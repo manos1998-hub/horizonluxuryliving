@@ -4,11 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Horizon | Luxury Boutique Apartments</title>
-    <!-- Font Awesome 6 (free) -->
+    <!-- Font Awesome 6 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <!-- Google Fonts: refined serif & sans -->
+    <!-- Google Fonts: Playfair Display + Inter -->
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
-    <!-- Firebase SDK -->
+    <!-- Firebase Compat (exactly as your config) -->
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
@@ -156,7 +156,7 @@
             margin-left: auto;
             margin-right: auto;
         }
-        /* ---------- SEARCH FORM (GLASS) ---------- */
+        /* ---------- SEARCH FORM ---------- */
         .search-form {
             background: rgba(255,255,255,0.15);
             backdrop-filter: blur(15px);
@@ -240,7 +240,7 @@
             max-width: 700px;
             margin: 0 auto;
         }
-        /* ---------- ABOUT (ELEGANT GRID) ---------- */
+        /* ---------- ABOUT ---------- */
         .about-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -320,7 +320,7 @@
             font-weight: 600;
             color: var(--primary);
         }
-        /* ---------- DINING SECTION ---------- */
+        /* ---------- DINING ---------- */
         .dining {
             background: var(--light-gray);
         }
@@ -352,7 +352,7 @@
             line-height: 1.8;
             font-size: 1.05rem;
         }
-        /* ---------- SERVICES CARDS ---------- */
+        /* ---------- SERVICES ---------- */
         .services-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -384,7 +384,7 @@
         .service-card p {
             color: var(--text-light);
         }
-        /* ---------- TESTIMONIALS (DARK) ---------- */
+        /* ---------- TESTIMONIALS ---------- */
         .testimonials {
             background: var(--dark);
             color: white;
@@ -434,7 +434,7 @@
             color: var(--primary);
             font-size: 1.2rem;
         }
-        /* ---------- LOCAL TOURS ---------- */
+        /* ---------- TOURS ---------- */
         .tours-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -522,7 +522,7 @@
             color: #666;
             font-size: 0.9rem;
         }
-        /* ---------- ADMIN ICON (FLOATING) ---------- */
+        /* ---------- ADMIN ICON ---------- */
         .admin-icon {
             position: fixed;
             bottom: 25px;
@@ -546,7 +546,7 @@
             transform: rotate(30deg) scale(1.1);
             background: var(--primary-dark);
         }
-        /* ---------- ADMIN OVERLAY (MODERN DASHBOARD) ---------- */
+        /* ---------- ADMIN OVERLAY ---------- */
         .admin-overlay {
             position: fixed;
             top: 0;
@@ -614,7 +614,7 @@
             color: red;
             margin-top: 10px;
         }
-        /* Admin tabs as pills */
+        /* Admin tabs */
         .admin-tabs {
             display: flex;
             gap: 10px;
@@ -648,7 +648,6 @@
         .admin-tab-content.active {
             display: block;
         }
-        /* Form fields */
         .admin-field {
             margin-bottom: 20px;
         }
@@ -804,7 +803,6 @@
         .btn-logout:hover {
             background: #cc0000;
         }
-        /* responsive */
         @media (max-width: 992px) {
             .about-grid, .dining-grid { grid-template-columns: 1fr; }
             .nav-menu { display: none; }
@@ -1055,7 +1053,7 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Firebase config
+            // Your exact Firebase configuration
             const firebaseConfig = {
                 apiKey: "AIzaSyBMzcjbqruiE_nJXhEfUWaASHbKE8YM60E",
                 authDomain: "horizonluxury-18b60.firebaseapp.com",
@@ -1064,13 +1062,15 @@
                 messagingSenderId: "521174900591",
                 appId: "1:521174900591:web:e7773cdd8052a6214b529a"
             };
+
+            // Initialize Firebase (compat)
             firebase.initializeApp(firebaseConfig);
             const auth = firebase.auth();
             const db = firebase.firestore();
             const storage = firebase.storage();
             const contentDoc = db.collection('website').doc('content');
 
-            // Default data (fixed apartment typo)
+            // ---------- DEFAULT DATA (with correct "apartment" field) ----------
             const defaultData = {
                 hero: {
                     subtitle: "Welcome to Horizon, a luxury apartment in the heart of the city",
@@ -1086,7 +1086,7 @@
                     desc2: "We proudly offers a full range of complimentary amenities and services that provide you with everything you need for an inspiring stay.",
                     image: "https://images.unsplash.com/photo-1566665797739-1674de7a421a?ixlib=rb-4.0.3&auto=format&fit=crop&w=1974&q=80"
                 },
-                apartment: [  // fixed property name (was 'apartments' in render)
+                apartment: [  // ✅ correct field name (singular)
                     { title: "Studio Apartment", desc: "Cozy space for 2 guests", price: "$199/night", image: "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?ixlib=rb-4.0.3&auto=format&fit=crop&w=1950&q=80" },
                     { title: "One-Bedroom Suite", desc: "Spacious with separate living area", price: "$299/night", image: "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?ixlib=rb-4.0.3&auto=format&fit=crop&w=1950&q=80" },
                     { title: "Penthouse", desc: "Panoramic city views", price: "$499/night", image: "https://images.unsplash.com/photo-1512918728675-ed5a9ecdebfd?ixlib=rb-4.0.3&auto=format&fit=crop&w=1950&q=80" }
@@ -1135,6 +1135,7 @@
 
             let siteData = JSON.parse(JSON.stringify(defaultData));
 
+            // Deep merge utility
             function mergeDeep(target, source) {
                 for (const key in source) {
                     if (source[key] && typeof source[key] === 'object' && !Array.isArray(source[key])) {
@@ -1146,6 +1147,7 @@
                 }
             }
 
+            // Load from Firestore
             async function loadFromFirebase() {
                 try {
                     const doc = await contentDoc.get();
@@ -1153,19 +1155,24 @@
                         const saved = doc.data();
                         siteData = JSON.parse(JSON.stringify(defaultData));
                         mergeDeep(siteData, saved);
+                        console.log('Data loaded from Firestore');
+                    } else {
+                        console.log('No document, using defaults');
                     }
                 } catch (error) {
-                    console.error("Error loading from Firebase:", error);
+                    console.error('Error loading from Firestore:', error);
                 }
                 renderSite();
                 populateAdminForms();
                 updatePreviews();
             }
 
+            // Save to Firestore
             async function saveToFirebase() {
                 await contentDoc.set(siteData);
             }
 
+            // Helper: populate guest dropdown
             function populateGuestDropdown(maxGuests) {
                 const select = document.getElementById('search-guests');
                 if (!select) return;
@@ -1179,7 +1186,9 @@
                 select.value = 2;
             }
 
+            // Render the public website
             function renderSite() {
+                // Hero background
                 document.getElementById('hero').style.backgroundImage = `linear-gradient(135deg, rgba(0,0,0,0.4), rgba(0,0,0,0.2)), url('${siteData.hero.bgImage}')`;
                 document.getElementById('hero-subtitle').textContent = siteData.hero.subtitle;
                 document.getElementById('hero-title').textContent = siteData.hero.title;
@@ -1188,6 +1197,7 @@
                 document.getElementById('search-checkout').value = siteData.hero.checkOut;
                 populateGuestDropdown(siteData.settings.maxGuests);
 
+                // Navigation menu
                 const navMenu = document.getElementById('nav-menu');
                 navMenu.innerHTML = '';
                 siteData.menu.forEach(item => {
@@ -1199,6 +1209,7 @@
                     navMenu.appendChild(li);
                 });
 
+                // Main content sections
                 const main = document.getElementById('main-content');
                 main.innerHTML = `
                     <section class="container" id="about">
@@ -1297,6 +1308,7 @@
                     </section>
                 `;
 
+                // Footer
                 const footerGrid = document.getElementById('footer-grid');
                 footerGrid.innerHTML = `
                     <div class="footer-col">
@@ -1322,7 +1334,9 @@
                 document.getElementById('copyright').textContent = siteData.footer.copyright;
             }
 
+            // Populate admin forms with current siteData
             function populateAdminForms() {
+                // Hero
                 document.getElementById('hero-subtitle-input').value = siteData.hero.subtitle;
                 document.getElementById('hero-title-input').value = siteData.hero.title;
                 document.getElementById('hero-text-input').value = siteData.hero.text;
@@ -1330,11 +1344,13 @@
                 document.getElementById('hero-checkin-input').value = siteData.hero.checkIn;
                 document.getElementById('hero-checkout-input').value = siteData.hero.checkOut;
 
+                // About
                 document.getElementById('about-title-input').value = siteData.about.title;
                 document.getElementById('about-desc1-input').value = siteData.about.desc1;
                 document.getElementById('about-desc2-input').value = siteData.about.desc2;
                 document.getElementById('about-image-input').value = siteData.about.image;
 
+                // Apartments
                 const aptList = document.getElementById('apartment-list');
                 aptList.innerHTML = '';
                 siteData.apartment.forEach((apt, index) => {
@@ -1347,19 +1363,21 @@
                             <div class="image-upload-row"><input type="text" value="${apt.price}" placeholder="Price" class="apt-price" data-index="${index}"></div>
                             <div class="image-upload-row">
                                 <input type="url" value="${apt.image}" placeholder="Image URL" class="apt-image" data-index="${index}">
-                                <button class="upload-btn" onclick="uploadApartmentImage(${index})">Upload</button>
+                                <button class="upload-btn" onclick="window.uploadApartmentImage(${index})">Upload</button>
                             </div>
                         </div>
                         <img class="image-preview" id="apt-preview-${index}" src="${apt.image}" style="display: ${apt.image ? 'block' : 'none'};">
-                        <button onclick="removeApartment(${index})"><i class="fas fa-times"></i></button>
+                        <button onclick="window.removeApartment(${index})"><i class="fas fa-times"></i></button>
                     `;
                     aptList.appendChild(div);
                 });
 
+                // Dining
                 document.getElementById('dining-title-input').value = siteData.dining.title;
                 document.getElementById('dining-desc-input').value = siteData.dining.desc;
                 document.getElementById('dining-image-input').value = siteData.dining.image;
 
+                // Services
                 const servicesList = document.getElementById('services-list');
                 servicesList.innerHTML = '';
                 siteData.services.forEach((service, index) => {
@@ -1371,11 +1389,12 @@
                             <div class="image-upload-row"><input type="text" value="${service.title}" placeholder="Title" class="service-title" data-index="${index}"></div>
                             <div class="image-upload-row"><input type="text" value="${service.desc}" placeholder="Description" class="service-desc" data-index="${index}"></div>
                         </div>
-                        <button onclick="removeService(${index})"><i class="fas fa-times"></i></button>
+                        <button onclick="window.removeService(${index})"><i class="fas fa-times"></i></button>
                     `;
                     servicesList.appendChild(div);
                 });
 
+                // Testimonials
                 const testList = document.getElementById('testimonials-list');
                 testList.innerHTML = '';
                 siteData.testimonials.forEach((test, index) => {
@@ -1386,11 +1405,12 @@
                             <div class="image-upload-row"><textarea placeholder="Testimonial text" class="test-text" data-index="${index}">${test.text}</textarea></div>
                             <div class="image-upload-row"><input type="text" value="${test.author}" placeholder="Author" class="test-author" data-index="${index}"></div>
                         </div>
-                        <button onclick="removeTestimonial(${index})"><i class="fas fa-times"></i></button>
+                        <button onclick="window.removeTestimonial(${index})"><i class="fas fa-times"></i></button>
                     `;
                     testList.appendChild(div);
                 });
 
+                // Tours
                 document.getElementById('tours-title-input').value = siteData.tours.title;
                 document.getElementById('tours-desc-input').value = siteData.tours.desc;
                 const toursList = document.getElementById('tours-list');
@@ -1404,15 +1424,16 @@
                             <div class="image-upload-row"><input type="text" value="${tour.desc}" placeholder="Description" class="tour-desc" data-index="${index}"></div>
                             <div class="image-upload-row">
                                 <input type="url" value="${tour.image}" placeholder="Image URL" class="tour-image" data-index="${index}">
-                                <button class="upload-btn" onclick="uploadTourImage(${index})">Upload</button>
+                                <button class="upload-btn" onclick="window.uploadTourImage(${index})">Upload</button>
                             </div>
                         </div>
                         <img class="image-preview" id="tour-preview-${index}" src="${tour.image}" style="display: ${tour.image ? 'block' : 'none'};">
-                        <button onclick="removeTour(${index})"><i class="fas fa-times"></i></button>
+                        <button onclick="window.removeTour(${index})"><i class="fas fa-times"></i></button>
                     `;
                     toursList.appendChild(div);
                 });
 
+                // Menu
                 const menuList = document.getElementById('menu-list');
                 menuList.innerHTML = '';
                 siteData.menu.forEach((item, index) => {
@@ -1423,21 +1444,24 @@
                             <div class="image-upload-row"><input type="text" value="${item.text}" placeholder="Text" class="menu-text" data-index="${index}"></div>
                             <div class="image-upload-row"><input type="text" value="${item.url}" placeholder="URL" class="menu-url" data-index="${index}"></div>
                         </div>
-                        <button onclick="removeMenuItem(${index})"><i class="fas fa-times"></i></button>
+                        <button onclick="window.removeMenuItem(${index})"><i class="fas fa-times"></i></button>
                     `;
                     menuList.appendChild(div);
                 });
 
+                // Settings
                 document.getElementById('settings-color').value = siteData.settings.primaryColor;
                 document.getElementById('settings-font').value = siteData.settings.fontFamily;
                 document.getElementById('settings-maxGuests').value = siteData.settings.maxGuests;
 
+                // Footer
                 document.getElementById('copyright-input').value = siteData.footer.copyright;
                 document.getElementById('footer-address').value = siteData.footer.address;
                 document.getElementById('footer-phone').value = siteData.footer.phone;
                 document.getElementById('footer-email').value = siteData.footer.email;
             }
 
+            // Update image previews
             function updatePreviews() {
                 const heroBg = document.getElementById('hero-bg-input').value;
                 const heroPreview = document.getElementById('hero-bg-preview');
@@ -1452,10 +1476,11 @@
                 if (diningImg) { diningPreview.src = diningImg; diningPreview.style.display = 'block'; } else diningPreview.style.display = 'none';
             }
 
+            // Upload image to Firebase Storage
             async function uploadImage(file, path) {
                 return new Promise((resolve, reject) => {
-                    if (!file) reject('No file');
-                    if (file.size > 5*1024*1024) reject('File too large (max 5MB)');
+                    if (!file) reject('No file selected');
+                    if (file.size > 5 * 1024 * 1024) reject('File too large (max 5MB)');
                     const storageRef = storage.ref();
                     const imageRef = storageRef.child(path + '/' + Date.now() + '_' + file.name);
                     const uploadTask = imageRef.put(file);
@@ -1466,6 +1491,7 @@
                 });
             }
 
+            // Expose functions globally for dynamic buttons
             window.uploadApartmentImage = async (index) => {
                 const input = document.createElement('input');
                 input.type = 'file';
@@ -1502,12 +1528,14 @@
                 input.click();
             };
 
+            // Remove item functions
             window.removeApartment = (index) => { siteData.apartment.splice(index, 1); populateAdminForms(); };
             window.removeService = (index) => { siteData.services.splice(index, 1); populateAdminForms(); };
             window.removeTestimonial = (index) => { siteData.testimonials.splice(index, 1); populateAdminForms(); };
             window.removeTour = (index) => { siteData.tours.items.splice(index, 1); populateAdminForms(); };
             window.removeMenuItem = (index) => { siteData.menu.splice(index, 1); populateAdminForms(); };
 
+            // Setup upload buttons for main fields
             function setupUploadButtons() {
                 document.getElementById('upload-hero-bg').addEventListener('click', () => {
                     const input = document.createElement('input');
@@ -1528,6 +1556,7 @@
                     };
                     input.click();
                 });
+
                 document.getElementById('upload-about-image').addEventListener('click', () => {
                     const input = document.createElement('input');
                     input.type = 'file';
@@ -1547,6 +1576,7 @@
                     };
                     input.click();
                 });
+
                 document.getElementById('upload-dining-image').addEventListener('click', () => {
                     const input = document.createElement('input');
                     input.type = 'file';
@@ -1568,7 +1598,9 @@
                 });
             }
 
+            // Collect data from admin forms into siteData
             function updateDataFromForms() {
+                // Hero
                 siteData.hero.subtitle = document.getElementById('hero-subtitle-input').value;
                 siteData.hero.title = document.getElementById('hero-title-input').value;
                 siteData.hero.text = document.getElementById('hero-text-input').value;
@@ -1576,11 +1608,13 @@
                 siteData.hero.checkIn = document.getElementById('hero-checkin-input').value;
                 siteData.hero.checkOut = document.getElementById('hero-checkout-input').value;
 
+                // About
                 siteData.about.title = document.getElementById('about-title-input').value;
                 siteData.about.desc1 = document.getElementById('about-desc1-input').value;
                 siteData.about.desc2 = document.getElementById('about-desc2-input').value;
                 siteData.about.image = document.getElementById('about-image-input').value;
 
+                // Apartment
                 const aptTitles = document.querySelectorAll('.apt-title');
                 const aptDescs = document.querySelectorAll('.apt-desc');
                 const aptPrices = document.querySelectorAll('.apt-price');
@@ -1592,10 +1626,12 @@
                     image: aptImages[i].value
                 }));
 
+                // Dining
                 siteData.dining.title = document.getElementById('dining-title-input').value;
                 siteData.dining.desc = document.getElementById('dining-desc-input').value;
                 siteData.dining.image = document.getElementById('dining-image-input').value;
 
+                // Services
                 const serviceIcons = document.querySelectorAll('.service-icon');
                 const serviceTitles = document.querySelectorAll('.service-title');
                 const serviceDescs = document.querySelectorAll('.service-desc');
@@ -1605,6 +1641,7 @@
                     desc: serviceDescs[i].value
                 }));
 
+                // Testimonials
                 const testTexts = document.querySelectorAll('.test-text');
                 const testAuthors = document.querySelectorAll('.test-author');
                 siteData.testimonials = Array.from(testTexts).map((el, i) => ({
@@ -1612,6 +1649,7 @@
                     author: testAuthors[i].value
                 }));
 
+                // Tours
                 siteData.tours.title = document.getElementById('tours-title-input').value;
                 siteData.tours.desc = document.getElementById('tours-desc-input').value;
                 const tourTitles = document.querySelectorAll('.tour-title');
@@ -1623,6 +1661,7 @@
                     image: tourImages[i].value
                 }));
 
+                // Menu
                 const menuTexts = document.querySelectorAll('.menu-text');
                 const menuUrls = document.querySelectorAll('.menu-url');
                 siteData.menu = Array.from(menuTexts).map((el, i) => ({
@@ -1630,16 +1669,19 @@
                     url: menuUrls[i].value
                 }));
 
+                // Settings
                 siteData.settings.primaryColor = document.getElementById('settings-color').value;
                 siteData.settings.fontFamily = document.getElementById('settings-font').value;
                 siteData.settings.maxGuests = parseInt(document.getElementById('settings-maxGuests').value) || 12;
 
+                // Footer
                 siteData.footer.copyright = document.getElementById('copyright-input').value;
                 siteData.footer.address = document.getElementById('footer-address').value;
                 siteData.footer.phone = document.getElementById('footer-phone').value;
                 siteData.footer.email = document.getElementById('footer-email').value;
             }
 
+            // Add event listeners for "Add" buttons
             document.getElementById('add-apartment').addEventListener('click', () => {
                 siteData.apartment.push({ title: 'New Apartment', desc: 'Description', price: '$0/night', image: '' });
                 populateAdminForms();
@@ -1661,6 +1703,7 @@
                 populateAdminForms();
             });
 
+            // Tab switching
             const tabs = document.querySelectorAll('.admin-tab');
             tabs.forEach(tab => {
                 tab.addEventListener('click', () => {
@@ -1671,6 +1714,7 @@
                 });
             });
 
+            // Admin icon click
             const adminIcon = document.getElementById('adminIcon');
             const adminOverlay = document.getElementById('adminOverlay');
             const loginContainer = document.getElementById('loginContainer');
@@ -1681,7 +1725,7 @@
                     loginContainer.style.display = 'none';
                     adminDashboard.style.display = 'block';
                     adminOverlay.style.display = 'flex';
-                    setTimeout(setupUploadButtons, 100);
+                    setTimeout(setupUploadButtons, 100); // ensure buttons attached
                 } else {
                     loginContainer.style.display = 'block';
                     adminDashboard.style.display = 'none';
@@ -1689,6 +1733,7 @@
                 }
             });
 
+            // Login button
             document.getElementById('loginBtn').addEventListener('click', async () => {
                 const email = document.getElementById('loginEmail').value;
                 const password = document.getElementById('loginPassword').value;
@@ -1704,6 +1749,7 @@
                 }
             });
 
+            // Logout button
             document.getElementById('logoutBtn').addEventListener('click', async () => {
                 await auth.signOut();
                 adminOverlay.style.display = 'none';
@@ -1711,10 +1757,12 @@
                 adminDashboard.style.display = 'none';
             });
 
+            // Close admin
             document.getElementById('closeAdmin').addEventListener('click', () => {
                 adminOverlay.style.display = 'none';
             });
 
+            // Save changes
             document.getElementById('saveChanges').addEventListener('click', async () => {
                 const saveBtn = document.getElementById('saveChanges');
                 saveBtn.disabled = true; saveBtn.textContent = 'Saving...';
@@ -1731,6 +1779,7 @@
                 }
             });
 
+            // Start
             loadFromFirebase();
         });
     </script>
