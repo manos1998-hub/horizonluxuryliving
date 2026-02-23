@@ -12,6 +12,7 @@
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
     <style>
+        /* (same styles as before – no changes) */
         * {
             margin: 0;
             padding: 0;
@@ -120,7 +121,7 @@
             flex-wrap: wrap;
             justify-content: center;
             gap: 10px;
-            max-width: 700px;
+            max-width: 800px;
             margin: 0 auto;
         }
         .search-input {
@@ -130,11 +131,15 @@
             border-radius: 40px;
             color: white;
             font-size: 15px;
-            min-width: 200px;
+            min-width: 180px;
             flex: 1;
+            font-family: 'Montserrat', sans-serif;
         }
         .search-input::placeholder {
             color: rgba(255,255,255,0.7);
+        }
+        .search-input option {
+            color: #2c2c2c;
         }
         .search-btn {
             background: #c9a86c;
@@ -569,9 +574,9 @@
             <h1 id="hero-title">Your Next Boutique Apartments</h1>
             <p id="hero-text">Stay in the heart of the city</p>
             <div class="search-form">
-                <input type="text" class="search-input" placeholder="Check-in" id="search-checkin">
-                <input type="text" class="search-input" placeholder="Check-out" id="search-checkout">
-                <input type="text" class="search-input" placeholder="Guests" id="search-guests">
+                <input type="date" class="search-input" id="search-checkin" value="2026-06-01">
+                <input type="date" class="search-input" id="search-checkout" value="2026-06-05">
+                <select class="search-input" id="search-guests"></select>
                 <button class="search-btn" id="search-btn">Search</button>
             </div>
         </div>
@@ -604,6 +609,7 @@
                 <div class="admin-tab" data-tab="testimonials">Testimonials</div>
                 <div class="admin-tab" data-tab="tours">Tours</div>
                 <div class="admin-tab" data-tab="menu">Menu</div>
+                <div class="admin-tab" data-tab="settings">Settings</div>
                 <div class="admin-tab" data-tab="footer">Footer</div>
             </div>
 
@@ -613,6 +619,8 @@
                 <div class="admin-field"><label>Title</label><input type="text" id="hero-title-input"></div>
                 <div class="admin-field"><label>Text</label><input type="text" id="hero-text-input"></div>
                 <div class="admin-field"><label>Background Image URL</label><input type="url" id="hero-bg-input"></div>
+                <div class="admin-field"><label>Default Check-In Date</label><input type="date" id="hero-checkin-input"></div>
+                <div class="admin-field"><label>Default Check-Out Date</label><input type="date" id="hero-checkout-input"></div>
             </div>
 
             <!-- About Tab -->
@@ -662,6 +670,20 @@
                 <button class="add-btn" id="add-menu-item">+ Add Menu Item</button>
             </div>
 
+            <!-- Settings Tab -->
+            <div class="admin-tab-content" id="tab-settings">
+                <div class="admin-field"><label>Primary Color</label><input type="color" id="settings-color" value="#c9a86c"></div>
+                <div class="admin-field">
+                    <label>Font Family</label>
+                    <select id="settings-font">
+                        <option value="'Montserrat', sans-serif">Montserrat</option>
+                        <option value="'Open Sans', sans-serif">Open Sans</option>
+                        <option value="'Roboto', sans-serif">Roboto</option>
+                    </select>
+                </div>
+                <div class="admin-field"><label>Max Guests (dropdown)</label><input type="number" id="settings-maxGuests" min="1" max="50" value="12"></div>
+            </div>
+
             <!-- Footer Tab -->
             <div class="admin-tab-content" id="tab-footer">
                 <div class="admin-field"><label>Copyright Text</label><input type="text" id="copyright-input"></div>
@@ -698,7 +720,9 @@
                     subtitle: "Welcome to Horizon, a luxury apartment in the heart of the city",
                     title: "Your Next Boutique Apartments",
                     text: "Stay in the heart of the city",
-                    bgImage: "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?ixlib=rb-4.0.3&auto=format&fit=crop&w=1950&q=80"
+                    bgImage: "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?ixlib=rb-4.0.3&auto=format&fit=crop&w=1950&q=80",
+                    checkIn: "2026-06-01",
+                    checkOut: "2026-06-05"
                 },
                 about: {
                     title: "Luxury furnished serviced apartments in the city center",
@@ -740,6 +764,11 @@
                     { text: "Services", url: "#services" },
                     { text: "Contact", url: "#contact" }
                 ],
+                settings: {
+                    primaryColor: "#c9a86c",
+                    fontFamily: "'Montserrat', sans-serif",
+                    maxGuests: 12
+                },
                 footer: {
                     copyright: "© 2026 Horizon Luxury Living. All rights reserved.",
                     address: "123 Luxury Avenue, New York, NY 10001",
@@ -754,9 +783,13 @@
                     const doc = await contentDoc.get();
                     if (doc.exists) {
                         siteData = doc.data();
+                        console.log('Loaded from Firebase:', siteData);
+                    } else {
+                        console.log('No saved data, using defaults');
                     }
                 } catch (error) {
-                    console.error("Error loading:", error);
+                    console.error("Error loading from Firebase:", error);
+                    alert("Error loading data: " + error.message);
                 }
                 renderSite();
                 populateAdminForms();
@@ -766,10 +799,26 @@
             async function saveToFirebase() {
                 try {
                     await contentDoc.set(siteData);
-                    alert("Changes saved to Firebase!");
+                    console.log('Saved to Firebase successfully');
+                    return true;
                 } catch (error) {
-                    alert("Error saving: " + error.message);
+                    console.error("Error saving to Firebase:", error);
+                    throw error;
                 }
+            }
+
+            // Helper to populate guest dropdown
+            function populateGuestDropdown(maxGuests) {
+                const select = document.getElementById('search-guests');
+                if (!select) return;
+                select.innerHTML = '';
+                for (let i = 1; i <= maxGuests; i++) {
+                    const option = document.createElement('option');
+                    option.value = i;
+                    option.textContent = i + (i === 1 ? ' Guest' : ' Guests');
+                    select.appendChild(option);
+                }
+                select.value = 2; // default
             }
 
             // Render site
@@ -779,6 +828,9 @@
                 document.getElementById('hero-subtitle').textContent = siteData.hero.subtitle;
                 document.getElementById('hero-title').textContent = siteData.hero.title;
                 document.getElementById('hero-text').textContent = siteData.hero.text;
+                document.getElementById('search-checkin').value = siteData.hero.checkIn;
+                document.getElementById('search-checkout').value = siteData.hero.checkOut;
+                populateGuestDropdown(siteData.settings.maxGuests);
 
                 // Navigation menu
                 const navMenu = document.getElementById('nav-menu');
@@ -930,6 +982,8 @@
                 document.getElementById('hero-title-input').value = siteData.hero.title;
                 document.getElementById('hero-text-input').value = siteData.hero.text;
                 document.getElementById('hero-bg-input').value = siteData.hero.bgImage;
+                document.getElementById('hero-checkin-input').value = siteData.hero.checkIn;
+                document.getElementById('hero-checkout-input').value = siteData.hero.checkOut;
 
                 // About
                 document.getElementById('about-title-input').value = siteData.about.title;
@@ -1018,6 +1072,11 @@
                     menuList.appendChild(div);
                 });
 
+                // Settings
+                document.getElementById('settings-color').value = siteData.settings.primaryColor;
+                document.getElementById('settings-font').value = siteData.settings.fontFamily;
+                document.getElementById('settings-maxGuests').value = siteData.settings.maxGuests;
+
                 // Footer
                 document.getElementById('copyright-input').value = siteData.footer.copyright;
                 document.getElementById('footer-address').value = siteData.footer.address;
@@ -1032,6 +1091,8 @@
                 siteData.hero.title = document.getElementById('hero-title-input').value;
                 siteData.hero.text = document.getElementById('hero-text-input').value;
                 siteData.hero.bgImage = document.getElementById('hero-bg-input').value;
+                siteData.hero.checkIn = document.getElementById('hero-checkin-input').value;
+                siteData.hero.checkOut = document.getElementById('hero-checkout-input').value;
 
                 // About
                 siteData.about.title = document.getElementById('about-title-input').value;
@@ -1094,6 +1155,11 @@
                     url: menuUrls[i].value
                 }));
 
+                // Settings
+                siteData.settings.primaryColor = document.getElementById('settings-color').value;
+                siteData.settings.fontFamily = document.getElementById('settings-font').value;
+                siteData.settings.maxGuests = parseInt(document.getElementById('settings-maxGuests').value) || 12;
+
                 // Footer
                 siteData.footer.copyright = document.getElementById('copyright-input').value;
                 siteData.footer.address = document.getElementById('footer-address').value;
@@ -1101,7 +1167,7 @@
                 siteData.footer.email = document.getElementById('footer-email').value;
             }
 
-            // Define global remove functions (so onclick works)
+            // Global remove functions
             window.removeApartment = (index) => {
                 siteData.apartments.splice(index, 1);
                 populateAdminForms();
@@ -1123,7 +1189,7 @@
                 populateAdminForms();
             };
 
-            // Add event listeners for add buttons
+            // Add event listeners
             document.getElementById('add-apartment').addEventListener('click', () => {
                 siteData.apartments.push({ title: 'New Apartment', desc: 'Description', price: '$0/night', image: '' });
                 populateAdminForms();
@@ -1173,12 +1239,36 @@
                 adminOverlay.style.display = 'none';
             });
 
-            // Save changes
+            // Save changes - FIXED with error handling
             document.getElementById('saveChanges').addEventListener('click', async () => {
-                updateDataFromForms();
-                renderSite();
-                await saveToFirebase();
-                adminOverlay.style.display = 'none';
+                // Disable button to prevent double-click
+                const saveBtn = document.getElementById('saveChanges');
+                saveBtn.disabled = true;
+                saveBtn.textContent = 'Saving...';
+
+                try {
+                    // Step 1: Collect form data
+                    console.log('Collecting form data...');
+                    updateDataFromForms();
+
+                    // Step 2: Update the site preview
+                    console.log('Rendering site...');
+                    renderSite();
+
+                    // Step 3: Save to Firebase
+                    console.log('Saving to Firebase...');
+                    await saveToFirebase();
+
+                    alert('Changes saved successfully!');
+                    adminOverlay.style.display = 'none';
+                } catch (error) {
+                    console.error('Save failed:', error);
+                    alert('Error saving changes: ' + error.message);
+                } finally {
+                    // Re-enable button
+                    saveBtn.disabled = false;
+                    saveBtn.textContent = 'Save Changes';
+                }
             });
 
             // Load data
