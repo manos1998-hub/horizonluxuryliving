@@ -12,6 +12,7 @@
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-storage-compat.js"></script>
     <style>
         * {
             margin: 0;
@@ -523,6 +524,42 @@
         .admin-field textarea {
             min-height: 80px;
         }
+        .image-upload-row {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            margin-bottom: 5px;
+        }
+        .image-upload-row input {
+            flex: 1;
+        }
+        .upload-btn {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 14px;
+            white-space: nowrap;
+        }
+        .upload-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        .upload-progress {
+            font-size: 12px;
+            color: #666;
+            margin-left: 10px;
+        }
+        .image-preview {
+            max-width: 100px;
+            max-height: 60px;
+            object-fit: cover;
+            border-radius: 4px;
+            margin-top: 5px;
+            border: 1px solid #ddd;
+        }
         .admin-buttons {
             display: flex;
             gap: 10px;
@@ -556,19 +593,19 @@
         .thumbnail-list {
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 15px;
             margin-bottom: 10px;
         }
         .thumbnail-item {
             display: flex;
             gap: 10px;
-            align-items: center;
+            align-items: flex-start;
             flex-wrap: wrap;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
         }
-        .thumbnail-item input,
-        .thumbnail-item textarea {
-            flex: 1;
-            min-width: 150px;
+        .thumbnail-item .image-upload-row {
+            width: 100%;
         }
         .thumbnail-item button {
             background: #ff4444;
@@ -670,20 +707,58 @@
 
                 <!-- Hero Tab -->
                 <div class="admin-tab-content active" id="tab-hero">
-                    <div class="admin-field"><label>Subtitle</label><input type="text" id="hero-subtitle-input"></div>
-                    <div class="admin-field"><label>Title</label><input type="text" id="hero-title-input"></div>
-                    <div class="admin-field"><label>Text</label><input type="text" id="hero-text-input"></div>
-                    <div class="admin-field"><label>Background Image URL</label><input type="url" id="hero-bg-input"></div>
-                    <div class="admin-field"><label>Default Check-In Date</label><input type="date" id="hero-checkin-input"></div>
-                    <div class="admin-field"><label>Default Check-Out Date</label><input type="date" id="hero-checkout-input"></div>
+                    <div class="admin-field">
+                        <label>Subtitle</label>
+                        <input type="text" id="hero-subtitle-input">
+                    </div>
+                    <div class="admin-field">
+                        <label>Title</label>
+                        <input type="text" id="hero-title-input">
+                    </div>
+                    <div class="admin-field">
+                        <label>Text</label>
+                        <input type="text" id="hero-text-input">
+                    </div>
+                    <div class="admin-field">
+                        <label>Background Image</label>
+                        <div class="image-upload-row">
+                            <input type="url" id="hero-bg-input" placeholder="Image URL">
+                            <button class="upload-btn" id="upload-hero-bg">Upload</button>
+                        </div>
+                        <img id="hero-bg-preview" class="image-preview" src="" style="display: none;">
+                    </div>
+                    <div class="admin-field">
+                        <label>Default Check-In Date</label>
+                        <input type="date" id="hero-checkin-input">
+                    </div>
+                    <div class="admin-field">
+                        <label>Default Check-Out Date</label>
+                        <input type="date" id="hero-checkout-input">
+                    </div>
                 </div>
 
                 <!-- About Tab -->
                 <div class="admin-tab-content" id="tab-about">
-                    <div class="admin-field"><label>Title</label><input type="text" id="about-title-input"></div>
-                    <div class="admin-field"><label>Description 1</label><textarea id="about-desc1-input"></textarea></div>
-                    <div class="admin-field"><label>Description 2</label><textarea id="about-desc2-input"></textarea></div>
-                    <div class="admin-field"><label>Image URL</label><input type="url" id="about-image-input"></div>
+                    <div class="admin-field">
+                        <label>Title</label>
+                        <input type="text" id="about-title-input">
+                    </div>
+                    <div class="admin-field">
+                        <label>Description 1</label>
+                        <textarea id="about-desc1-input"></textarea>
+                    </div>
+                    <div class="admin-field">
+                        <label>Description 2</label>
+                        <textarea id="about-desc2-input"></textarea>
+                    </div>
+                    <div class="admin-field">
+                        <label>Image</label>
+                        <div class="image-upload-row">
+                            <input type="url" id="about-image-input" placeholder="Image URL">
+                            <button class="upload-btn" id="upload-about-image">Upload</button>
+                        </div>
+                        <img id="about-image-preview" class="image-preview" src="" style="display: none;">
+                    </div>
                 </div>
 
                 <!-- Apartments Tab -->
@@ -694,9 +769,22 @@
 
                 <!-- Dining Tab -->
                 <div class="admin-tab-content" id="tab-dining">
-                    <div class="admin-field"><label>Title</label><input type="text" id="dining-title-input"></div>
-                    <div class="admin-field"><label>Description</label><textarea id="dining-desc-input"></textarea></div>
-                    <div class="admin-field"><label>Image URL</label><input type="url" id="dining-image-input"></div>
+                    <div class="admin-field">
+                        <label>Title</label>
+                        <input type="text" id="dining-title-input">
+                    </div>
+                    <div class="admin-field">
+                        <label>Description</label>
+                        <textarea id="dining-desc-input"></textarea>
+                    </div>
+                    <div class="admin-field">
+                        <label>Image</label>
+                        <div class="image-upload-row">
+                            <input type="url" id="dining-image-input" placeholder="Image URL">
+                            <button class="upload-btn" id="upload-dining-image">Upload</button>
+                        </div>
+                        <img id="dining-image-preview" class="image-preview" src="" style="display: none;">
+                    </div>
                 </div>
 
                 <!-- Services Tab -->
@@ -713,8 +801,14 @@
 
                 <!-- Tours Tab -->
                 <div class="admin-tab-content" id="tab-tours">
-                    <div class="admin-field"><label>Tours Title</label><input type="text" id="tours-title-input"></div>
-                    <div class="admin-field"><label>Tours Description</label><textarea id="tours-desc-input"></textarea></div>
+                    <div class="admin-field">
+                        <label>Tours Title</label>
+                        <input type="text" id="tours-title-input">
+                    </div>
+                    <div class="admin-field">
+                        <label>Tours Description</label>
+                        <textarea id="tours-desc-input"></textarea>
+                    </div>
                     <div id="tours-list"></div>
                     <button class="add-btn" id="add-tour">+ Add Tour</button>
                 </div>
@@ -727,7 +821,10 @@
 
                 <!-- Settings Tab -->
                 <div class="admin-tab-content" id="tab-settings">
-                    <div class="admin-field"><label>Primary Color</label><input type="color" id="settings-color" value="#c9a86c"></div>
+                    <div class="admin-field">
+                        <label>Primary Color</label>
+                        <input type="color" id="settings-color" value="#c9a86c">
+                    </div>
                     <div class="admin-field">
                         <label>Font Family</label>
                         <select id="settings-font">
@@ -736,15 +833,30 @@
                             <option value="'Roboto', sans-serif">Roboto</option>
                         </select>
                     </div>
-                    <div class="admin-field"><label>Max Guests (dropdown)</label><input type="number" id="settings-maxGuests" min="1" max="50" value="12"></div>
+                    <div class="admin-field">
+                        <label>Max Guests (dropdown)</label>
+                        <input type="number" id="settings-maxGuests" min="1" max="50" value="12">
+                    </div>
                 </div>
 
                 <!-- Footer Tab -->
                 <div class="admin-tab-content" id="tab-footer">
-                    <div class="admin-field"><label>Copyright Text</label><input type="text" id="copyright-input"></div>
-                    <div class="admin-field"><label>Address</label><input type="text" id="footer-address"></div>
-                    <div class="admin-field"><label>Phone</label><input type="text" id="footer-phone"></div>
-                    <div class="admin-field"><label>Email</label><input type="email" id="footer-email"></div>
+                    <div class="admin-field">
+                        <label>Copyright Text</label>
+                        <input type="text" id="copyright-input">
+                    </div>
+                    <div class="admin-field">
+                        <label>Address</label>
+                        <input type="text" id="footer-address">
+                    </div>
+                    <div class="admin-field">
+                        <label>Phone</label>
+                        <input type="text" id="footer-phone">
+                    </div>
+                    <div class="admin-field">
+                        <label>Email</label>
+                        <input type="email" id="footer-email">
+                    </div>
                 </div>
 
                 <div class="admin-buttons">
@@ -769,6 +881,7 @@
             firebase.initializeApp(firebaseConfig);
             const auth = firebase.auth();
             const db = firebase.firestore();
+            const storage = firebase.storage();
             const contentDoc = db.collection('website').doc('content');
 
             // Complete default data with all categories
@@ -868,6 +981,7 @@
                 }
                 renderSite();
                 populateAdminForms();
+                updatePreviews();
             }
 
             // Save to Firebase
@@ -1073,10 +1187,20 @@
                     const div = document.createElement('div');
                     div.className = 'thumbnail-item';
                     div.innerHTML = `
-                        <input type="text" value="${apt.title}" placeholder="Title" class="apt-title" data-index="${index}">
-                        <input type="text" value="${apt.desc}" placeholder="Description" class="apt-desc" data-index="${index}">
-                        <input type="text" value="${apt.price}" placeholder="Price" class="apt-price" data-index="${index}">
-                        <input type="url" value="${apt.image}" placeholder="Image URL" class="apt-image" data-index="${index}">
+                        <div class="image-upload-row">
+                            <input type="text" value="${apt.title}" placeholder="Title" class="apt-title" data-index="${index}">
+                        </div>
+                        <div class="image-upload-row">
+                            <input type="text" value="${apt.desc}" placeholder="Description" class="apt-desc" data-index="${index}">
+                        </div>
+                        <div class="image-upload-row">
+                            <input type="text" value="${apt.price}" placeholder="Price" class="apt-price" data-index="${index}">
+                        </div>
+                        <div class="image-upload-row">
+                            <input type="url" value="${apt.image}" placeholder="Image URL" class="apt-image" data-index="${index}">
+                            <button class="upload-btn" onclick="uploadApartmentImage(${index})">Upload</button>
+                        </div>
+                        <img class="image-preview" id="apt-preview-${index}" src="${apt.image}" style="display: ${apt.image ? 'block' : 'none'};">
                         <button onclick="removeApartment(${index})"><i class="fas fa-times"></i></button>
                     `;
                     aptList.appendChild(div);
@@ -1094,9 +1218,15 @@
                     const div = document.createElement('div');
                     div.className = 'thumbnail-item';
                     div.innerHTML = `
-                        <input type="text" value="${service.icon}" placeholder="Icon class (e.g., fas fa-wifi)" class="service-icon" data-index="${index}">
-                        <input type="text" value="${service.title}" placeholder="Title" class="service-title" data-index="${index}">
-                        <input type="text" value="${service.desc}" placeholder="Description" class="service-desc" data-index="${index}">
+                        <div class="image-upload-row">
+                            <input type="text" value="${service.icon}" placeholder="Icon class (e.g., fas fa-wifi)" class="service-icon" data-index="${index}">
+                        </div>
+                        <div class="image-upload-row">
+                            <input type="text" value="${service.title}" placeholder="Title" class="service-title" data-index="${index}">
+                        </div>
+                        <div class="image-upload-row">
+                            <input type="text" value="${service.desc}" placeholder="Description" class="service-desc" data-index="${index}">
+                        </div>
                         <button onclick="removeService(${index})"><i class="fas fa-times"></i></button>
                     `;
                     servicesList.appendChild(div);
@@ -1109,8 +1239,12 @@
                     const div = document.createElement('div');
                     div.className = 'thumbnail-item';
                     div.innerHTML = `
-                        <textarea placeholder="Testimonial text" class="test-text" data-index="${index}">${test.text}</textarea>
-                        <input type="text" value="${test.author}" placeholder="Author" class="test-author" data-index="${index}">
+                        <div class="image-upload-row">
+                            <textarea placeholder="Testimonial text" class="test-text" data-index="${index}">${test.text}</textarea>
+                        </div>
+                        <div class="image-upload-row">
+                            <input type="text" value="${test.author}" placeholder="Author" class="test-author" data-index="${index}">
+                        </div>
                         <button onclick="removeTestimonial(${index})"><i class="fas fa-times"></i></button>
                     `;
                     testList.appendChild(div);
@@ -1125,9 +1259,17 @@
                     const div = document.createElement('div');
                     div.className = 'thumbnail-item';
                     div.innerHTML = `
-                        <input type="text" value="${tour.title}" placeholder="Title" class="tour-title" data-index="${index}">
-                        <input type="text" value="${tour.desc}" placeholder="Description" class="tour-desc" data-index="${index}">
-                        <input type="url" value="${tour.image}" placeholder="Image URL" class="tour-image" data-index="${index}">
+                        <div class="image-upload-row">
+                            <input type="text" value="${tour.title}" placeholder="Title" class="tour-title" data-index="${index}">
+                        </div>
+                        <div class="image-upload-row">
+                            <input type="text" value="${tour.desc}" placeholder="Description" class="tour-desc" data-index="${index}">
+                        </div>
+                        <div class="image-upload-row">
+                            <input type="url" value="${tour.image}" placeholder="Image URL" class="tour-image" data-index="${index}">
+                            <button class="upload-btn" onclick="uploadTourImage(${index})">Upload</button>
+                        </div>
+                        <img class="image-preview" id="tour-preview-${index}" src="${tour.image}" style="display: ${tour.image ? 'block' : 'none'};">
                         <button onclick="removeTour(${index})"><i class="fas fa-times"></i></button>
                     `;
                     toursList.appendChild(div);
@@ -1140,8 +1282,12 @@
                     const div = document.createElement('div');
                     div.className = 'thumbnail-item';
                     div.innerHTML = `
-                        <input type="text" value="${item.text}" placeholder="Text" class="menu-text" data-index="${index}">
-                        <input type="text" value="${item.url}" placeholder="URL" class="menu-url" data-index="${index}">
+                        <div class="image-upload-row">
+                            <input type="text" value="${item.text}" placeholder="Text" class="menu-text" data-index="${index}">
+                        </div>
+                        <div class="image-upload-row">
+                            <input type="text" value="${item.url}" placeholder="URL" class="menu-url" data-index="${index}">
+                        </div>
                         <button onclick="removeMenuItem(${index})"><i class="fas fa-times"></i></button>
                     `;
                     menuList.appendChild(div);
@@ -1158,6 +1304,206 @@
                 document.getElementById('footer-phone').value = siteData.footer.phone;
                 document.getElementById('footer-email').value = siteData.footer.email;
             }
+
+            // Update previews for images
+            function updatePreviews() {
+                // Hero preview
+                const heroBg = document.getElementById('hero-bg-input').value;
+                const heroPreview = document.getElementById('hero-bg-preview');
+                if (heroBg) {
+                    heroPreview.src = heroBg;
+                    heroPreview.style.display = 'block';
+                } else {
+                    heroPreview.style.display = 'none';
+                }
+
+                // About preview
+                const aboutImg = document.getElementById('about-image-input').value;
+                const aboutPreview = document.getElementById('about-image-preview');
+                if (aboutImg) {
+                    aboutPreview.src = aboutImg;
+                    aboutPreview.style.display = 'block';
+                } else {
+                    aboutPreview.style.display = 'none';
+                }
+
+                // Dining preview
+                const diningImg = document.getElementById('dining-image-input').value;
+                const diningPreview = document.getElementById('dining-image-preview');
+                if (diningImg) {
+                    diningPreview.src = diningImg;
+                    diningPreview.style.display = 'block';
+                } else {
+                    diningPreview.style.display = 'none';
+                }
+
+                // Apartment previews are handled in their own elements
+            }
+
+            // Generic image upload function
+            async function uploadImage(file, path) {
+                return new Promise((resolve, reject) => {
+                    if (!file) {
+                        reject('No file selected');
+                        return;
+                    }
+                    if (file.size > 5 * 1024 * 1024) {
+                        reject('File size exceeds 5 MB');
+                        return;
+                    }
+                    const storageRef = storage.ref();
+                    const imageRef = storageRef.child(path + '/' + Date.now() + '_' + file.name);
+                    const uploadTask = imageRef.put(file);
+
+                    uploadTask.on('state_changed',
+                        (snapshot) => {
+                            // Optional: update progress
+                        },
+                        (error) => {
+                            reject(error);
+                        },
+                        async () => {
+                            const downloadURL = await uploadTask.snapshot.ref.getDownloadURL();
+                            resolve(downloadURL);
+                        }
+                    );
+                });
+            }
+
+            // Setup upload buttons
+            function setupUploadButtons() {
+                // Hero background
+                document.getElementById('upload-hero-bg').addEventListener('click', () => {
+                    const input = document.createElement('input');
+                    input.type = 'file';
+                    input.accept = 'image/*';
+                    input.onchange = async (e) => {
+                        const file = e.target.files[0];
+                        if (!file) return;
+                        const btn = document.getElementById('upload-hero-bg');
+                        btn.disabled = true;
+                        btn.textContent = 'Uploading...';
+                        try {
+                            const url = await uploadImage(file, 'hero');
+                            document.getElementById('hero-bg-input').value = url;
+                            document.getElementById('hero-bg-preview').src = url;
+                            document.getElementById('hero-bg-preview').style.display = 'block';
+                        } catch (error) {
+                            alert('Upload failed: ' + error);
+                        } finally {
+                            btn.disabled = false;
+                            btn.textContent = 'Upload';
+                        }
+                    };
+                    input.click();
+                });
+
+                // About image
+                document.getElementById('upload-about-image').addEventListener('click', () => {
+                    const input = document.createElement('input');
+                    input.type = 'file';
+                    input.accept = 'image/*';
+                    input.onchange = async (e) => {
+                        const file = e.target.files[0];
+                        if (!file) return;
+                        const btn = document.getElementById('upload-about-image');
+                        btn.disabled = true;
+                        btn.textContent = 'Uploading...';
+                        try {
+                            const url = await uploadImage(file, 'about');
+                            document.getElementById('about-image-input').value = url;
+                            document.getElementById('about-image-preview').src = url;
+                            document.getElementById('about-image-preview').style.display = 'block';
+                        } catch (error) {
+                            alert('Upload failed: ' + error);
+                        } finally {
+                            btn.disabled = false;
+                            btn.textContent = 'Upload';
+                        }
+                    };
+                    input.click();
+                });
+
+                // Dining image
+                document.getElementById('upload-dining-image').addEventListener('click', () => {
+                    const input = document.createElement('input');
+                    input.type = 'file';
+                    input.accept = 'image/*';
+                    input.onchange = async (e) => {
+                        const file = e.target.files[0];
+                        if (!file) return;
+                        const btn = document.getElementById('upload-dining-image');
+                        btn.disabled = true;
+                        btn.textContent = 'Uploading...';
+                        try {
+                            const url = await uploadImage(file, 'dining');
+                            document.getElementById('dining-image-input').value = url;
+                            document.getElementById('dining-image-preview').src = url;
+                            document.getElementById('dining-image-preview').style.display = 'block';
+                        } catch (error) {
+                            alert('Upload failed: ' + error);
+                        } finally {
+                            btn.disabled = false;
+                            btn.textContent = 'Upload';
+                        }
+                    };
+                    input.click();
+                });
+            }
+
+            // Global upload functions for dynamic elements
+            window.uploadApartmentImage = (index) => {
+                const input = document.createElement('input');
+                input.type = 'file';
+                input.accept = 'image/*';
+                input.onchange = async (e) => {
+                    const file = e.target.files[0];
+                    if (!file) return;
+                    const btn = e.target;
+                    try {
+                        const url = await uploadImage(file, 'apartments');
+                        // Update the input field
+                        const aptImageInput = document.querySelector(`.apt-image[data-index="${index}"]`);
+                        if (aptImageInput) {
+                            aptImageInput.value = url;
+                        }
+                        // Update preview
+                        const preview = document.getElementById(`apt-preview-${index}`);
+                        if (preview) {
+                            preview.src = url;
+                            preview.style.display = 'block';
+                        }
+                    } catch (error) {
+                        alert('Upload failed: ' + error);
+                    }
+                };
+                input.click();
+            };
+
+            window.uploadTourImage = (index) => {
+                const input = document.createElement('input');
+                input.type = 'file';
+                input.accept = 'image/*';
+                input.onchange = async (e) => {
+                    const file = e.target.files[0];
+                    if (!file) return;
+                    try {
+                        const url = await uploadImage(file, 'tours');
+                        const tourImageInput = document.querySelector(`.tour-image[data-index="${index}"]`);
+                        if (tourImageInput) {
+                            tourImageInput.value = url;
+                        }
+                        const preview = document.getElementById(`tour-preview-${index}`);
+                        if (preview) {
+                            preview.src = url;
+                            preview.style.display = 'block';
+                        }
+                    } catch (error) {
+                        alert('Upload failed: ' + error);
+                    }
+                };
+                input.click();
+            };
 
             // Update data from forms
             function updateDataFromForms() {
@@ -1304,14 +1650,13 @@
             const adminDashboard = document.getElementById('adminDashboard');
 
             adminIcon.addEventListener('click', () => {
-                // Check if user is already logged in
                 if (auth.currentUser) {
-                    // Show admin dashboard directly
                     loginContainer.style.display = 'none';
                     adminDashboard.style.display = 'block';
                     adminOverlay.style.display = 'flex';
+                    // Re-setup upload buttons when dashboard opens
+                    setTimeout(setupUploadButtons, 100);
                 } else {
-                    // Show login form
                     loginContainer.style.display = 'block';
                     adminDashboard.style.display = 'none';
                     adminOverlay.style.display = 'flex';
@@ -1325,10 +1670,11 @@
                 const errorDiv = document.getElementById('loginError');
                 try {
                     await auth.signInWithEmailAndPassword(email, password);
-                    // Success
                     loginContainer.style.display = 'none';
                     adminDashboard.style.display = 'block';
                     errorDiv.textContent = '';
+                    // Setup upload buttons
+                    setupUploadButtons();
                 } catch (error) {
                     errorDiv.textContent = error.message;
                 }
