@@ -1065,12 +1065,8 @@
                     <button class="add-btn" id="add-gallery-image">+ Add Image</button>
                 </div>
 
-                <!-- Pricing Tab -->
+                <!-- Pricing Tab (no apartment selector) -->
                 <div class="admin-tab-content" id="tab-pricing">
-                    <div class="admin-field">
-                        <label>Select Apartment:</label>
-                        <select id="pricing-apartment-select"></select>
-                    </div>
                     <div class="admin-field">
                         <label>Base Price ($ per night)</label>
                         <input type="number" id="pricing-basePrice" min="0" step="1">
@@ -1146,12 +1142,8 @@
                     <button class="add-btn" id="add-tour">+ Add Tour</button>
                 </div>
 
-                <!-- Calendar Tab -->
+                <!-- Calendar Tab (no apartment selector) -->
                 <div class="admin-tab-content" id="tab-calendar">
-                    <div class="admin-field">
-                        <label>Select Apartment:</label>
-                        <select id="calendar-apartment-select"></select>
-                    </div>
                     <div style="display: flex; justify-content: space-between; align-items: center; margin: 20px 0;">
                         <button class="upload-btn" id="calendar-prev-month"><i class="fas fa-chevron-left"></i> Prev</button>
                         <span id="calendar-month-year"></span>
@@ -1282,7 +1274,7 @@
             const contentDoc = db.collection('website').doc('content');
             const reservationsCol = db.collection('reservations');
 
-            // ---------- DEFAULT DATA ----------
+            // ---------- DEFAULT DATA (single apartment, pricing array still but we'll use index 0) ----------
             const defaultData = {
                 hero: {
                     subtitle: "Welcome to Horizon, a luxury apartment in the heart of the city",
@@ -1304,9 +1296,7 @@
                     { title: "Kitchen", desc: "Modern kitchen", image: "https://images.unsplash.com/photo-1512918728675-ed5a9ecdebfd?ixlib=rb-4.0.3&auto=format&fit=crop&w=1950&q=80" }
                 ],
                 pricing: [
-                    { basePrice: 199, maxGuests: 2, extraGuestFee: 20 },
-                    { basePrice: 299, maxGuests: 3, extraGuestFee: 25 },
-                    { basePrice: 499, maxGuests: 4, extraGuestFee: 30 }
+                    { basePrice: 199, maxGuests: 2, extraGuestFee: 20 }
                 ],
                 dining: {
                     title: "Experience exquisite cuisine from all over the world",
@@ -1387,7 +1377,6 @@
                 updatePreviews();
                 renderReservationsList();
                 renderCalendar(); // for admin
-                // No overview to update
             }
 
             async function saveToFirebase() {
@@ -1545,7 +1534,7 @@
                 select.value = 2;
             }
 
-            // Admin functions (populate forms, etc.) - as in previous full version
+            // Admin functions (populate forms, etc.)
             function populateAdminForms() {
                 // Hero
                 document.getElementById('hero-subtitle-input').value = siteData.hero.subtitle;
@@ -1581,6 +1570,11 @@
                     `;
                     galleryList.appendChild(div);
                 });
+
+                // Pricing (single apartment)
+                document.getElementById('pricing-basePrice').value = siteData.pricing[0]?.basePrice || 0;
+                document.getElementById('pricing-maxGuests').value = siteData.pricing[0]?.maxGuests || 2;
+                document.getElementById('pricing-extraFee').value = siteData.pricing[0]?.extraGuestFee || 0;
 
                 // Dining
                 document.getElementById('dining-title-input').value = siteData.dining.title;
@@ -1719,29 +1713,9 @@
 
             window.removeGalleryImage = (index) => {
                 siteData.gallery.splice(index, 1);
-                siteData.pricing.splice(index, 1); // keep sync
+                // Keep pricing array length in sync (but we only use index 0 anyway)
+                if (siteData.pricing.length > 1) siteData.pricing.splice(index, 1);
                 populateAdminForms();
-                // Also update selects in pricing and calendar if needed
-                const pricingSelect = document.getElementById('pricing-apartment-select');
-                if (pricingSelect) {
-                    pricingSelect.innerHTML = '';
-                    siteData.gallery.forEach((item, idx) => {
-                        const opt = document.createElement('option');
-                        opt.value = idx;
-                        opt.textContent = item.title;
-                        pricingSelect.appendChild(opt);
-                    });
-                }
-                const calendarSelect = document.getElementById('calendar-apartment-select');
-                if (calendarSelect) {
-                    calendarSelect.innerHTML = '';
-                    siteData.gallery.forEach((item, idx) => {
-                        const opt = document.createElement('option');
-                        opt.value = idx;
-                        opt.textContent = item.title;
-                        calendarSelect.appendChild(opt);
-                    });
-                }
             };
 
             window.uploadTourImage = async (index) => {
@@ -1830,25 +1804,15 @@
                 });
             }
 
-            // Pricing tab: update when apartment changes
-            document.getElementById('pricing-apartment-select').addEventListener('change', function() {
-                const idx = this.value;
-                if (idx !== '') {
-                    document.getElementById('pricing-basePrice').value = siteData.pricing[idx]?.basePrice || 0;
-                    document.getElementById('pricing-maxGuests').value = siteData.pricing[idx]?.maxGuests || 2;
-                    document.getElementById('pricing-extraFee').value = siteData.pricing[idx]?.extraGuestFee || 0;
-                }
-            });
-
-            // Bulk pricing
+            // Bulk pricing (single apartment)
             document.getElementById('apply-bulk-pricing').addEventListener('click', function() {
-                const aptIdx = document.getElementById('pricing-apartment-select').value;
                 const from = document.getElementById('bulk-from').value;
                 const to = document.getElementById('bulk-to').value;
                 const price = parseFloat(document.getElementById('bulk-price').value);
-                if (!aptIdx || !from || !to || isNaN(price)) { alert('Please fill all fields'); return; }
+                if (!from || !to || isNaN(price)) { alert('Please fill all fields'); return; }
                 if (new Date(from) > new Date(to)) { alert('From date must be before To date'); return; }
 
+                const aptIdx = 0;
                 if (!siteData.availability) siteData.availability = {};
                 if (!siteData.availability[aptIdx]) siteData.availability[aptIdx] = {};
 
@@ -1952,7 +1916,7 @@
 
                 const reservation = {
                     apartmentIndex: aptIdx,
-                    apartmentTitle: siteData.gallery[aptIdx].title,
+                    apartmentTitle: siteData.gallery[aptIdx]?.title || 'Horizon Suite',
                     checkIn: checkin,
                     checkOut: checkout,
                     guests,
@@ -2035,12 +1999,11 @@
                 }
             };
 
-            // Calendar functions (admin)
+            // Calendar functions (admin) - single apartment
             let currentCalendarDate = new Date();
 
             function renderCalendar() {
-                const aptIndex = document.getElementById('calendar-apartment-select').value;
-                if (aptIndex === null || aptIndex === '') return;
+                const aptIdx = 0;
                 const year = currentCalendarDate.getFullYear();
                 const month = currentCalendarDate.getMonth();
                 const firstDay = new Date(year, month, 1);
@@ -2058,7 +2021,7 @@
 
                 for (let d = 1; d <= daysInMonth; d++) {
                     const dateStr = `${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
-                    const dayData = siteData.availability?.[aptIndex]?.[dateStr] || {};
+                    const dayData = siteData.availability?.[aptIdx]?.[dateStr] || {};
                     const available = dayData.available !== false;
                     const price = dayData.price || '';
                     gridHtml += `
@@ -2073,10 +2036,9 @@
             }
 
             function collectCalendarData() {
-                const aptIndex = document.getElementById('calendar-apartment-select').value;
-                if (!aptIndex) return;
+                const aptIdx = 0;
                 if (!siteData.availability) siteData.availability = {};
-                if (!siteData.availability[aptIndex]) siteData.availability[aptIndex] = {};
+                if (!siteData.availability[aptIdx]) siteData.availability[aptIdx] = {};
 
                 const checkboxes = document.querySelectorAll('.cal-available');
                 const priceInputs = document.querySelectorAll('.cal-price');
@@ -2087,9 +2049,9 @@
                     const price = priceInput.value ? parseFloat(priceInput.value) : null;
 
                     if (!available && price === null) {
-                        delete siteData.availability[aptIndex][date];
+                        delete siteData.availability[aptIdx][date];
                     } else {
-                        siteData.availability[aptIndex][date] = { available, price };
+                        siteData.availability[aptIdx][date] = { available, price };
                     }
                 });
             }
@@ -2097,25 +2059,11 @@
             // Add event listeners for add buttons
             document.getElementById('add-gallery-image').addEventListener('click', () => {
                 siteData.gallery.push({ title: 'New Image', desc: '', image: '' });
-                siteData.pricing.push({ basePrice: 200, maxGuests: 2, extraGuestFee: 20 });
+                // Keep pricing array with at least one entry
+                if (siteData.pricing.length < siteData.gallery.length) {
+                    siteData.pricing.push({ basePrice: 200, maxGuests: 2, extraGuestFee: 20 });
+                }
                 populateAdminForms();
-                // Update selects
-                const pricingSelect = document.getElementById('pricing-apartment-select');
-                pricingSelect.innerHTML = '';
-                siteData.gallery.forEach((item, idx) => {
-                    const opt = document.createElement('option');
-                    opt.value = idx;
-                    opt.textContent = item.title;
-                    pricingSelect.appendChild(opt);
-                });
-                const calendarSelect = document.getElementById('calendar-apartment-select');
-                calendarSelect.innerHTML = '';
-                siteData.gallery.forEach((item, idx) => {
-                    const opt = document.createElement('option');
-                    opt.value = idx;
-                    opt.textContent = item.title;
-                    calendarSelect.appendChild(opt);
-                });
             });
 
             document.getElementById('add-service').addEventListener('click', () => {
@@ -2147,28 +2095,7 @@
                     tab.classList.add('active');
                     document.getElementById('tab-' + tab.dataset.tab).classList.add('active');
                     if (tab.dataset.tab === 'calendar') {
-                        // populate selects
-                        const calendarSelect = document.getElementById('calendar-apartment-select');
-                        calendarSelect.innerHTML = '';
-                        siteData.gallery.forEach((item, idx) => {
-                            const opt = document.createElement('option');
-                            opt.value = idx;
-                            opt.textContent = item.title;
-                            calendarSelect.appendChild(opt);
-                        });
                         renderCalendar();
-                    }
-                    if (tab.dataset.tab === 'pricing') {
-                        const pricingSelect = document.getElementById('pricing-apartment-select');
-                        pricingSelect.innerHTML = '';
-                        siteData.gallery.forEach((item, idx) => {
-                            const opt = document.createElement('option');
-                            opt.value = idx;
-                            opt.textContent = item.title;
-                            pricingSelect.appendChild(opt);
-                        });
-                        const event = new Event('change');
-                        pricingSelect.dispatchEvent(event);
                     }
                     if (tab.dataset.tab === 'reservations') {
                         renderReservationsList();
@@ -2185,7 +2112,6 @@
                 currentCalendarDate.setMonth(currentCalendarDate.getMonth() + 1);
                 renderCalendar();
             });
-            document.getElementById('calendar-apartment-select').addEventListener('change', renderCalendar);
 
             // Admin login/logout
             const adminIcon = document.getElementById('adminIcon');
@@ -2200,23 +2126,6 @@
                     adminOverlay.style.display = 'flex';
                     setTimeout(() => {
                         setupUploadButtons();
-                        // Populate selects
-                        const pricingSelect = document.getElementById('pricing-apartment-select');
-                        pricingSelect.innerHTML = '';
-                        siteData.gallery.forEach((item, idx) => {
-                            const opt = document.createElement('option');
-                            opt.value = idx;
-                            opt.textContent = item.title;
-                            pricingSelect.appendChild(opt);
-                        });
-                        const calendarSelect = document.getElementById('calendar-apartment-select');
-                        calendarSelect.innerHTML = '';
-                        siteData.gallery.forEach((item, idx) => {
-                            const opt = document.createElement('option');
-                            opt.value = idx;
-                            opt.textContent = item.title;
-                            calendarSelect.appendChild(opt);
-                        });
                         renderCalendar();
                     }, 100);
                 } else {
@@ -2236,22 +2145,6 @@
                     adminDashboard.style.display = 'block';
                     errorDiv.textContent = '';
                     setupUploadButtons();
-                    const pricingSelect = document.getElementById('pricing-apartment-select');
-                    pricingSelect.innerHTML = '';
-                    siteData.gallery.forEach((item, idx) => {
-                        const opt = document.createElement('option');
-                        opt.value = idx;
-                        opt.textContent = item.title;
-                        pricingSelect.appendChild(opt);
-                    });
-                    const calendarSelect = document.getElementById('calendar-apartment-select');
-                    calendarSelect.innerHTML = '';
-                    siteData.gallery.forEach((item, idx) => {
-                        const opt = document.createElement('option');
-                        opt.value = idx;
-                        opt.textContent = item.title;
-                        calendarSelect.appendChild(opt);
-                    });
                     renderCalendar();
                 } catch (error) {
                     errorDiv.textContent = error.message;
@@ -2281,15 +2174,12 @@
                     image: galleryImages[i].value
                 }));
 
-                // Update pricing from current form
-                const aptIdx = document.getElementById('pricing-apartment-select').value;
-                if (aptIdx !== '') {
-                    siteData.pricing[aptIdx] = {
-                        basePrice: parseFloat(document.getElementById('pricing-basePrice').value) || 0,
-                        maxGuests: parseInt(document.getElementById('pricing-maxGuests').value) || 2,
-                        extraGuestFee: parseFloat(document.getElementById('pricing-extraFee').value) || 0
-                    };
-                }
+                // Update pricing (single)
+                siteData.pricing[0] = {
+                    basePrice: parseFloat(document.getElementById('pricing-basePrice').value) || 0,
+                    maxGuests: parseInt(document.getElementById('pricing-maxGuests').value) || 2,
+                    extraGuestFee: parseFloat(document.getElementById('pricing-extraFee').value) || 0
+                };
 
                 // Collect other form data (hero, about, dining, services, etc.)
                 siteData.hero.subtitle = document.getElementById('hero-subtitle-input').value;
