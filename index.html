@@ -156,7 +156,7 @@
             margin-left: auto;
             margin-right: auto;
         }
-        /* ---------- AVAILABILITY & BOOKING BAR ---------- */
+        /* ---------- AVAILABILITY & BOOKING BAR (no apartment dropdown) ---------- */
         .booking-bar {
             background: rgba(255,255,255,0.15);
             backdrop-filter: blur(15px);
@@ -167,7 +167,7 @@
             flex-wrap: wrap;
             justify-content: center;
             gap: 8px;
-            max-width: 1000px;
+            max-width: 800px;
             margin: 0 auto;
             border: 1px solid rgba(255,255,255,0.2);
             box-shadow: 0 20px 40px -10px rgba(0,0,0,0.3);
@@ -212,52 +212,6 @@
             background: var(--primary-dark);
             transform: translateY(-3px);
             box-shadow: 0 15px 30px -8px rgba(201,168,108,0.7);
-        }
-        /* ---------- AVAILABILITY OVERVIEW ---------- */
-        .availability-overview {
-            margin-top: 30px;
-            background: rgba(255,255,255,0.1);
-            backdrop-filter: blur(8px);
-            border-radius: 30px;
-            padding: 20px;
-            max-width: 900px;
-            margin-left: auto;
-            margin-right: auto;
-            color: white;
-            border: 1px solid rgba(255,255,255,0.15);
-        }
-        .overview-title {
-            font-size: 1.2rem;
-            margin-bottom: 15px;
-            font-weight: 500;
-            letter-spacing: 1px;
-        }
-        .overview-days {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            justify-content: center;
-        }
-        .day-card {
-            background: rgba(0,0,0,0.3);
-            border-radius: 20px;
-            padding: 10px;
-            min-width: 90px;
-            text-align: center;
-            border: 1px solid rgba(255,255,255,0.1);
-        }
-        .day-card .date {
-            font-size: 0.8rem;
-            opacity: 0.8;
-        }
-        .day-card .price {
-            font-size: 1.2rem;
-            font-weight: 600;
-            color: var(--primary);
-        }
-        .day-card.closed {
-            opacity: 0.4;
-            text-decoration: line-through;
         }
         /* ---------- SECTION TITLES ---------- */
         .section-title {
@@ -880,6 +834,85 @@
         .reservation-actions button:hover {
             background: #cc0000;
         }
+        /* BOOKING MODAL */
+        .booking-modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(5px);
+            z-index: 3000;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            background: white;
+            border-radius: 30px;
+            padding: 40px;
+            max-width: 450px;
+            width: 90%;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.5);
+            position: relative;
+        }
+        .modal-content h3 {
+            font-size: 2rem;
+            margin-bottom: 20px;
+            color: var(--dark);
+        }
+        .modal-content .close-modal {
+            position: absolute;
+            top: 20px;
+            right: 25px;
+            font-size: 28px;
+            cursor: pointer;
+            color: #aaa;
+            transition: var(--transition);
+        }
+        .modal-content .close-modal:hover {
+            color: var(--dark);
+        }
+        .modal-field {
+            margin-bottom: 20px;
+        }
+        .modal-field label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: #444;
+        }
+        .modal-field input {
+            width: 100%;
+            padding: 12px 18px;
+            border: 1px solid #ddd;
+            border-radius: 30px;
+            font-family: 'Inter', sans-serif;
+            font-size: 15px;
+        }
+        .modal-field input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+        .modal-field .readonly-input {
+            background: #f0f0f0;
+            color: #555;
+        }
+        .modal-submit {
+            background: var(--primary);
+            color: var(--dark);
+            border: none;
+            padding: 15px 30px;
+            border-radius: 40px;
+            font-weight: 600;
+            width: 100%;
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 16px;
+            margin-top: 10px;
+        }
+        .modal-submit:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
         @media (max-width: 992px) {
             .about-grid, .dining-grid { grid-template-columns: 1fr; }
             .nav-menu { display: none; }
@@ -904,7 +937,7 @@
         </div>
     </header>
 
-    <!-- Hero Section with BOOKING BAR -->
+    <!-- Hero Section with BOOKING BAR (no apartment dropdown) -->
     <section class="hero" id="hero">
         <div class="hero-content">
             <div class="hero-subtitle" id="hero-subtitle">Welcome to Horizon, a luxury apartment in the heart of the city</div>
@@ -913,15 +946,10 @@
             <div class="booking-bar">
                 <input type="date" class="booking-input" id="booking-checkin" value="2026-06-01">
                 <input type="date" class="booking-input" id="booking-checkout" value="2026-06-05">
-                <select class="booking-input" id="booking-apartment"></select>
                 <select class="booking-input" id="booking-guests"></select>
                 <button class="book-btn" id="book-btn">Check Availability & Book</button>
             </div>
-            <!-- Availability overview -->
-            <div class="availability-overview" id="availabilityOverview">
-                <div class="overview-title">📅 Next 7 days availability (first apartment)</div>
-                <div class="overview-days" id="overviewDays"></div>
-            </div>
+            <!-- NO availability overview -->
         </div>
     </section>
 
@@ -1031,7 +1059,7 @@
                     </div>
                 </div>
 
-                <!-- Gallery Tab (images only) -->
+                <!-- Gallery Tab -->
                 <div class="admin-tab-content" id="tab-gallery">
                     <div id="gallery-list"></div>
                     <button class="add-btn" id="add-gallery-image">+ Add Image</button>
@@ -1192,6 +1220,49 @@
         </div>
     </div>
 
+    <!-- BOOKING MODAL -->
+    <div class="booking-modal" id="bookingModal">
+        <div class="modal-content">
+            <span class="close-modal" id="closeModal">&times;</span>
+            <h3>Complete your booking</h3>
+            <form id="booking-form">
+                <div class="modal-field">
+                    <label>First Name *</label>
+                    <input type="text" id="modal-firstname" required>
+                </div>
+                <div class="modal-field">
+                    <label>Last Name *</label>
+                    <input type="text" id="modal-lastname" required>
+                </div>
+                <div class="modal-field">
+                    <label>Email *</label>
+                    <input type="email" id="modal-email" required>
+                </div>
+                <div class="modal-field">
+                    <label>Phone Number *</label>
+                    <input type="tel" id="modal-phone" required>
+                </div>
+                <div class="modal-field">
+                    <label>Check-in</label>
+                    <input type="text" id="modal-checkin" class="readonly-input" readonly>
+                </div>
+                <div class="modal-field">
+                    <label>Check-out</label>
+                    <input type="text" id="modal-checkout" class="readonly-input" readonly>
+                </div>
+                <div class="modal-field">
+                    <label>Guests</label>
+                    <input type="text" id="modal-guests" class="readonly-input" readonly>
+                </div>
+                <div class="modal-field">
+                    <label>Total Price</label>
+                    <input type="text" id="modal-total" class="readonly-input" readonly>
+                </div>
+                <button type="submit" class="modal-submit" id="modal-submit">Confirm Booking</button>
+            </form>
+        </div>
+    </div>
+
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // Firebase config
@@ -1314,47 +1385,13 @@
                 renderSite();
                 populateAdminForms();
                 updatePreviews();
-                populateSelects();
-                renderCalendar();
-                updateAvailabilityOverview();
                 renderReservationsList();
+                renderCalendar(); // for admin
+                // No overview to update
             }
 
             async function saveToFirebase() {
                 await contentDoc.set(siteData);
-            }
-
-            function populateSelects() {
-                const bookingSelect = document.getElementById('booking-apartment');
-                const pricingSelect = document.getElementById('pricing-apartment-select');
-                const calendarSelect = document.getElementById('calendar-apartment-select');
-                if (bookingSelect) {
-                    bookingSelect.innerHTML = '';
-                    siteData.gallery.forEach((item, idx) => {
-                        const opt = document.createElement('option');
-                        opt.value = idx;
-                        opt.textContent = item.title;
-                        bookingSelect.appendChild(opt);
-                    });
-                }
-                if (pricingSelect) {
-                    pricingSelect.innerHTML = '';
-                    siteData.gallery.forEach((item, idx) => {
-                        const opt = document.createElement('option');
-                        opt.value = idx;
-                        opt.textContent = item.title;
-                        pricingSelect.appendChild(opt);
-                    });
-                }
-                if (calendarSelect) {
-                    calendarSelect.innerHTML = '';
-                    siteData.gallery.forEach((item, idx) => {
-                        const opt = document.createElement('option');
-                        opt.value = idx;
-                        opt.textContent = item.title;
-                        calendarSelect.appendChild(opt);
-                    });
-                }
             }
 
             function renderSite() {
@@ -1365,7 +1402,6 @@
                 document.getElementById('booking-checkin').value = siteData.hero.checkIn;
                 document.getElementById('booking-checkout').value = siteData.hero.checkOut;
                 populateGuestDropdown(siteData.settings.maxGuests);
-                populateSelects();
 
                 const navMenu = document.getElementById('nav-menu');
                 navMenu.innerHTML = '';
@@ -1509,6 +1545,7 @@
                 select.value = 2;
             }
 
+            // Admin functions (populate forms, etc.) - as in previous full version
             function populateAdminForms() {
                 // Hero
                 document.getElementById('hero-subtitle-input').value = siteData.hero.subtitle;
@@ -1545,7 +1582,6 @@
                     galleryList.appendChild(div);
                 });
 
-                // Pricing (populate later on tab change)
                 // Dining
                 document.getElementById('dining-title-input').value = siteData.dining.title;
                 document.getElementById('dining-desc-input').value = siteData.dining.desc;
@@ -1685,7 +1721,27 @@
                 siteData.gallery.splice(index, 1);
                 siteData.pricing.splice(index, 1); // keep sync
                 populateAdminForms();
-                populateSelects();
+                // Also update selects in pricing and calendar if needed
+                const pricingSelect = document.getElementById('pricing-apartment-select');
+                if (pricingSelect) {
+                    pricingSelect.innerHTML = '';
+                    siteData.gallery.forEach((item, idx) => {
+                        const opt = document.createElement('option');
+                        opt.value = idx;
+                        opt.textContent = item.title;
+                        pricingSelect.appendChild(opt);
+                    });
+                }
+                const calendarSelect = document.getElementById('calendar-apartment-select');
+                if (calendarSelect) {
+                    calendarSelect.innerHTML = '';
+                    siteData.gallery.forEach((item, idx) => {
+                        const opt = document.createElement('option');
+                        opt.value = idx;
+                        opt.textContent = item.title;
+                        calendarSelect.appendChild(opt);
+                    });
+                }
             };
 
             window.uploadTourImage = async (index) => {
@@ -1808,24 +1864,38 @@
                 renderCalendar();
             });
 
-            // Booking logic
-            document.getElementById('book-btn').addEventListener('click', async () => {
+            // BOOKING MODAL LOGIC
+            const modal = document.getElementById('bookingModal');
+            const closeModal = document.getElementById('closeModal');
+            const bookBtn = document.getElementById('book-btn');
+            const bookingForm = document.getElementById('booking-form');
+
+            let currentBooking = {
+                checkin: '',
+                checkout: '',
+                guests: 0,
+                total: 0,
+                aptIdx: 0,
+                nights: []
+            };
+
+            bookBtn.addEventListener('click', async () => {
                 const checkin = document.getElementById('booking-checkin').value;
                 const checkout = document.getElementById('booking-checkout').value;
-                const aptIdx = document.getElementById('booking-apartment').value;
                 const guests = parseInt(document.getElementById('booking-guests').value);
 
                 if (!checkin || !checkout) { alert('Please select dates'); return; }
                 if (new Date(checkin) >= new Date(checkout)) { alert('Check-out must be after check-in'); return; }
 
+                const aptIdx = 0; // single apartment
                 const aptPricing = siteData.pricing[aptIdx];
-                if (!aptPricing) { alert('Apartment pricing not found'); return; }
-                if (guests > aptPricing.maxGuests) { alert(`Max guests for this apartment is ${aptPricing.maxGuests}`); return; }
+                if (!aptPricing) { alert('Pricing not found'); return; }
+                if (guests > aptPricing.maxGuests) { alert(`Max guests is ${aptPricing.maxGuests}`); return; }
 
                 let total = 0;
+                let nights = [];
                 let current = new Date(checkin);
                 const end = new Date(checkout);
-                const nights = [];
                 while (current < end) {
                     const dateStr = current.toISOString().split('T')[0];
                     const dayData = siteData.availability?.[aptIdx]?.[dateStr] || {};
@@ -1843,7 +1913,42 @@
                 const extraGuests = Math.max(0, guests - 2);
                 total += extraGuests * (aptPricing.extraGuestFee || 0);
 
-                if (!confirm(`Total for ${guests} guest(s): $${total}. Confirm booking?`)) return;
+                currentBooking = {
+                    checkin, checkout, guests, total, aptIdx, nights
+                };
+
+                document.getElementById('modal-checkin').value = checkin;
+                document.getElementById('modal-checkout').value = checkout;
+                document.getElementById('modal-guests').value = guests;
+                document.getElementById('modal-total').value = `$${total}`;
+
+                modal.style.display = 'flex';
+            });
+
+            closeModal.addEventListener('click', () => {
+                modal.style.display = 'none';
+            });
+
+            window.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    modal.style.display = 'none';
+                }
+            });
+
+            bookingForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+
+                const firstName = document.getElementById('modal-firstname').value.trim();
+                const lastName = document.getElementById('modal-lastname').value.trim();
+                const email = document.getElementById('modal-email').value.trim();
+                const phone = document.getElementById('modal-phone').value.trim();
+
+                if (!firstName || !lastName || !email || !phone) {
+                    alert('Please fill all fields');
+                    return;
+                }
+
+                const { checkin, checkout, guests, total, aptIdx, nights } = currentBooking;
 
                 const reservation = {
                     apartmentIndex: aptIdx,
@@ -1852,6 +1957,10 @@
                     checkOut: checkout,
                     guests,
                     totalPrice: total,
+                    firstName,
+                    lastName,
+                    email,
+                    phone,
                     createdAt: firebase.firestore.FieldValue.serverTimestamp(),
                     status: 'confirmed'
                 };
@@ -1867,9 +1976,10 @@
                     const resSnapshot = await reservationsCol.orderBy('createdAt', 'desc').get();
                     reservations = resSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
                     renderReservationsList();
-                    updateAvailabilityOverview();
                     renderCalendar();
-                    alert('Booking confirmed!');
+                    modal.style.display = 'none';
+                    alert('Booking confirmed! Thank you.');
+                    bookingForm.reset();
                 } catch (error) {
                     alert('Error creating reservation: ' + error.message);
                 }
@@ -1890,7 +2000,8 @@
                         <div class="reservation-details">
                             <strong>${res.apartmentTitle}</strong><br>
                             ${res.checkIn} to ${res.checkOut} · ${res.guests} guests · $${res.totalPrice}<br>
-                            <small>Booked: ${res.createdAt ? new Date(res.createdAt.toDate()).toLocaleString() : 'just now'}</small>
+                            <small>Booked: ${res.createdAt ? new Date(res.createdAt.toDate()).toLocaleString() : 'just now'}</small><br>
+                            <small>${res.firstName} ${res.lastName} | ${res.email} | ${res.phone}</small>
                         </div>
                         <div class="reservation-actions">
                             <button onclick="window.cancelReservation('${res.id}', ${res.apartmentIndex}, '${res.checkIn}', '${res.checkOut}')">Cancel</button>
@@ -1917,7 +2028,6 @@
                     const resSnapshot = await reservationsCol.orderBy('createdAt', 'desc').get();
                     reservations = resSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
                     renderReservationsList();
-                    updateAvailabilityOverview();
                     renderCalendar();
                     alert('Reservation cancelled');
                 } catch (error) {
@@ -1925,30 +2035,7 @@
                 }
             };
 
-            function updateAvailabilityOverview() {
-                const aptIdx = 0;
-                const today = new Date();
-                const days = [];
-                for (let i = 0; i < 7; i++) {
-                    const date = new Date(today);
-                    date.setDate(today.getDate() + i);
-                    const dateStr = date.toISOString().split('T')[0];
-                    const aptPricing = siteData.pricing[aptIdx] || { basePrice: 0 };
-                    const basePrice = aptPricing.basePrice;
-                    const dayData = siteData.availability?.[aptIdx]?.[dateStr] || {};
-                    const available = dayData.available !== false;
-                    const price = dayData.price || basePrice;
-                    days.push({ dateStr, available, price });
-                }
-                const overviewDiv = document.getElementById('overviewDays');
-                overviewDiv.innerHTML = days.map(day => `
-                    <div class="day-card ${!day.available ? 'closed' : ''}">
-                        <div class="date">${day.dateStr.slice(5)}</div>
-                        <div class="price">${day.available ? '$'+day.price : 'Closed'}</div>
-                    </div>
-                `).join('');
-            }
-
+            // Calendar functions (admin)
             let currentCalendarDate = new Date();
 
             function renderCalendar() {
@@ -2012,7 +2099,23 @@
                 siteData.gallery.push({ title: 'New Image', desc: '', image: '' });
                 siteData.pricing.push({ basePrice: 200, maxGuests: 2, extraGuestFee: 20 });
                 populateAdminForms();
-                populateSelects();
+                // Update selects
+                const pricingSelect = document.getElementById('pricing-apartment-select');
+                pricingSelect.innerHTML = '';
+                siteData.gallery.forEach((item, idx) => {
+                    const opt = document.createElement('option');
+                    opt.value = idx;
+                    opt.textContent = item.title;
+                    pricingSelect.appendChild(opt);
+                });
+                const calendarSelect = document.getElementById('calendar-apartment-select');
+                calendarSelect.innerHTML = '';
+                siteData.gallery.forEach((item, idx) => {
+                    const opt = document.createElement('option');
+                    opt.value = idx;
+                    opt.textContent = item.title;
+                    calendarSelect.appendChild(opt);
+                });
             });
 
             document.getElementById('add-service').addEventListener('click', () => {
@@ -2044,13 +2147,28 @@
                     tab.classList.add('active');
                     document.getElementById('tab-' + tab.dataset.tab).classList.add('active');
                     if (tab.dataset.tab === 'calendar') {
-                        populateSelects();
+                        // populate selects
+                        const calendarSelect = document.getElementById('calendar-apartment-select');
+                        calendarSelect.innerHTML = '';
+                        siteData.gallery.forEach((item, idx) => {
+                            const opt = document.createElement('option');
+                            opt.value = idx;
+                            opt.textContent = item.title;
+                            calendarSelect.appendChild(opt);
+                        });
                         renderCalendar();
                     }
                     if (tab.dataset.tab === 'pricing') {
-                        populateSelects();
+                        const pricingSelect = document.getElementById('pricing-apartment-select');
+                        pricingSelect.innerHTML = '';
+                        siteData.gallery.forEach((item, idx) => {
+                            const opt = document.createElement('option');
+                            opt.value = idx;
+                            opt.textContent = item.title;
+                            pricingSelect.appendChild(opt);
+                        });
                         const event = new Event('change');
-                        document.getElementById('pricing-apartment-select').dispatchEvent(event);
+                        pricingSelect.dispatchEvent(event);
                     }
                     if (tab.dataset.tab === 'reservations') {
                         renderReservationsList();
@@ -2082,7 +2200,23 @@
                     adminOverlay.style.display = 'flex';
                     setTimeout(() => {
                         setupUploadButtons();
-                        populateSelects();
+                        // Populate selects
+                        const pricingSelect = document.getElementById('pricing-apartment-select');
+                        pricingSelect.innerHTML = '';
+                        siteData.gallery.forEach((item, idx) => {
+                            const opt = document.createElement('option');
+                            opt.value = idx;
+                            opt.textContent = item.title;
+                            pricingSelect.appendChild(opt);
+                        });
+                        const calendarSelect = document.getElementById('calendar-apartment-select');
+                        calendarSelect.innerHTML = '';
+                        siteData.gallery.forEach((item, idx) => {
+                            const opt = document.createElement('option');
+                            opt.value = idx;
+                            opt.textContent = item.title;
+                            calendarSelect.appendChild(opt);
+                        });
                         renderCalendar();
                     }, 100);
                 } else {
@@ -2102,7 +2236,22 @@
                     adminDashboard.style.display = 'block';
                     errorDiv.textContent = '';
                     setupUploadButtons();
-                    populateSelects();
+                    const pricingSelect = document.getElementById('pricing-apartment-select');
+                    pricingSelect.innerHTML = '';
+                    siteData.gallery.forEach((item, idx) => {
+                        const opt = document.createElement('option');
+                        opt.value = idx;
+                        opt.textContent = item.title;
+                        pricingSelect.appendChild(opt);
+                    });
+                    const calendarSelect = document.getElementById('calendar-apartment-select');
+                    calendarSelect.innerHTML = '';
+                    siteData.gallery.forEach((item, idx) => {
+                        const opt = document.createElement('option');
+                        opt.value = idx;
+                        opt.textContent = item.title;
+                        calendarSelect.appendChild(opt);
+                    });
                     renderCalendar();
                 } catch (error) {
                     errorDiv.textContent = error.message;
@@ -2143,7 +2292,6 @@
                 }
 
                 // Collect other form data (hero, about, dining, services, etc.)
-                // Hero
                 siteData.hero.subtitle = document.getElementById('hero-subtitle-input').value;
                 siteData.hero.title = document.getElementById('hero-title-input').value;
                 siteData.hero.text = document.getElementById('hero-text-input').value;
@@ -2151,18 +2299,15 @@
                 siteData.hero.checkIn = document.getElementById('hero-checkin-input').value;
                 siteData.hero.checkOut = document.getElementById('hero-checkout-input').value;
 
-                // About
                 siteData.about.title = document.getElementById('about-title-input').value;
                 siteData.about.desc1 = document.getElementById('about-desc1-input').value;
                 siteData.about.desc2 = document.getElementById('about-desc2-input').value;
                 siteData.about.image = document.getElementById('about-image-input').value;
 
-                // Dining
                 siteData.dining.title = document.getElementById('dining-title-input').value;
                 siteData.dining.desc = document.getElementById('dining-desc-input').value;
                 siteData.dining.image = document.getElementById('dining-image-input').value;
 
-                // Services
                 const serviceIcons = document.querySelectorAll('.service-icon');
                 const serviceTitles = document.querySelectorAll('.service-title');
                 const serviceDescs = document.querySelectorAll('.service-desc');
@@ -2172,7 +2317,6 @@
                     desc: serviceDescs[i].value
                 }));
 
-                // Testimonials
                 const testTexts = document.querySelectorAll('.test-text');
                 const testAuthors = document.querySelectorAll('.test-author');
                 siteData.testimonials = Array.from(testTexts).map((el, i) => ({
@@ -2180,7 +2324,6 @@
                     author: testAuthors[i].value
                 }));
 
-                // Tours
                 siteData.tours.title = document.getElementById('tours-title-input').value;
                 siteData.tours.desc = document.getElementById('tours-desc-input').value;
                 const tourTitles = document.querySelectorAll('.tour-title');
@@ -2192,7 +2335,6 @@
                     image: tourImages[i].value
                 }));
 
-                // Menu
                 const menuTexts = document.querySelectorAll('.menu-text');
                 const menuUrls = document.querySelectorAll('.menu-url');
                 siteData.menu = Array.from(menuTexts).map((el, i) => ({
@@ -2200,12 +2342,10 @@
                     url: menuUrls[i].value
                 }));
 
-                // Settings
                 siteData.settings.primaryColor = document.getElementById('settings-color').value;
                 siteData.settings.fontFamily = document.getElementById('settings-font').value;
                 siteData.settings.maxGuests = parseInt(document.getElementById('settings-maxGuests').value) || 12;
 
-                // Footer
                 siteData.footer.copyright = document.getElementById('copyright-input').value;
                 siteData.footer.address = document.getElementById('footer-address').value;
                 siteData.footer.phone = document.getElementById('footer-phone').value;
@@ -2216,7 +2356,6 @@
 
                 await saveToFirebase();
                 renderSite();
-                updateAvailabilityOverview();
                 alert('Changes saved');
                 adminOverlay.style.display = 'none';
             });
