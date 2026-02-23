@@ -12,7 +12,6 @@
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
     <style>
-        /* (same styles as before – no changes) */
         * {
             margin: 0;
             padding: 0;
@@ -714,8 +713,8 @@
             const db = firebase.firestore();
             const contentDoc = db.collection('website').doc('content');
 
-            // Default data
-            let siteData = {
+            // Complete default data with all categories
+            const defaultData = {
                 hero: {
                     subtitle: "Welcome to Horizon, a luxury apartment in the heart of the city",
                     title: "Your Next Boutique Apartments",
@@ -777,12 +776,30 @@
                 }
             };
 
+            // Site data will be a deep merge of default and saved
+            let siteData = JSON.parse(JSON.stringify(defaultData)); // clone
+
+            // Deep merge utility
+            function mergeDeep(target, source) {
+                for (const key in source) {
+                    if (source[key] && typeof source[key] === 'object' && !Array.isArray(source[key])) {
+                        if (!target[key]) target[key] = {};
+                        mergeDeep(target[key], source[key]);
+                    } else {
+                        target[key] = source[key];
+                    }
+                }
+            }
+
             // Load from Firebase
             async function loadFromFirebase() {
                 try {
                     const doc = await contentDoc.get();
                     if (doc.exists) {
-                        siteData = doc.data();
+                        const saved = doc.data();
+                        // Start with default, then overwrite with saved
+                        siteData = JSON.parse(JSON.stringify(defaultData));
+                        mergeDeep(siteData, saved);
                         console.log('Loaded from Firebase:', siteData);
                     } else {
                         console.log('No saved data, using defaults');
@@ -1239,33 +1256,22 @@
                 adminOverlay.style.display = 'none';
             });
 
-            // Save changes - FIXED with error handling
+            // Save changes
             document.getElementById('saveChanges').addEventListener('click', async () => {
-                // Disable button to prevent double-click
                 const saveBtn = document.getElementById('saveChanges');
                 saveBtn.disabled = true;
                 saveBtn.textContent = 'Saving...';
 
                 try {
-                    // Step 1: Collect form data
-                    console.log('Collecting form data...');
                     updateDataFromForms();
-
-                    // Step 2: Update the site preview
-                    console.log('Rendering site...');
                     renderSite();
-
-                    // Step 3: Save to Firebase
-                    console.log('Saving to Firebase...');
                     await saveToFirebase();
-
                     alert('Changes saved successfully!');
                     adminOverlay.style.display = 'none';
                 } catch (error) {
                     console.error('Save failed:', error);
                     alert('Error saving changes: ' + error.message);
                 } finally {
-                    // Re-enable button
                     saveBtn.disabled = false;
                     saveBtn.textContent = 'Save Changes';
                 }
