@@ -506,7 +506,7 @@
                     <p class="text-muted">Create a template with variables: apartment, checkin, checkout, guests, total, firstName, lastName, email, phone.</p>
                 </div>
 
-                <!-- Calendar Sync Tab -->
+                <!-- Calendar Sync Tab (generic iCal import) -->
                 <div class="admin-tab-content" id="tab-sync">
                     <h3>Export iCal (for Airbnb, Booking.com, etc.)</h3>
                     <p>Download an .ics file containing all booked dates. Import this file into your other calendars to block those dates.</p>
@@ -514,13 +514,13 @@
 
                     <hr style="margin: 30px 0;">
 
-                    <h3>Import Airbnb iCal</h3>
-                    <p>Paste your Airbnb calendar's iCal URL below. We'll fetch it and block those dates on your site.</p>
+                    <h3>Import External iCal</h3>
+                    <p>Paste any iCal URL (from Airbnb, Booking.com, or other platforms). We'll fetch it and block those dates on your site.</p>
                     <div class="admin-field">
-                        <label>Airbnb iCal URL</label>
-                        <input type="url" id="airbnb-ical-url" placeholder="https://www.airbnb.com/calendar/ical/xxxx.ics">
+                        <label>iCal URL</label>
+                        <input type="url" id="ical-import-url" placeholder="https://www.airbnb.com/calendar/ical/xxxx.ics or https://ical.booking.com/...">
                     </div>
-                    <button class="upload-btn" id="import-airbnb">🔄 Sync from Airbnb</button>
+                    <button class="upload-btn" id="import-ical">🔄 Sync from iCal</button>
                     <div id="import-result" style="margin-top: 15px;"></div>
                 </div>
 
@@ -1428,7 +1428,7 @@
                 });
             }
 
-            // iCal export
+            // iCal export (unchanged)
             function exportICal() {
                 const aptIdx = 0;
                 const events = [];
@@ -1497,8 +1497,8 @@ END:VEVENT
                 URL.revokeObjectURL(url);
             }
 
-            // Import Airbnb iCal
-            async function importAirbnbICal(url) {
+            // Generic iCal import (works for any platform)
+            async function importICal(url) {
                 const resultDiv = document.getElementById('import-result');
                 resultDiv.innerHTML = '⏳ Fetching calendar...';
 
@@ -1555,19 +1555,19 @@ END:VEVENT
                         }
                     });
 
-                    resultDiv.innerHTML = `✅ Synced! ${blockedCount} dates blocked from Airbnb.`;
+                    resultDiv.innerHTML = `✅ Synced! ${blockedCount} dates blocked from external calendar.`;
                     renderCalendar();
                 } catch (error) {
                     resultDiv.innerHTML = `❌ Error: ${error.message}`;
                 }
             }
 
-            // Add event listeners for sync buttons (after DOM ready)
+            // Add event listeners for sync buttons
             document.getElementById('export-ical')?.addEventListener('click', exportICal);
-            document.getElementById('import-airbnb')?.addEventListener('click', () => {
-                const url = document.getElementById('airbnb-ical-url').value;
+            document.getElementById('import-ical')?.addEventListener('click', () => {
+                const url = document.getElementById('ical-import-url').value;
                 if (!url) { alert('Please enter an iCal URL'); return; }
-                importAirbnbICal(url);
+                importICal(url);
             });
 
             // Add buttons for gallery, services, etc.
