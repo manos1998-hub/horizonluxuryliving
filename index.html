@@ -8,6 +8,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <!-- Google Fonts: Playfair Display + Inter -->
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <!-- EmailJS -->
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
     <!-- Firebase Compat -->
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
@@ -156,7 +158,7 @@
             margin-left: auto;
             margin-right: auto;
         }
-        /* ---------- AVAILABILITY & BOOKING BAR (no apartment dropdown) ---------- */
+        /* ---------- AVAILABILITY & BOOKING BAR ---------- */
         .booking-bar {
             background: rgba(255,255,255,0.15);
             backdrop-filter: blur(15px);
@@ -274,7 +276,7 @@
             object-fit: cover;
             display: block;
         }
-        /* ---------- GALLERY (images only) ---------- */
+        /* ---------- GALLERY ---------- */
         .gallery-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
@@ -937,7 +939,7 @@
         </div>
     </header>
 
-    <!-- Hero Section with BOOKING BAR (no apartment dropdown) -->
+    <!-- Hero Section with BOOKING BAR -->
     <section class="hero" id="hero">
         <div class="hero-content">
             <div class="hero-subtitle" id="hero-subtitle">Welcome to Horizon, a luxury apartment in the heart of the city</div>
@@ -949,7 +951,6 @@
                 <select class="booking-input" id="booking-guests"></select>
                 <button class="book-btn" id="book-btn">Check Availability & Book</button>
             </div>
-            <!-- NO availability overview -->
         </div>
     </section>
 
@@ -967,7 +968,7 @@
     <!-- Admin Icon -->
     <div class="admin-icon" id="adminIcon"><i class="fas fa-pen-to-square"></i></div>
 
-    <!-- Admin Overlay (full panel) -->
+    <!-- Admin Overlay -->
     <div class="admin-overlay" id="adminOverlay">
         <div class="admin-panel" id="adminPanel">
             <!-- Login -->
@@ -1065,7 +1066,7 @@
                     <button class="add-btn" id="add-gallery-image">+ Add Image</button>
                 </div>
 
-                <!-- Pricing Tab (no apartment selector) -->
+                <!-- Pricing Tab -->
                 <div class="admin-tab-content" id="tab-pricing">
                     <div class="admin-field">
                         <label>Base Price ($ per night)</label>
@@ -1142,7 +1143,7 @@
                     <button class="add-btn" id="add-tour">+ Add Tour</button>
                 </div>
 
-                <!-- Calendar Tab (no apartment selector) -->
+                <!-- Calendar Tab -->
                 <div class="admin-tab-content" id="tab-calendar">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin: 20px 0;">
                         <button class="upload-btn" id="calendar-prev-month"><i class="fas fa-chevron-left"></i> Prev</button>
@@ -1164,7 +1165,7 @@
                     <button class="add-btn" id="add-menu-item">+ Add Menu Item</button>
                 </div>
 
-                <!-- Settings Tab -->
+                <!-- Settings Tab (added EmailJS fields) -->
                 <div class="admin-tab-content" id="tab-settings">
                     <div class="admin-field">
                         <label>Primary Color</label>
@@ -1182,6 +1183,25 @@
                         <label>Max Guests (dropdown)</label>
                         <input type="number" id="settings-maxGuests" min="1" max="50" value="12">
                     </div>
+                    <hr>
+                    <h3>Email Notifications (EmailJS)</h3>
+                    <div class="admin-field">
+                        <label>Admin Email (to receive notifications)</label>
+                        <input type="email" id="settings-adminEmail" placeholder="admin@example.com">
+                    </div>
+                    <div class="admin-field">
+                        <label>EmailJS Public Key</label>
+                        <input type="text" id="settings-emailjs-public" placeholder="your_public_key">
+                    </div>
+                    <div class="admin-field">
+                        <label>EmailJS Service ID</label>
+                        <input type="text" id="settings-emailjs-service" placeholder="service_id">
+                    </div>
+                    <div class="admin-field">
+                        <label>EmailJS Template ID</label>
+                        <input type="text" id="settings-emailjs-template" placeholder="template_id">
+                    </div>
+                    <p class="text-muted">Create a template with variables: apartment, checkin, checkout, guests, total, firstName, lastName, email, phone.</p>
                 </div>
 
                 <!-- Footer Tab -->
@@ -1274,7 +1294,15 @@
             const contentDoc = db.collection('website').doc('content');
             const reservationsCol = db.collection('reservations');
 
-            // ---------- DEFAULT DATA (single apartment, pricing array still but we'll use index 0) ----------
+            // Initialize EmailJS (will be called after settings loaded)
+            let emailjsInitialized = false;
+            function initEmailJS(publicKey) {
+                if (!publicKey) return;
+                emailjs.init(publicKey);
+                emailjsInitialized = true;
+            }
+
+            // ---------- DEFAULT DATA (with email settings) ----------
             const defaultData = {
                 hero: {
                     subtitle: "Welcome to Horizon, a luxury apartment in the heart of the city",
@@ -1330,7 +1358,11 @@
                 settings: {
                     primaryColor: "#c9a86c",
                     fontFamily: "'Inter', sans-serif",
-                    maxGuests: 12
+                    maxGuests: 12,
+                    adminEmail: "",
+                    emailjsPublic: "",
+                    emailjsService: "",
+                    emailjsTemplate: ""
                 },
                 footer: {
                     copyright: "© 2026 Horizon Luxury Living. All rights reserved.",
@@ -1369,6 +1401,11 @@
                     }
                     const resSnapshot = await reservationsCol.orderBy('createdAt', 'desc').get();
                     reservations = resSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+
+                    // Initialize EmailJS if public key exists
+                    if (siteData.settings.emailjsPublic) {
+                        initEmailJS(siteData.settings.emailjsPublic);
+                    }
                 } catch (error) {
                     console.error('Error loading from Firestore:', error);
                 }
@@ -1376,11 +1413,15 @@
                 populateAdminForms();
                 updatePreviews();
                 renderReservationsList();
-                renderCalendar(); // for admin
+                renderCalendar();
             }
 
             async function saveToFirebase() {
                 await contentDoc.set(siteData);
+                // Re-init EmailJS if public key changed
+                if (siteData.settings.emailjsPublic) {
+                    initEmailJS(siteData.settings.emailjsPublic);
+                }
             }
 
             function renderSite() {
@@ -1534,7 +1575,6 @@
                 select.value = 2;
             }
 
-            // Admin functions (populate forms, etc.)
             function populateAdminForms() {
                 // Hero
                 document.getElementById('hero-subtitle-input').value = siteData.hero.subtitle;
@@ -1571,7 +1611,7 @@
                     galleryList.appendChild(div);
                 });
 
-                // Pricing (single apartment)
+                // Pricing
                 document.getElementById('pricing-basePrice').value = siteData.pricing[0]?.basePrice || 0;
                 document.getElementById('pricing-maxGuests').value = siteData.pricing[0]?.maxGuests || 2;
                 document.getElementById('pricing-extraFee').value = siteData.pricing[0]?.extraGuestFee || 0;
@@ -1657,6 +1697,10 @@
                 document.getElementById('settings-color').value = siteData.settings.primaryColor;
                 document.getElementById('settings-font').value = siteData.settings.fontFamily;
                 document.getElementById('settings-maxGuests').value = siteData.settings.maxGuests;
+                document.getElementById('settings-adminEmail').value = siteData.settings.adminEmail || '';
+                document.getElementById('settings-emailjs-public').value = siteData.settings.emailjsPublic || '';
+                document.getElementById('settings-emailjs-service').value = siteData.settings.emailjsService || '';
+                document.getElementById('settings-emailjs-template').value = siteData.settings.emailjsTemplate || '';
 
                 // Footer
                 document.getElementById('copyright-input').value = siteData.footer.copyright;
@@ -1713,7 +1757,6 @@
 
             window.removeGalleryImage = (index) => {
                 siteData.gallery.splice(index, 1);
-                // Keep pricing array length in sync (but we only use index 0 anyway)
                 if (siteData.pricing.length > 1) siteData.pricing.splice(index, 1);
                 populateAdminForms();
             };
@@ -1741,7 +1784,6 @@
             window.removeTour = (index) => { siteData.tours.items.splice(index, 1); populateAdminForms(); };
             window.removeMenuItem = (index) => { siteData.menu.splice(index, 1); populateAdminForms(); };
 
-            // Setup upload buttons for main fields
             function setupUploadButtons() {
                 document.getElementById('upload-hero-bg').addEventListener('click', () => {
                     const input = document.createElement('input');
@@ -1804,7 +1846,7 @@
                 });
             }
 
-            // Bulk pricing (single apartment)
+            // Bulk pricing
             document.getElementById('apply-bulk-pricing').addEventListener('click', function() {
                 const from = document.getElementById('bulk-from').value;
                 const to = document.getElementById('bulk-to').value;
@@ -1851,7 +1893,7 @@
                 if (!checkin || !checkout) { alert('Please select dates'); return; }
                 if (new Date(checkin) >= new Date(checkout)) { alert('Check-out must be after check-in'); return; }
 
-                const aptIdx = 0; // single apartment
+                const aptIdx = 0;
                 const aptPricing = siteData.pricing[aptIdx];
                 if (!aptPricing) { alert('Pricing not found'); return; }
                 if (guests > aptPricing.maxGuests) { alert(`Max guests is ${aptPricing.maxGuests}`); return; }
@@ -1899,6 +1941,32 @@
                 }
             });
 
+            // Function to send email via EmailJS
+            async function sendAdminEmail(reservation) {
+                if (!siteData.settings.adminEmail || !siteData.settings.emailjsService || !siteData.settings.emailjsTemplate || !emailjsInitialized) {
+                    console.warn('EmailJS not configured or admin email missing');
+                    return;
+                }
+                const templateParams = {
+                    to_email: siteData.settings.adminEmail,
+                    apartment: reservation.apartmentTitle,
+                    checkin: reservation.checkIn,
+                    checkout: reservation.checkOut,
+                    guests: reservation.guests,
+                    total: reservation.totalPrice,
+                    firstName: reservation.firstName,
+                    lastName: reservation.lastName,
+                    email: reservation.email,
+                    phone: reservation.phone
+                };
+                try {
+                    await emailjs.send(siteData.settings.emailjsService, siteData.settings.emailjsTemplate, templateParams);
+                    console.log('Admin email sent');
+                } catch (error) {
+                    console.error('Failed to send admin email:', error);
+                }
+            }
+
             bookingForm.addEventListener('submit', async (e) => {
                 e.preventDefault();
 
@@ -1941,6 +2009,10 @@
                     reservations = resSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
                     renderReservationsList();
                     renderCalendar();
+                    
+                    // Send email notification to admin
+                    await sendAdminEmail(reservation);
+
                     modal.style.display = 'none';
                     alert('Booking confirmed! Thank you.');
                     bookingForm.reset();
@@ -1999,7 +2071,7 @@
                 }
             };
 
-            // Calendar functions (admin) - single apartment
+            // Calendar functions
             let currentCalendarDate = new Date();
 
             function renderCalendar() {
@@ -2059,7 +2131,6 @@
             // Add event listeners for add buttons
             document.getElementById('add-gallery-image').addEventListener('click', () => {
                 siteData.gallery.push({ title: 'New Image', desc: '', image: '' });
-                // Keep pricing array with at least one entry
                 if (siteData.pricing.length < siteData.gallery.length) {
                     siteData.pricing.push({ basePrice: 200, maxGuests: 2, extraGuestFee: 20 });
                 }
@@ -2164,7 +2235,7 @@
 
             // Save changes
             document.getElementById('saveChanges').addEventListener('click', async () => {
-                // Update gallery from forms
+                // Update gallery
                 const galleryTitles = document.querySelectorAll('.gallery-title');
                 const galleryDescs = document.querySelectorAll('.gallery-desc');
                 const galleryImages = document.querySelectorAll('.gallery-image');
@@ -2174,14 +2245,14 @@
                     image: galleryImages[i].value
                 }));
 
-                // Update pricing (single)
+                // Update pricing
                 siteData.pricing[0] = {
                     basePrice: parseFloat(document.getElementById('pricing-basePrice').value) || 0,
                     maxGuests: parseInt(document.getElementById('pricing-maxGuests').value) || 2,
                     extraGuestFee: parseFloat(document.getElementById('pricing-extraFee').value) || 0
                 };
 
-                // Collect other form data (hero, about, dining, services, etc.)
+                // Hero
                 siteData.hero.subtitle = document.getElementById('hero-subtitle-input').value;
                 siteData.hero.title = document.getElementById('hero-title-input').value;
                 siteData.hero.text = document.getElementById('hero-text-input').value;
@@ -2189,15 +2260,18 @@
                 siteData.hero.checkIn = document.getElementById('hero-checkin-input').value;
                 siteData.hero.checkOut = document.getElementById('hero-checkout-input').value;
 
+                // About
                 siteData.about.title = document.getElementById('about-title-input').value;
                 siteData.about.desc1 = document.getElementById('about-desc1-input').value;
                 siteData.about.desc2 = document.getElementById('about-desc2-input').value;
                 siteData.about.image = document.getElementById('about-image-input').value;
 
+                // Dining
                 siteData.dining.title = document.getElementById('dining-title-input').value;
                 siteData.dining.desc = document.getElementById('dining-desc-input').value;
                 siteData.dining.image = document.getElementById('dining-image-input').value;
 
+                // Services
                 const serviceIcons = document.querySelectorAll('.service-icon');
                 const serviceTitles = document.querySelectorAll('.service-title');
                 const serviceDescs = document.querySelectorAll('.service-desc');
@@ -2207,6 +2281,7 @@
                     desc: serviceDescs[i].value
                 }));
 
+                // Testimonials
                 const testTexts = document.querySelectorAll('.test-text');
                 const testAuthors = document.querySelectorAll('.test-author');
                 siteData.testimonials = Array.from(testTexts).map((el, i) => ({
@@ -2214,6 +2289,7 @@
                     author: testAuthors[i].value
                 }));
 
+                // Tours
                 siteData.tours.title = document.getElementById('tours-title-input').value;
                 siteData.tours.desc = document.getElementById('tours-desc-input').value;
                 const tourTitles = document.querySelectorAll('.tour-title');
@@ -2225,6 +2301,7 @@
                     image: tourImages[i].value
                 }));
 
+                // Menu
                 const menuTexts = document.querySelectorAll('.menu-text');
                 const menuUrls = document.querySelectorAll('.menu-url');
                 siteData.menu = Array.from(menuTexts).map((el, i) => ({
@@ -2232,10 +2309,16 @@
                     url: menuUrls[i].value
                 }));
 
+                // Settings
                 siteData.settings.primaryColor = document.getElementById('settings-color').value;
                 siteData.settings.fontFamily = document.getElementById('settings-font').value;
                 siteData.settings.maxGuests = parseInt(document.getElementById('settings-maxGuests').value) || 12;
+                siteData.settings.adminEmail = document.getElementById('settings-adminEmail').value;
+                siteData.settings.emailjsPublic = document.getElementById('settings-emailjs-public').value;
+                siteData.settings.emailjsService = document.getElementById('settings-emailjs-service').value;
+                siteData.settings.emailjsTemplate = document.getElementById('settings-emailjs-template').value;
 
+                // Footer
                 siteData.footer.copyright = document.getElementById('copyright-input').value;
                 siteData.footer.address = document.getElementById('footer-address').value;
                 siteData.footer.phone = document.getElementById('footer-phone').value;
