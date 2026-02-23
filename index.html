@@ -647,7 +647,7 @@
     <section class="hero" id="hero">
         <div class="hero-content">
             <div class="hero-subtitle" id="hero-subtitle">Welcome to Horizon, a luxury apartment in the heart of the city</div>
-            <h1 id="hero-title">Your Next Boutique Apartments</h1>
+            <h1 id="hero-title">Your Next Boutique Apartment</h1>
             <p id="hero-text">Stay in the heart of the city</p>
             <div class="search-form">
                 <input type="date" class="search-input" id="search-checkin" value="2026-06-01">
@@ -695,7 +695,7 @@
                 <div class="admin-tabs">
                     <div class="admin-tab active" data-tab="hero">Hero</div>
                     <div class="admin-tab" data-tab="about">About</div>
-                    <div class="admin-tab" data-tab="apartments">Apartments</div>
+                    <div class="admin-tab" data-tab="apartment">Apartment</div>
                     <div class="admin-tab" data-tab="dining">Dining</div>
                     <div class="admin-tab" data-tab="services">Services</div>
                     <div class="admin-tab" data-tab="testimonials">Testimonials</div>
@@ -761,10 +761,10 @@
                     </div>
                 </div>
 
-                <!-- Apartments Tab -->
-                <div class="admin-tab-content" id="tab-apartments">
-                    <div id="apartments-list"></div>
-                    <button class="add-btn" id="add-apartment">+ Add Apartment</button>
+                <!-- Apartment Tab -->
+                <div class="admin-tab-content" id="tab-apartment">
+                    <div id="apartment-list"></div>
+                    <button class="add-btn" id="add-apartmen">+ Add Apartment</button>
                 </div>
 
                 <!-- Dining Tab -->
@@ -888,19 +888,19 @@
             const defaultData = {
                 hero: {
                     subtitle: "Welcome to Horizon, a luxury apartment in the heart of the city",
-                    title: "Your Next Boutique Apartments",
+                    title: "Your Next Boutique Apartment",
                     text: "Stay in the heart of the city",
                     bgImage: "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?ixlib=rb-4.0.3&auto=format&fit=crop&w=1950&q=80",
                     checkIn: "2026-06-01",
                     checkOut: "2026-06-05"
                 },
                 about: {
-                    title: "Luxury furnished serviced apartments in the city center",
+                    title: "Luxury furnished serviced apartment in the city center",
                     desc1: "Located in the heart of the city, Horizon apartment hotel provides a peaceful, private retreat in the heart of one of the world's most iconic cities. Experience a sophisticated blend of professional services and home comforts.",
                     desc2: "We proudly offers a full range of complimentary amenities and services that provide you with everything you need for an inspiring stay.",
                     image: "https://images.unsplash.com/photo-1566665797739-1674de7a421a?ixlib=rb-4.0.3&auto=format&fit=crop&w=1974&q=80"
                 },
-                apartments: [
+                apartment: [
                     { title: "Studio Apartment", desc: "Cozy space for 2 guests", price: "$199/night", image: "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?ixlib=rb-4.0.3&auto=format&fit=crop&w=1950&q=80" },
                     { title: "One-Bedroom Suite", desc: "Spacious with separate living area", price: "$299/night", image: "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?ixlib=rb-4.0.3&auto=format&fit=crop&w=1950&q=80" },
                     { title: "Penthouse", desc: "Panoramic city views", price: "$499/night", image: "https://images.unsplash.com/photo-1512918728675-ed5a9ecdebfd?ixlib=rb-4.0.3&auto=format&fit=crop&w=1950&q=80" }
@@ -930,7 +930,7 @@
                 menu: [
                     { text: "Home", url: "#home" },
                     { text: "About", url: "#about" },
-                    { text: "Apartments", url: "#apartments" },
+                    { text: "Apartment", url: "#apartment" },
                     { text: "Services", url: "#services" },
                     { text: "Contact", url: "#contact" }
                 ],
@@ -1050,8 +1050,8 @@
                         </div>
                     </section>
 
-                    <!-- Apartments Section -->
-                    <section class="container" id="apartments">
+                    <!-- Apartment Section -->
+                    <section class="container" id="apartment">
                         <div class="section-title">
                             <div class="subtitle">Extraordinary Accommodations</div>
                             <h2>Choose Your Apartment Type</h2>
@@ -1143,7 +1143,7 @@
                 footerGrid.innerHTML = `
                     <div class="footer-col">
                         <h4>Horizon</h4>
-                        <p>Luxury boutique apartments in the heart of the city.</p>
+                        <p>Luxury boutique apartment in the heart of the city.</p>
                         <div class="social-icons">
                             <a href="#"><i class="fab fa-facebook-f"></i></a>
                             <a href="#"><i class="fab fa-instagram"></i></a>
@@ -1181,9 +1181,9 @@
                 document.getElementById('about-image-input').value = siteData.about.image;
 
                 // Apartments
-                const aptList = document.getElementById('apartments-list');
+                const aptList = document.getElementById('apartment-list');
                 aptList.innerHTML = '';
-                siteData.apartments.forEach((apt, index) => {
+                siteData.apartment.forEach((apt, index) => {
                     const div = document.createElement('div');
                     div.className = 'thumbnail-item';
                     div.innerHTML = `
@@ -1461,7 +1461,7 @@
                     if (!file) return;
                     const btn = e.target;
                     try {
-                        const url = await uploadImage(file, 'apartments');
+                        const url = await uploadImage(file, 'apartment');
                         // Update the input field
                         const aptImageInput = document.querySelector(`.apt-image[data-index="${index}"]`);
                         if (aptImageInput) {
@@ -1521,12 +1521,12 @@
                 siteData.about.desc2 = document.getElementById('about-desc2-input').value;
                 siteData.about.image = document.getElementById('about-image-input').value;
 
-                // Apartments
+                // Apartment
                 const aptTitles = document.querySelectorAll('.apt-title');
                 const aptDescs = document.querySelectorAll('.apt-desc');
                 const aptPrices = document.querySelectorAll('.apt-price');
                 const aptImages = document.querySelectorAll('.apt-image');
-                siteData.apartments = Array.from(aptTitles).map((el, i) => ({
+                siteData.apartment = Array.from(aptTitles).map((el, i) => ({
                     title: el.value,
                     desc: aptDescs[i].value,
                     price: aptPrices[i].value,
@@ -1590,7 +1590,7 @@
 
             // Global remove functions
             window.removeApartment = (index) => {
-                siteData.apartments.splice(index, 1);
+                siteData.apartment.splice(index, 1);
                 populateAdminForms();
             };
             window.removeService = (index) => {
@@ -1612,7 +1612,7 @@
 
             // Add event listeners
             document.getElementById('add-apartment').addEventListener('click', () => {
-                siteData.apartments.push({ title: 'New Apartment', desc: 'Description', price: '$0/night', image: '' });
+                siteData.apartment.push({ title: 'New Apartment', desc: 'Description', price: '$0/night', image: '' });
                 populateAdminForms();
             });
             document.getElementById('add-service').addEventListener('click', () => {
