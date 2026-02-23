@@ -17,904 +17,205 @@
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-storage-compat.js"></script>
     <style>
         /* ---------- RESET & VARIABLES ---------- */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         :root {
-            --primary: #c9a86c;
-            --primary-dark: #b48b4c;
-            --dark: #1a1a1a;
-            --gray: #2c2c2c;
-            --light-gray: #f5f5f5;
-            --text: #2c2c2c;
-            --text-light: #666;
-            --white: #ffffff;
+            --primary: #c9a86c; --primary-dark: #b48b4c; --dark: #1a1a1a; --gray: #2c2c2c;
+            --light-gray: #f5f5f5; --text: #2c2c2c; --text-light: #666; --white: #ffffff;
             --shadow-sm: 0 10px 30px -10px rgba(0,0,0,0.1);
             --shadow-md: 0 20px 40px -15px rgba(0,0,0,0.2);
             --transition: all 0.3s ease;
         }
         body {
-            font-family: 'Inter', sans-serif;
-            color: var(--text);
-            line-height: 1.6;
-            background-color: var(--white);
-            scroll-behavior: smooth;
+            font-family: 'Inter', sans-serif; color: var(--text); line-height: 1.6;
+            background-color: var(--white); scroll-behavior: smooth;
         }
-        h1, h2, h3, h4 {
-            font-family: 'Playfair Display', serif;
-            font-weight: 600;
-            letter-spacing: -0.02em;
-        }
-        .container {
-            width: 90%;
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 100px 0;
-        }
+        h1, h2, h3, h4 { font-family: 'Playfair Display', serif; font-weight: 600; letter-spacing: -0.02em; }
+        .container { width: 90%; max-width: 1400px; margin: 0 auto; padding: 100px 0; }
         /* ---------- HEADER ---------- */
-        .site-header {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            z-index: 100;
-            padding: 30px 0;
-            background: transparent;
-        }
-        .header-inner {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            width: 90%;
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-        .logo {
-            font-family: 'Playfair Display', serif;
-            font-size: 28px;
-            font-weight: 700;
-            color: white;
-            text-shadow: 0 4px 20px rgba(0,0,0,0.3);
-            letter-spacing: 1px;
-        }
-        .nav-menu {
-            display: flex;
-            list-style: none;
-            gap: 40px;
-        }
-        .nav-menu a {
-            color: white;
-            text-decoration: none;
-            font-weight: 500;
-            font-size: 15px;
-            transition: var(--transition);
-            text-shadow: 0 2px 8px rgba(0,0,0,0.3);
-            position: relative;
-        }
-        .nav-menu a::after {
-            content: '';
-            position: absolute;
-            bottom: -4px;
-            left: 0;
-            width: 0%;
-            height: 2px;
-            background: var(--primary);
-            transition: var(--transition);
-        }
-        .nav-menu a:hover::after {
-            width: 100%;
-        }
+        .site-header { position: absolute; top: 0; left: 0; width: 100%; z-index: 100; padding: 30px 0; background: transparent; }
+        .header-inner { display: flex; justify-content: space-between; align-items: center; width: 90%; max-width: 1400px; margin: 0 auto; }
+        .logo { font-family: 'Playfair Display', serif; font-size: 28px; font-weight: 700; color: white; text-shadow: 0 4px 20px rgba(0,0,0,0.3); letter-spacing: 1px; }
+        .nav-menu { display: flex; list-style: none; gap: 40px; }
+        .nav-menu a { color: white; text-decoration: none; font-weight: 500; font-size: 15px; transition: var(--transition); text-shadow: 0 2px 8px rgba(0,0,0,0.3); position: relative; }
+        .nav-menu a::after { content: ''; position: absolute; bottom: -4px; left: 0; width: 0%; height: 2px; background: var(--primary); transition: var(--transition); }
+        .nav-menu a:hover::after { width: 100%; }
         /* ---------- HERO ---------- */
         .hero {
             height: 100vh;
             background: linear-gradient(135deg, rgba(0,0,0,0.4), rgba(0,0,0,0.2)), 
                         url('https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?ixlib=rb-4.0.3&auto=format&fit=crop&w=1950&q=80') center/cover no-repeat;
-            display: flex;
-            align-items: center;
-            text-align: center;
-            color: white;
-            position: relative;
+            display: flex; align-items: center; text-align: center; color: white; position: relative;
         }
-        .hero::before {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 150px;
-            background: linear-gradient(to top, rgba(0,0,0,0.4), transparent);
-            z-index: 1;
-        }
-        .hero-content {
-            position: relative;
-            z-index: 2;
-            max-width: 1000px;
-            margin: 0 auto;
-            padding: 0 20px;
-        }
-        .hero-subtitle {
-            font-size: 14px;
-            letter-spacing: 4px;
-            text-transform: uppercase;
-            margin-bottom: 20px;
-            font-weight: 400;
-            color: rgba(255,255,255,0.9);
-        }
-        .hero h1 {
-            font-size: clamp(3rem, 10vw, 5.5rem);
-            margin-bottom: 20px;
-            line-height: 1.1;
-            font-weight: 700;
-            text-shadow: 0 4px 30px rgba(0,0,0,0.3);
-        }
-        .hero p {
-            font-size: 1.2rem;
-            margin-bottom: 40px;
-            font-weight: 300;
-            opacity: 0.95;
-            max-width: 600px;
-            margin-left: auto;
-            margin-right: auto;
-        }
+        .hero::before { content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 150px; background: linear-gradient(to top, rgba(0,0,0,0.4), transparent); z-index: 1; }
+        .hero-content { position: relative; z-index: 2; max-width: 1000px; margin: 0 auto; padding: 0 20px; }
+        .hero-subtitle { font-size: 14px; letter-spacing: 4px; text-transform: uppercase; margin-bottom: 20px; font-weight: 400; color: rgba(255,255,255,0.9); }
+        .hero h1 { font-size: clamp(3rem, 10vw, 5.5rem); margin-bottom: 20px; line-height: 1.1; font-weight: 700; text-shadow: 0 4px 30px rgba(0,0,0,0.3); }
+        .hero p { font-size: 1.2rem; margin-bottom: 40px; font-weight: 300; opacity: 0.95; max-width: 600px; margin-left: auto; margin-right: auto; }
         /* ---------- AVAILABILITY & BOOKING BAR ---------- */
         .booking-bar {
-            background: rgba(255,255,255,0.15);
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
-            border-radius: 60px;
-            padding: 8px;
-            display: inline-flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 8px;
-            max-width: 800px;
-            margin: 0 auto;
-            border: 1px solid rgba(255,255,255,0.2);
-            box-shadow: 0 20px 40px -10px rgba(0,0,0,0.3);
+            background: rgba(255,255,255,0.15); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
+            border-radius: 60px; padding: 8px; display: inline-flex; flex-wrap: wrap; justify-content: center; gap: 8px;
+            max-width: 800px; margin: 0 auto; border: 1px solid rgba(255,255,255,0.2); box-shadow: 0 20px 40px -10px rgba(0,0,0,0.3);
         }
         .booking-input {
-            background: rgba(255,255,255,0.2);
-            border: 1px solid rgba(255,255,255,0.3);
-            padding: 15px 25px;
-            border-radius: 50px;
-            color: white;
-            font-size: 15px;
-            min-width: 140px;
-            flex: 1;
-            font-family: 'Inter', sans-serif;
+            background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.3); padding: 15px 25px;
+            border-radius: 50px; color: white; font-size: 15px; min-width: 140px; flex: 1; font-family: 'Inter', sans-serif;
             transition: var(--transition);
         }
-        .booking-input:focus {
-            outline: none;
-            border-color: var(--primary);
-            background: rgba(255,255,255,0.25);
-        }
-        .booking-input::placeholder {
-            color: rgba(255,255,255,0.8);
-        }
-        .booking-input option {
-            color: var(--dark);
-        }
+        .booking-input:focus { outline: none; border-color: var(--primary); background: rgba(255,255,255,0.25); }
+        .booking-input::placeholder { color: rgba(255,255,255,0.8); }
+        .booking-input option { color: var(--dark); }
         .book-btn {
-            background: var(--primary);
-            border: none;
-            padding: 15px 40px;
-            border-radius: 50px;
-            color: var(--dark);
-            font-weight: 600;
-            cursor: pointer;
-            transition: var(--transition);
-            font-size: 15px;
-            letter-spacing: 1px;
+            background: var(--primary); border: none; padding: 15px 40px; border-radius: 50px; color: var(--dark);
+            font-weight: 600; cursor: pointer; transition: var(--transition); font-size: 15px; letter-spacing: 1px;
             box-shadow: 0 8px 20px -8px rgba(201,168,108,0.5);
         }
-        .book-btn:hover {
-            background: var(--primary-dark);
-            transform: translateY(-3px);
-            box-shadow: 0 15px 30px -8px rgba(201,168,108,0.7);
-        }
+        .book-btn:hover { background: var(--primary-dark); transform: translateY(-3px); box-shadow: 0 15px 30px -8px rgba(201,168,108,0.7); }
         /* ---------- SECTION TITLES ---------- */
-        .section-title {
-            text-align: center;
-            margin-bottom: 70px;
-        }
-        .section-title .subtitle {
-            font-size: 13px;
-            letter-spacing: 3px;
-            text-transform: uppercase;
-            color: var(--primary);
-            margin-bottom: 10px;
-            font-weight: 500;
-        }
-        .section-title h2 {
-            font-size: clamp(2rem, 5vw, 3.2rem);
-            color: var(--dark);
-            margin-bottom: 20px;
-            max-width: 800px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-        .section-title p {
-            font-size: 1.1rem;
-            color: var(--text-light);
-            max-width: 700px;
-            margin: 0 auto;
-        }
+        .section-title { text-align: center; margin-bottom: 70px; }
+        .section-title .subtitle { font-size: 13px; letter-spacing: 3px; text-transform: uppercase; color: var(--primary); margin-bottom: 10px; font-weight: 500; }
+        .section-title h2 { font-size: clamp(2rem, 5vw, 3.2rem); color: var(--dark); margin-bottom: 20px; max-width: 800px; margin-left: auto; margin-right: auto; }
+        .section-title p { font-size: 1.1rem; color: var(--text-light); max-width: 700px; margin: 0 auto; }
         /* ---------- ABOUT ---------- */
-        .about-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 70px;
-            align-items: center;
-        }
-        .about-content h3 {
-            font-size: clamp(1.8rem, 4vw, 2.8rem);
-            margin-bottom: 30px;
-            color: var(--dark);
-        }
-        .about-content p {
-            color: var(--text-light);
-            margin-bottom: 20px;
-            font-size: 1.05rem;
-            line-height: 1.8;
-        }
-        .about-image {
-            border-radius: 16px;
-            overflow: hidden;
-            box-shadow: var(--shadow-md);
-            transform: perspective(1000px) rotateY(-2deg);
-            transition: var(--transition);
-        }
-        .about-image:hover {
-            transform: perspective(1000px) rotateY(0deg);
-        }
-        .about-image img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            display: block;
-        }
+        .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 70px; align-items: center; }
+        .about-content h3 { font-size: clamp(1.8rem, 4vw, 2.8rem); margin-bottom: 30px; color: var(--dark); }
+        .about-content p { color: var(--text-light); margin-bottom: 20px; font-size: 1.05rem; line-height: 1.8; }
+        .about-image { border-radius: 16px; overflow: hidden; box-shadow: var(--shadow-md); transform: perspective(1000px) rotateY(-2deg); transition: var(--transition); }
+        .about-image:hover { transform: perspective(1000px) rotateY(0deg); }
+        .about-image img { width: 100%; height: 100%; object-fit: cover; display: block; }
         /* ---------- GALLERY ---------- */
-        .gallery-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: 30px;
-            margin-top: 40px;
-        }
-        .gallery-card {
-            background: white;
-            border-radius: 20px;
-            overflow: hidden;
-            box-shadow: var(--shadow-sm);
-            transition: var(--transition);
-            border: 1px solid rgba(0,0,0,0.03);
-        }
-        .gallery-card:hover {
-            transform: translateY(-12px);
-            box-shadow: var(--shadow-md);
-        }
-        .gallery-card img {
-            width: 100%;
-            height: 300px;
-            object-fit: cover;
-            transition: var(--transition);
-            display: block;
-        }
-        .gallery-card:hover img {
-            transform: scale(1.03);
-        }
+        .gallery-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 30px; margin-top: 40px; }
+        .gallery-card { background: white; border-radius: 20px; overflow: hidden; box-shadow: var(--shadow-sm); transition: var(--transition); border: 1px solid rgba(0,0,0,0.03); }
+        .gallery-card:hover { transform: translateY(-12px); box-shadow: var(--shadow-md); }
+        .gallery-card img { width: 100%; height: 300px; object-fit: cover; transition: var(--transition); display: block; }
+        .gallery-card:hover img { transform: scale(1.03); }
         /* ---------- DINING ---------- */
-        .dining {
-            background: var(--light-gray);
-        }
-        .dining-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 70px;
-            align-items: center;
-        }
-        .dining-image {
-            border-radius: 20px;
-            overflow: hidden;
-            box-shadow: var(--shadow-md);
-        }
-        .dining-image img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            display: block;
-        }
-        .dining-content h3 {
-            font-size: clamp(1.8rem, 4vw, 2.8rem);
-            margin-bottom: 30px;
-            color: var(--dark);
-        }
-        .dining-content p {
-            color: var(--text-light);
-            margin-bottom: 20px;
-            line-height: 1.8;
-            font-size: 1.05rem;
-        }
+        .dining { background: var(--light-gray); }
+        .dining-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 70px; align-items: center; }
+        .dining-image { border-radius: 20px; overflow: hidden; box-shadow: var(--shadow-md); }
+        .dining-image img { width: 100%; height: 100%; object-fit: cover; display: block; }
+        .dining-content h3 { font-size: clamp(1.8rem, 4vw, 2.8rem); margin-bottom: 30px; color: var(--dark); }
+        .dining-content p { color: var(--text-light); margin-bottom: 20px; line-height: 1.8; font-size: 1.05rem; }
         /* ---------- SERVICES ---------- */
-        .services-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 40px;
-            margin-top: 40px;
-        }
-        .service-card {
-            text-align: center;
-            padding: 40px 25px;
-            background: white;
-            border-radius: 20px;
-            box-shadow: var(--shadow-sm);
-            transition: var(--transition);
-            border: 1px solid rgba(0,0,0,0.02);
-        }
-        .service-card:hover {
-            transform: translateY(-8px);
-            box-shadow: var(--shadow-md);
-        }
-        .service-card i {
-            font-size: 3.2rem;
-            color: var(--primary);
-            margin-bottom: 20px;
-        }
-        .service-card h3 {
-            font-size: 1.5rem;
-            margin-bottom: 12px;
-        }
-        .service-card p {
-            color: var(--text-light);
-        }
+        .services-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 40px; margin-top: 40px; }
+        .service-card { text-align: center; padding: 40px 25px; background: white; border-radius: 20px; box-shadow: var(--shadow-sm); transition: var(--transition); border: 1px solid rgba(0,0,0,0.02); }
+        .service-card:hover { transform: translateY(-8px); box-shadow: var(--shadow-md); }
+        .service-card i { font-size: 3.2rem; color: var(--primary); margin-bottom: 20px; }
+        .service-card h3 { font-size: 1.5rem; margin-bottom: 12px; }
+        .service-card p { color: var(--text-light); }
         /* ---------- TESTIMONIALS ---------- */
-        .testimonials {
-            background: var(--dark);
-            color: white;
-            position: relative;
-            overflow: hidden;
-        }
-        .testimonials::before {
-            content: '';
-            position: absolute;
-            top: -30%;
-            right: -10%;
-            width: 400px;
-            height: 400px;
-            background: var(--primary);
-            opacity: 0.05;
-            border-radius: 50%;
-        }
-        .testimonials .section-title h2,
-        .testimonials .section-title p {
-            color: white;
-        }
-        .testimonial-card {
-            max-width: 800px;
-            margin: 0 auto;
-            text-align: center;
-            padding: 40px;
-            background: rgba(255,255,255,0.03);
-            backdrop-filter: blur(10px);
-            border-radius: 30px;
-            border: 1px solid rgba(255,255,255,0.05);
-        }
-        .testimonial-card i {
-            font-size: 3.5rem;
-            color: var(--primary);
-            margin-bottom: 25px;
-            opacity: 0.5;
-        }
-        .testimonial-card p {
-            font-size: 1.6rem;
-            font-family: 'Playfair Display', serif;
-            margin-bottom: 30px;
-            line-height: 1.5;
-            font-style: italic;
-        }
-        .testimonial-author {
-            font-weight: 600;
-            color: var(--primary);
-            font-size: 1.2rem;
-        }
+        .testimonials { background: var(--dark); color: white; position: relative; overflow: hidden; }
+        .testimonials::before { content: ''; position: absolute; top: -30%; right: -10%; width: 400px; height: 400px; background: var(--primary); opacity: 0.05; border-radius: 50%; }
+        .testimonials .section-title h2, .testimonials .section-title p { color: white; }
+        .testimonial-card { max-width: 800px; margin: 0 auto; text-align: center; padding: 40px; background: rgba(255,255,255,0.03); backdrop-filter: blur(10px); border-radius: 30px; border: 1px solid rgba(255,255,255,0.05); }
+        .testimonial-card i { font-size: 3.5rem; color: var(--primary); margin-bottom: 25px; opacity: 0.5; }
+        .testimonial-card p { font-size: 1.6rem; font-family: 'Playfair Display', serif; margin-bottom: 30px; line-height: 1.5; font-style: italic; }
+        .testimonial-author { font-weight: 600; color: var(--primary); font-size: 1.2rem; }
         /* ---------- TOURS ---------- */
-        .tours-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 30px;
-            margin-top: 40px;
-        }
-        .tour-card {
-            background: white;
-            border-radius: 20px;
-            overflow: hidden;
-            box-shadow: var(--shadow-sm);
-            transition: var(--transition);
-        }
-        .tour-card:hover {
-            transform: translateY(-8px);
-            box-shadow: var(--shadow-md);
-        }
-        .tour-card img {
-            width: 100%;
-            height: 220px;
-            object-fit: cover;
-        }
-        .tour-info {
-            padding: 25px;
-        }
-        .tour-info h4 {
-            font-size: 1.4rem;
-            margin-bottom: 10px;
-        }
-        .tour-info p {
-            color: var(--text-light);
-        }
+        .tours-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; margin-top: 40px; }
+        .tour-card { background: white; border-radius: 20px; overflow: hidden; box-shadow: var(--shadow-sm); transition: var(--transition); }
+        .tour-card:hover { transform: translateY(-8px); box-shadow: var(--shadow-md); }
+        .tour-card img { width: 100%; height: 220px; object-fit: cover; }
+        .tour-info { padding: 25px; }
+        .tour-info h4 { font-size: 1.4rem; margin-bottom: 10px; }
+        .tour-info p { color: var(--text-light); }
         /* ---------- FOOTER ---------- */
-        footer {
-            background: var(--dark);
-            color: #aaa;
-            padding: 80px 0 30px;
-        }
-        .footer-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 50px;
-            margin-bottom: 50px;
-        }
-        .footer-col h4 {
-            color: white;
-            margin-bottom: 20px;
-            font-size: 1.2rem;
-            letter-spacing: 0.5px;
-        }
-        .footer-col p, .footer-col a {
-            color: #aaa;
-            text-decoration: none;
-            line-height: 2;
-            transition: var(--transition);
-        }
-        .footer-col a:hover {
-            color: var(--primary);
-        }
-        .social-icons {
-            display: flex;
-            gap: 15px;
-            margin-top: 20px;
-        }
-        .social-icons a {
-            color: white;
-            background: #333;
-            width: 42px;
-            height: 42px;
-            border-radius: 50%;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            transition: var(--transition);
-        }
-        .social-icons a:hover {
-            background: var(--primary);
-            color: var(--dark);
-            transform: translateY(-3px);
-        }
-        .copyright {
-            text-align: center;
-            border-top: 1px solid #333;
-            padding-top: 30px;
-            color: #666;
-            font-size: 0.9rem;
-        }
+        footer { background: var(--dark); color: #aaa; padding: 80px 0 30px; }
+        .footer-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 50px; margin-bottom: 50px; }
+        .footer-col h4 { color: white; margin-bottom: 20px; font-size: 1.2rem; letter-spacing: 0.5px; }
+        .footer-col p, .footer-col a { color: #aaa; text-decoration: none; line-height: 2; transition: var(--transition); }
+        .footer-col a:hover { color: var(--primary); }
+        .social-icons { display: flex; gap: 15px; margin-top: 20px; }
+        .social-icons a { color: white; background: #333; width: 42px; height: 42px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; transition: var(--transition); }
+        .social-icons a:hover { background: var(--primary); color: var(--dark); transform: translateY(-3px); }
+        .copyright { text-align: center; border-top: 1px solid #333; padding-top: 30px; color: #666; font-size: 0.9rem; }
         /* ---------- ADMIN ICON ---------- */
         .admin-icon {
-            position: fixed;
-            bottom: 25px;
-            right: 25px;
-            width: 56px;
-            height: 56px;
-            background: var(--primary);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--dark);
-            font-size: 24px;
-            cursor: pointer;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.25);
-            z-index: 1000;
-            transition: var(--transition);
-            border: 2px solid rgba(255,255,255,0.2);
+            position: fixed; bottom: 25px; right: 25px; width: 56px; height: 56px; background: var(--primary);
+            border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--dark);
+            font-size: 24px; cursor: pointer; box-shadow: 0 8px 25px rgba(0,0,0,0.25); z-index: 1000;
+            transition: var(--transition); border: 2px solid rgba(255,255,255,0.2);
         }
-        .admin-icon:hover {
-            transform: rotate(30deg) scale(1.1);
-            background: var(--primary-dark);
-        }
+        .admin-icon:hover { transform: rotate(30deg) scale(1.1); background: var(--primary-dark); }
         /* ---------- ADMIN OVERLAY ---------- */
         .admin-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.8);
-            backdrop-filter: blur(8px);
-            z-index: 2000;
-            display: none;
-            justify-content: center;
-            align-items: center;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(8px); z-index: 2000; display: none; justify-content: center; align-items: center;
         }
         .admin-panel {
-            background: #f8f9fc;
-            width: 95%;
-            max-width: 1200px;
-            max-height: 90vh;
-            border-radius: 28px;
-            padding: 30px;
-            overflow-y: auto;
-            position: relative;
-            box-shadow: 0 30px 60px rgba(0,0,0,0.5);
+            background: #f8f9fc; width: 95%; max-width: 1200px; max-height: 90vh; border-radius: 28px;
+            padding: 30px; overflow-y: auto; position: relative; box-shadow: 0 30px 60px rgba(0,0,0,0.5);
             border: 1px solid rgba(255,255,255,0.1);
         }
-        .admin-panel h2 {
-            margin-bottom: 20px;
-            color: var(--dark);
-            font-size: 1.8rem;
-        }
+        .admin-panel h2 { margin-bottom: 20px; color: var(--dark); font-size: 1.8rem; }
         /* Login form */
-        .login-form {
-            max-width: 400px;
-            margin: 50px auto;
-            text-align: center;
-            background: white;
-            padding: 40px;
-            border-radius: 24px;
-            box-shadow: var(--shadow-md);
-        }
-        .login-form input {
-            width: 100%;
-            padding: 14px;
-            margin: 10px 0;
-            border: 1px solid #ddd;
-            border-radius: 40px;
-            font-family: 'Inter', sans-serif;
-        }
-        .login-form button {
-            width: 100%;
-            padding: 14px;
-            background: var(--primary);
-            color: var(--dark);
-            border: none;
-            border-radius: 40px;
-            font-weight: 600;
-            cursor: pointer;
-            margin-top: 10px;
-            transition: var(--transition);
-        }
-        .login-form button:hover {
-            background: var(--primary-dark);
-        }
-        .login-form .error {
-            color: red;
-            margin-top: 10px;
-        }
+        .login-form { max-width: 400px; margin: 50px auto; text-align: center; background: white; padding: 40px; border-radius: 24px; box-shadow: var(--shadow-md); }
+        .login-form input { width: 100%; padding: 14px; margin: 10px 0; border: 1px solid #ddd; border-radius: 40px; font-family: 'Inter', sans-serif; }
+        .login-form button { width: 100%; padding: 14px; background: var(--primary); color: var(--dark); border: none; border-radius: 40px; font-weight: 600; cursor: pointer; margin-top: 10px; transition: var(--transition); }
+        .login-form button:hover { background: var(--primary-dark); }
+        .login-form .error { color: red; margin-top: 10px; }
         /* Admin tabs */
-        .admin-tabs {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-            margin-bottom: 25px;
-            background: white;
-            padding: 15px 20px;
-            border-radius: 60px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
-        }
-        .admin-tab {
-            padding: 10px 20px;
-            background: #f0f0f0;
-            border-radius: 40px;
-            cursor: pointer;
-            font-weight: 500;
-            transition: var(--transition);
-            font-size: 0.95rem;
-        }
-        .admin-tab.active {
-            background: var(--primary);
-            color: white;
-        }
-        .admin-tab-content {
-            display: none;
-            background: white;
-            padding: 30px;
-            border-radius: 24px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.03);
-        }
-        .admin-tab-content.active {
-            display: block;
-        }
-        .admin-field {
-            margin-bottom: 20px;
-        }
-        .admin-field label {
-            display: block;
-            font-weight: 600;
-            margin-bottom: 8px;
-            color: #444;
-            font-size: 0.95rem;
-        }
-        .admin-field input,
-        .admin-field textarea,
-        .admin-field select {
-            width: 100%;
-            padding: 12px 16px;
-            border: 1px solid #e0e0e0;
-            border-radius: 16px;
-            font-family: 'Inter', sans-serif;
-            transition: var(--transition);
-            background: #fafafa;
-        }
-        .admin-field input:focus,
-        .admin-field textarea:focus {
-            border-color: var(--primary);
-            outline: none;
-            background: white;
-        }
-        .admin-field textarea {
-            min-height: 100px;
-        }
-        .image-upload-row {
-            display: flex;
-            gap: 12px;
-            align-items: center;
-            margin-bottom: 10px;
-            flex-wrap: wrap;
-        }
-        .image-upload-row input {
-            flex: 1;
-        }
-        .upload-btn {
-            background: var(--primary);
-            color: var(--dark);
-            border: none;
-            padding: 10px 24px;
-            border-radius: 40px;
-            cursor: pointer;
-            font-size: 0.9rem;
-            font-weight: 500;
-            transition: var(--transition);
-            white-space: nowrap;
-        }
-        .upload-btn:hover {
-            background: var(--primary-dark);
-        }
-        .upload-btn:disabled {
-            background: #ccc;
-            cursor: not-allowed;
-        }
-        .image-preview {
-            max-width: 120px;
-            max-height: 80px;
-            object-fit: cover;
-            border-radius: 12px;
-            margin-top: 8px;
-            border: 2px solid #eee;
-            box-shadow: 0 5px 10px rgba(0,0,0,0.1);
-        }
-        .thumbnail-list {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-            margin-bottom: 15px;
-        }
-        .thumbnail-item {
-            display: flex;
-            gap: 15px;
-            align-items: flex-start;
-            flex-wrap: wrap;
-            border-bottom: 1px solid #eee;
-            padding-bottom: 20px;
-            background: #f9f9f9;
-            border-radius: 20px;
-            padding: 20px;
-        }
-        .thumbnail-item .image-upload-row {
-            width: 100%;
-        }
-        .thumbnail-item button {
-            background: #ff4d4d;
-            color: white;
-            border: none;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            cursor: pointer;
-            transition: var(--transition);
-        }
-        .thumbnail-item button:hover {
-            background: #cc0000;
-        }
-        .add-btn {
-            background: #4CAF50;
-            color: white;
-            border: none;
-            padding: 12px 28px;
-            border-radius: 40px;
-            cursor: pointer;
-            margin-top: 15px;
-            font-weight: 500;
-            transition: var(--transition);
-        }
-        .add-btn:hover {
-            background: #45a049;
-        }
-        .admin-buttons {
-            display: flex;
-            gap: 15px;
-            justify-content: flex-end;
-            margin-top: 30px;
-        }
-        .admin-buttons button {
-            padding: 14px 32px;
-            border: none;
-            border-radius: 40px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: var(--transition);
-        }
-        .btn-save {
-            background: var(--primary);
-            color: var(--dark);
-        }
-        .btn-save:hover {
-            background: var(--primary-dark);
-        }
-        .btn-close {
-            background: #ddd;
-            color: #333;
-        }
-        .btn-close:hover {
-            background: #ccc;
-        }
-        .btn-logout {
-            background: #ff4d4d;
-            color: white;
-            border: none;
-            padding: 10px 24px;
-            border-radius: 40px;
-            cursor: pointer;
-            font-weight: 500;
-        }
-        .btn-logout:hover {
-            background: #cc0000;
-        }
+        .admin-tabs { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 25px; background: white; padding: 15px 20px; border-radius: 60px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
+        .admin-tab { padding: 10px 20px; background: #f0f0f0; border-radius: 40px; cursor: pointer; font-weight: 500; transition: var(--transition); font-size: 0.95rem; }
+        .admin-tab.active { background: var(--primary); color: white; }
+        .admin-tab-content { display: none; background: white; padding: 30px; border-radius: 24px; box-shadow: 0 10px 25px rgba(0,0,0,0.03); }
+        .admin-tab-content.active { display: block; }
+        .admin-field { margin-bottom: 20px; }
+        .admin-field label { display: block; font-weight: 600; margin-bottom: 8px; color: #444; font-size: 0.95rem; }
+        .admin-field input, .admin-field textarea, .admin-field select { width: 100%; padding: 12px 16px; border: 1px solid #e0e0e0; border-radius: 16px; font-family: 'Inter', sans-serif; transition: var(--transition); background: #fafafa; }
+        .admin-field input:focus, .admin-field textarea:focus { border-color: var(--primary); outline: none; background: white; }
+        .admin-field textarea { min-height: 100px; }
+        .image-upload-row { display: flex; gap: 12px; align-items: center; margin-bottom: 10px; flex-wrap: wrap; }
+        .image-upload-row input { flex: 1; }
+        .upload-btn { background: var(--primary); color: var(--dark); border: none; padding: 10px 24px; border-radius: 40px; cursor: pointer; font-size: 0.9rem; font-weight: 500; transition: var(--transition); white-space: nowrap; }
+        .upload-btn:hover { background: var(--primary-dark); }
+        .upload-btn:disabled { background: #ccc; cursor: not-allowed; }
+        .image-preview { max-width: 120px; max-height: 80px; object-fit: cover; border-radius: 12px; margin-top: 8px; border: 2px solid #eee; box-shadow: 0 5px 10px rgba(0,0,0,0.1); }
+        .thumbnail-list { display: flex; flex-direction: column; gap: 20px; margin-bottom: 15px; }
+        .thumbnail-item { display: flex; gap: 15px; align-items: flex-start; flex-wrap: wrap; border-bottom: 1px solid #eee; padding-bottom: 20px; background: #f9f9f9; border-radius: 20px; padding: 20px; }
+        .thumbnail-item .image-upload-row { width: 100%; }
+        .thumbnail-item button { background: #ff4d4d; color: white; border: none; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; transition: var(--transition); }
+        .thumbnail-item button:hover { background: #cc0000; }
+        .add-btn { background: #4CAF50; color: white; border: none; padding: 12px 28px; border-radius: 40px; cursor: pointer; margin-top: 15px; font-weight: 500; transition: var(--transition); }
+        .add-btn:hover { background: #45a049; }
+        .admin-buttons { display: flex; gap: 15px; justify-content: flex-end; margin-top: 30px; }
+        .admin-buttons button { padding: 14px 32px; border: none; border-radius: 40px; font-weight: 600; cursor: pointer; transition: var(--transition); }
+        .btn-save { background: var(--primary); color: var(--dark); }
+        .btn-save:hover { background: var(--primary-dark); }
+        .btn-close { background: #ddd; color: #333; }
+        .btn-close:hover { background: #ccc; }
+        .btn-logout { background: #ff4d4d; color: white; border: none; padding: 10px 24px; border-radius: 40px; cursor: pointer; font-weight: 500; }
+        .btn-logout:hover { background: #cc0000; }
         /* Calendar grid */
-        .calendar-day {
-            background: #f9f9f9;
-            border-radius: 12px;
-            padding: 8px;
-            text-align: center;
-            border: 1px solid #eee;
-        }
-        .calendar-day .day-number {
-            font-weight: 600;
-            margin-bottom: 5px;
-        }
-        .calendar-day input[type="checkbox"] {
-            margin-right: 5px;
-        }
-        .calendar-day input[type="number"] {
-            width: 80px;
-            padding: 4px;
-            border-radius: 20px;
-            border: 1px solid #ccc;
-            text-align: center;
-            font-size: 0.9rem;
-        }
+        .calendar-day { background: #f9f9f9; border-radius: 12px; padding: 8px; text-align: center; border: 1px solid #eee; }
+        .calendar-day .day-number { font-weight: 600; margin-bottom: 5px; }
+        .calendar-day input[type="checkbox"] { margin-right: 5px; }
+        .calendar-day input[type="number"] { width: 80px; padding: 4px; border-radius: 20px; border: 1px solid #ccc; text-align: center; font-size: 0.9rem; }
         /* Reservation list */
-        .reservation-item {
-            background: #f9f9f9;
-            border-radius: 16px;
-            padding: 15px;
-            margin-bottom: 15px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-        }
-        .reservation-details {
-            flex: 1;
-        }
-        .reservation-actions button {
-            background: #ff4d4d;
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 30px;
-            cursor: pointer;
-        }
-        .reservation-actions button:hover {
-            background: #cc0000;
-        }
+        .reservation-item { background: #f9f9f9; border-radius: 16px; padding: 15px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; }
+        .reservation-details { flex: 1; }
+        .reservation-actions button { background: #ff4d4d; color: white; border: none; padding: 8px 16px; border-radius: 30px; cursor: pointer; }
+        .reservation-actions button:hover { background: #cc0000; }
         /* BOOKING MODAL */
         .booking-modal {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.7);
-            backdrop-filter: blur(5px);
-            z-index: 3000;
-            justify-content: center;
-            align-items: center;
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.7); backdrop-filter: blur(5px); z-index: 3000;
+            justify-content: center; align-items: center;
         }
         .modal-content {
-            background: white;
-            border-radius: 30px;
-            padding: 40px;
-            max-width: 450px;
-            width: 90%;
-            box-shadow: 0 30px 60px rgba(0,0,0,0.5);
-            position: relative;
+            background: white; border-radius: 30px; padding: 40px; max-width: 450px; width: 90%;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.5); position: relative;
         }
-        .modal-content h3 {
-            font-size: 2rem;
-            margin-bottom: 20px;
-            color: var(--dark);
-        }
-        .modal-content .close-modal {
-            position: absolute;
-            top: 20px;
-            right: 25px;
-            font-size: 28px;
-            cursor: pointer;
-            color: #aaa;
-            transition: var(--transition);
-        }
-        .modal-content .close-modal:hover {
-            color: var(--dark);
-        }
-        .modal-field {
-            margin-bottom: 20px;
-        }
-        .modal-field label {
-            display: block;
-            font-weight: 600;
-            margin-bottom: 5px;
-            color: #444;
-        }
-        .modal-field input {
-            width: 100%;
-            padding: 12px 18px;
-            border: 1px solid #ddd;
-            border-radius: 30px;
-            font-family: 'Inter', sans-serif;
-            font-size: 15px;
-        }
-        .modal-field input:focus {
-            outline: none;
-            border-color: var(--primary);
-        }
-        .modal-field .readonly-input {
-            background: #f0f0f0;
-            color: #555;
-        }
-        .modal-submit {
-            background: var(--primary);
-            color: var(--dark);
-            border: none;
-            padding: 15px 30px;
-            border-radius: 40px;
-            font-weight: 600;
-            width: 100%;
-            cursor: pointer;
-            transition: var(--transition);
-            font-size: 16px;
-            margin-top: 10px;
-        }
-        .modal-submit:hover {
-            background: var(--primary-dark);
-            transform: translateY(-2px);
-        }
+        .modal-content h3 { font-size: 2rem; margin-bottom: 20px; color: var(--dark); }
+        .modal-content .close-modal { position: absolute; top: 20px; right: 25px; font-size: 28px; cursor: pointer; color: #aaa; transition: var(--transition); }
+        .modal-content .close-modal:hover { color: var(--dark); }
+        .modal-field { margin-bottom: 20px; }
+        .modal-field label { display: block; font-weight: 600; margin-bottom: 5px; color: #444; }
+        .modal-field input { width: 100%; padding: 12px 18px; border: 1px solid #ddd; border-radius: 30px; font-family: 'Inter', sans-serif; font-size: 15px; }
+        .modal-field input:focus { outline: none; border-color: var(--primary); }
+        .modal-field .readonly-input { background: #f0f0f0; color: #555; }
+        .modal-submit { background: var(--primary); color: var(--dark); border: none; padding: 15px 30px; border-radius: 40px; font-weight: 600; width: 100%; cursor: pointer; transition: var(--transition); font-size: 16px; margin-top: 10px; }
+        .modal-submit:hover { background: var(--primary-dark); transform: translateY(-2px); }
         @media (max-width: 992px) {
             .about-grid, .dining-grid { grid-template-columns: 1fr; }
             .nav-menu { display: none; }
@@ -1001,6 +302,7 @@
                     <div class="admin-tab" data-tab="reservations">Reservations</div>
                     <div class="admin-tab" data-tab="menu">Menu</div>
                     <div class="admin-tab" data-tab="settings">Settings</div>
+                    <div class="admin-tab" data-tab="sync">Calendar Sync</div>
                     <div class="admin-tab" data-tab="footer">Footer</div>
                 </div>
 
@@ -1165,7 +467,7 @@
                     <button class="add-btn" id="add-menu-item">+ Add Menu Item</button>
                 </div>
 
-                <!-- Settings Tab (added EmailJS fields) -->
+                <!-- Settings Tab (with EmailJS) -->
                 <div class="admin-tab-content" id="tab-settings">
                     <div class="admin-field">
                         <label>Primary Color</label>
@@ -1202,6 +504,24 @@
                         <input type="text" id="settings-emailjs-template" placeholder="template_id">
                     </div>
                     <p class="text-muted">Create a template with variables: apartment, checkin, checkout, guests, total, firstName, lastName, email, phone.</p>
+                </div>
+
+                <!-- Calendar Sync Tab -->
+                <div class="admin-tab-content" id="tab-sync">
+                    <h3>Export iCal (for Airbnb, Booking.com, etc.)</h3>
+                    <p>Download an .ics file containing all booked dates. Import this file into your other calendars to block those dates.</p>
+                    <button class="upload-btn" id="export-ical">📅 Download iCal File</button>
+
+                    <hr style="margin: 30px 0;">
+
+                    <h3>Import Airbnb iCal</h3>
+                    <p>Paste your Airbnb calendar's iCal URL below. We'll fetch it and block those dates on your site.</p>
+                    <div class="admin-field">
+                        <label>Airbnb iCal URL</label>
+                        <input type="url" id="airbnb-ical-url" placeholder="https://www.airbnb.com/calendar/ical/xxxx.ics">
+                    </div>
+                    <button class="upload-btn" id="import-airbnb">🔄 Sync from Airbnb</button>
+                    <div id="import-result" style="margin-top: 15px;"></div>
                 </div>
 
                 <!-- Footer Tab -->
@@ -1294,7 +614,7 @@
             const contentDoc = db.collection('website').doc('content');
             const reservationsCol = db.collection('reservations');
 
-            // Initialize EmailJS (will be called after settings loaded)
+            // EmailJS initialization flag
             let emailjsInitialized = false;
             function initEmailJS(publicKey) {
                 if (!publicKey) return;
@@ -1302,7 +622,7 @@
                 emailjsInitialized = true;
             }
 
-            // ---------- DEFAULT DATA (with email settings) ----------
+            // Default data
             const defaultData = {
                 hero: {
                     subtitle: "Welcome to Horizon, a luxury apartment in the heart of the city",
@@ -1376,7 +696,7 @@
             let siteData = JSON.parse(JSON.stringify(defaultData));
             let reservations = [];
 
-            // ---------- Helper functions ----------
+            // Helper functions
             function mergeDeep(target, source) {
                 for (const key in source) {
                     if (source[key] && typeof source[key] === 'object' && !Array.isArray(source[key])) {
@@ -1402,7 +722,6 @@
                     const resSnapshot = await reservationsCol.orderBy('createdAt', 'desc').get();
                     reservations = resSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
 
-                    // Initialize EmailJS if public key exists
                     if (siteData.settings.emailjsPublic) {
                         initEmailJS(siteData.settings.emailjsPublic);
                     }
@@ -1418,7 +737,6 @@
 
             async function saveToFirebase() {
                 await contentDoc.set(siteData);
-                // Re-init EmailJS if public key changed
                 if (siteData.settings.emailjsPublic) {
                     initEmailJS(siteData.settings.emailjsPublic);
                 }
@@ -1870,20 +1188,13 @@
                 renderCalendar();
             });
 
-            // BOOKING MODAL LOGIC
+            // Booking modal logic
             const modal = document.getElementById('bookingModal');
             const closeModal = document.getElementById('closeModal');
             const bookBtn = document.getElementById('book-btn');
             const bookingForm = document.getElementById('booking-form');
 
-            let currentBooking = {
-                checkin: '',
-                checkout: '',
-                guests: 0,
-                total: 0,
-                aptIdx: 0,
-                nights: []
-            };
+            let currentBooking = { checkin: '', checkout: '', guests: 0, total: 0, aptIdx: 0, nights: [] };
 
             bookBtn.addEventListener('click', async () => {
                 const checkin = document.getElementById('booking-checkin').value;
@@ -1919,9 +1230,7 @@
                 const extraGuests = Math.max(0, guests - 2);
                 total += extraGuests * (aptPricing.extraGuestFee || 0);
 
-                currentBooking = {
-                    checkin, checkout, guests, total, aptIdx, nights
-                };
+                currentBooking = { checkin, checkout, guests, total, aptIdx, nights };
 
                 document.getElementById('modal-checkin').value = checkin;
                 document.getElementById('modal-checkout').value = checkout;
@@ -1931,17 +1240,9 @@
                 modal.style.display = 'flex';
             });
 
-            closeModal.addEventListener('click', () => {
-                modal.style.display = 'none';
-            });
+            closeModal.addEventListener('click', () => { modal.style.display = 'none'; });
+            window.addEventListener('click', (e) => { if (e.target === modal) modal.style.display = 'none'; });
 
-            window.addEventListener('click', (e) => {
-                if (e.target === modal) {
-                    modal.style.display = 'none';
-                }
-            });
-
-            // Function to send email via EmailJS
             async function sendAdminEmail(reservation) {
                 if (!siteData.settings.adminEmail || !siteData.settings.emailjsService || !siteData.settings.emailjsTemplate || !emailjsInitialized) {
                     console.warn('EmailJS not configured or admin email missing');
@@ -2009,8 +1310,7 @@
                     reservations = resSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
                     renderReservationsList();
                     renderCalendar();
-                    
-                    // Send email notification to admin
+
                     await sendAdminEmail(reservation);
 
                     modal.style.display = 'none';
@@ -2128,7 +1428,149 @@
                 });
             }
 
-            // Add event listeners for add buttons
+            // iCal export
+            function exportICal() {
+                const aptIdx = 0;
+                const events = [];
+
+                reservations.forEach(res => {
+                    if (res.apartmentIndex === aptIdx) {
+                        events.push({
+                            start: res.checkIn,
+                            end: res.checkOut,
+                            summary: `Booked: ${res.firstName} ${res.lastName}`,
+                            description: `${res.guests} guests`
+                        });
+                    }
+                });
+
+                if (siteData.availability && siteData.availability[aptIdx]) {
+                    Object.entries(siteData.availability[aptIdx]).forEach(([date, data]) => {
+                        if (data.available === false) {
+                            const alreadyBooked = reservations.some(res => {
+                                const checkin = new Date(res.checkIn);
+                                const checkout = new Date(res.checkOut);
+                                const current = new Date(date);
+                                return current >= checkin && current < checkout;
+                            });
+                            if (!alreadyBooked) {
+                                events.push({
+                                    start: date,
+                                    end: new Date(new Date(date).getTime() + 24*60*60*1000).toISOString().split('T')[0],
+                                    summary: 'Blocked (manual)',
+                                    description: ''
+                                });
+                            }
+                        }
+                    });
+                }
+
+                let icalContent = `BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Horizon//Calendar//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+`;
+
+                events.forEach((event, idx) => {
+                    const uid = `event-${idx}@horizon-${Date.now()}`;
+                    const startFormatted = event.start.replace(/-/g, '');
+                    const endFormatted = event.end.replace(/-/g, '');
+                    icalContent += `BEGIN:VEVENT
+UID:${uid}
+DTSTART;VALUE=DATE:${startFormatted}
+DTEND;VALUE=DATE:${endFormatted}
+SUMMARY:${event.summary}
+DESCRIPTION:${event.description}
+END:VEVENT
+`;
+                });
+
+                icalContent += `END:VCALENDAR`;
+
+                const blob = new Blob([icalContent], { type: 'text/calendar' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'horizon-calendar.ics';
+                a.click();
+                URL.revokeObjectURL(url);
+            }
+
+            // Import Airbnb iCal
+            async function importAirbnbICal(url) {
+                const resultDiv = document.getElementById('import-result');
+                resultDiv.innerHTML = '⏳ Fetching calendar...';
+
+                const proxyUrl = 'https://api.allorigins.win/raw?url=' + encodeURIComponent(url);
+                try {
+                    const response = await fetch(proxyUrl);
+                    if (!response.ok) throw new Error('Failed to fetch iCal');
+                    const icalText = await response.text();
+
+                    const lines = icalText.split('\n');
+                    let inEvent = false;
+                    let currentEvent = {};
+                    const events = [];
+
+                    for (let line of lines) {
+                        line = line.trim();
+                        if (line === 'BEGIN:VEVENT') {
+                            inEvent = true;
+                            currentEvent = {};
+                        } else if (line === 'END:VEVENT') {
+                            inEvent = false;
+                            if (currentEvent.start && currentEvent.end) {
+                                events.push(currentEvent);
+                            }
+                        } else if (inEvent) {
+                            if (line.startsWith('DTSTART;VALUE=DATE:')) {
+                                currentEvent.start = line.substring(19).replace(/(....)(..)(..)/, '$1-$2-$3');
+                            } else if (line.startsWith('DTSTART:')) {
+                                currentEvent.start = line.substring(8).replace(/(....)(..)(..).*/, '$1-$2-$3');
+                            } else if (line.startsWith('DTEND;VALUE=DATE:')) {
+                                currentEvent.end = line.substring(17).replace(/(....)(..)(..)/, '$1-$2-$3');
+                            } else if (line.startsWith('DTEND:')) {
+                                currentEvent.end = line.substring(6).replace(/(....)(..)(..).*/, '$1-$2-$3');
+                            }
+                        }
+                    }
+
+                    const aptIdx = 0;
+                    if (!siteData.availability) siteData.availability = {};
+                    if (!siteData.availability[aptIdx]) siteData.availability[aptIdx] = {};
+
+                    let blockedCount = 0;
+                    events.forEach(event => {
+                        let start = new Date(event.start);
+                        let end = new Date(event.end);
+                        while (start < end) {
+                            const dateStr = start.toISOString().split('T')[0];
+                            const current = siteData.availability[aptIdx][dateStr] || {};
+                            if (current.available !== false) {
+                                siteData.availability[aptIdx][dateStr] = { ...current, available: false };
+                                blockedCount++;
+                            }
+                            start.setDate(start.getDate() + 1);
+                        }
+                    });
+
+                    resultDiv.innerHTML = `✅ Synced! ${blockedCount} dates blocked from Airbnb.`;
+                    renderCalendar();
+                } catch (error) {
+                    resultDiv.innerHTML = `❌ Error: ${error.message}`;
+                }
+            }
+
+            // Add event listeners for sync buttons (after DOM ready)
+            document.getElementById('export-ical')?.addEventListener('click', exportICal);
+            document.getElementById('import-airbnb')?.addEventListener('click', () => {
+                const url = document.getElementById('airbnb-ical-url').value;
+                if (!url) { alert('Please enter an iCal URL'); return; }
+                importAirbnbICal(url);
+            });
+
+            // Add buttons for gallery, services, etc.
             document.getElementById('add-gallery-image').addEventListener('click', () => {
                 siteData.gallery.push({ title: 'New Image', desc: '', image: '' });
                 if (siteData.pricing.length < siteData.gallery.length) {
