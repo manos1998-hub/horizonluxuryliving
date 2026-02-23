@@ -4,24 +4,26 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Horizon Luxury Living | The Horizon Suite</title>
-    <!-- Font Awesome Icons -->
+    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;700&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
-    <!-- Firebase SDKs -->
+    <!-- Firebase -->
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
     <style>
+        /* ---------- Global Styles ---------- */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
         body {
-            font-family: 'Montserrat', sans-serif;
+            font-family: var(--font-family, 'Montserrat', sans-serif);
             color: #333;
             line-height: 1.6;
             background-color: #f9f9f9;
+            transition: background-color 0.3s;
         }
         h1, h2, h3 {
             font-family: 'Playfair Display', serif;
@@ -38,7 +40,7 @@
             background: #111;
             color: white;
             padding: 15px 0;
-            border-bottom: 3px solid #f0b90b;
+            border-bottom: 3px solid var(--primary-color, #f0b90b);
         }
         .header-inner {
             display: flex;
@@ -53,6 +55,21 @@
             font-size: 26px;
             font-weight: 700;
             color: white;
+        }
+        /* Navigation */
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 30px;
+        }
+        .nav-menu a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: 0.3s;
+        }
+        .nav-menu a:hover {
+            color: var(--primary-color, #f0b90b);
         }
         /* Main layout */
         .suite-grid {
@@ -71,7 +88,6 @@
             object-fit: cover;
             border-radius: 12px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            cursor: pointer;
         }
         .thumbnail-grid {
             display: grid;
@@ -89,10 +105,9 @@
             border: 2px solid transparent;
         }
         .thumbnail-grid img:hover {
-            border-color: #f0b90b;
+            border-color: var(--primary-color, #f0b90b);
             transform: scale(1.05);
         }
-
         .suite-title {
             margin: 30px 0 20px;
         }
@@ -118,24 +133,15 @@
             font-weight: 500;
         }
         .meta-item i {
-            color: #f0b90b;
+            color: var(--primary-color, #f0b90b);
             font-size: 18px;
             width: 24px;
-        }
-        .meta-item span.editable {
-            min-width: 50px;
-            display: inline-block;
-        }
-
-        .suite-description {
-            margin-bottom: 30px;
         }
         .suite-description p {
             color: #555;
             margin-bottom: 20px;
             font-size: 16px;
         }
-
         .amenities-section h2 {
             font-size: 28px;
             margin-bottom: 25px;
@@ -157,15 +163,10 @@
             font-size: 16px;
         }
         .amenity-item i {
-            color: #f0b90b;
+            color: var(--primary-color, #f0b90b);
             font-size: 18px;
             width: 24px;
         }
-        .amenity-item span.editable {
-            min-width: 100px;
-            display: inline-block;
-        }
-
         .calendar-section {
             margin: 40px 0;
         }
@@ -186,11 +187,10 @@
         }
         .calendar-placeholder i {
             font-size: 40px;
-            color: #f0b90b;
+            color: var(--primary-color, #f0b90b);
             margin-right: 15px;
         }
-
-        /* Right Column - Booking Card */
+        /* Booking Card */
         .booking-card {
             background: white;
             border-radius: 16px;
@@ -210,7 +210,7 @@
         .price {
             font-size: 36px;
             font-weight: 700;
-            color: #f0b90b;
+            color: var(--primary-color, #f0b90b);
             font-family: 'Playfair Display', serif;
         }
         .price span {
@@ -219,25 +219,16 @@
             color: #777;
             margin-left: 5px;
         }
-        .price .editable {
-            display: inline-block;
-            min-width: 60px;
-        }
         .rating {
-            background: #f0b90b20;
+            background: color-mix(in srgb, var(--primary-color, #f0b90b) 20%, white);
             padding: 8px 15px;
             border-radius: 40px;
             font-weight: 600;
         }
         .rating i {
-            color: #f0b90b;
+            color: var(--primary-color, #f0b90b);
             margin-right: 5px;
         }
-        .rating .editable {
-            display: inline-block;
-            min-width: 30px;
-        }
-
         .booking-form {
             display: flex;
             flex-direction: column;
@@ -281,18 +272,17 @@
             transition: 0.2s;
         }
         .counter-btn:hover {
-            background: #f0b90b;
+            background: var(--primary-color, #f0b90b);
             color: white;
-            border-color: #f0b90b;
+            border-color: var(--primary-color, #f0b90b);
         }
         .counter-value {
             font-weight: 600;
             min-width: 20px;
             text-align: center;
         }
-
         .check-availability-btn {
-            background: #f0b90b;
+            background: var(--primary-color, #f0b90b);
             color: #222;
             border: none;
             padding: 16px;
@@ -305,11 +295,10 @@
             width: 100%;
         }
         .check-availability-btn:hover {
-            background: #d4a50a;
+            background: color-mix(in srgb, var(--primary-color, #f0b90b) 80%, black);
             transform: translateY(-2px);
             box-shadow: 0 10px 20px rgba(0,0,0,0.1);
         }
-
         .extra-info {
             margin-top: 25px;
             padding-top: 20px;
@@ -324,11 +313,6 @@
         .extra-row span:first-child {
             font-weight: 500;
         }
-        .extra-row span.editable {
-            min-width: 60px;
-            display: inline-block;
-        }
-
         /* Footer */
         footer {
             background: #111;
@@ -340,11 +324,6 @@
             text-align: center;
             color: #aaa;
         }
-        .footer-content .editable {
-            display: inline-block;
-            min-width: 200px;
-        }
-
         /* Admin Icon */
         .admin-icon {
             position: fixed;
@@ -352,7 +331,7 @@
             right: 20px;
             width: 50px;
             height: 50px;
-            background: #f0b90b;
+            background: var(--primary-color, #f0b90b);
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -366,56 +345,145 @@
         }
         .admin-icon:hover {
             transform: rotate(30deg);
-            background: #d4a50a;
+            background: color-mix(in srgb, var(--primary-color, #f0b90b) 80%, black);
         }
-
-        /* Admin Panel */
-        .admin-panel {
+        /* Admin Panel Overlay */
+        .admin-overlay {
             position: fixed;
-            bottom: 80px;
-            right: 20px;
-            background: white;
-            border-radius: 8px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
-            padding: 15px;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            z-index: 1000;
-            min-width: 180px;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            z-index: 2000;
+            display: none;
+            justify-content: center;
+            align-items: center;
         }
-        .admin-panel button {
-            background: #f0b90b;
-            border: none;
+        .admin-panel {
+            background: white;
+            width: 90%;
+            max-width: 800px;
+            max-height: 80vh;
+            border-radius: 16px;
+            padding: 30px;
+            overflow-y: auto;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        }
+        .admin-panel h2 {
+            margin-bottom: 20px;
+            color: #333;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+        }
+        .admin-tabs {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 10px;
+        }
+        .admin-tab {
+            padding: 8px 16px;
+            background: #f0f0f0;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: 0.2s;
+        }
+        .admin-tab.active {
+            background: var(--primary-color, #f0b90b);
+            color: #111;
+        }
+        .admin-tab-content {
+            display: none;
+            margin-bottom: 20px;
+        }
+        .admin-tab-content.active {
+            display: block;
+        }
+        .admin-field {
+            margin-bottom: 15px;
+        }
+        .admin-field label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: #555;
+        }
+        .admin-field input, .admin-field textarea {
+            width: 100%;
             padding: 10px;
-            border-radius: 4px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-family: 'Montserrat', sans-serif;
+        }
+        .admin-field textarea {
+            min-height: 80px;
+            resize: vertical;
+        }
+        .admin-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+            margin-top: 20px;
+        }
+        .admin-buttons button {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 30px;
             font-weight: 600;
             cursor: pointer;
             transition: 0.2s;
         }
-        .admin-panel button:hover {
-            background: #d4a50a;
+        .btn-save {
+            background: var(--primary-color, #f0b90b);
+            color: #111;
         }
-        .admin-panel button#exitAdmin {
+        .btn-save:hover {
+            background: color-mix(in srgb, var(--primary-color, #f0b90b) 80%, black);
+        }
+        .btn-close {
             background: #ddd;
             color: #333;
         }
-        .admin-panel button#exitAdmin:hover {
+        .btn-close:hover {
             background: #ccc;
         }
-
-        /* Editable highlight in admin mode */
-        .admin-mode [contenteditable="true"] {
-            background: rgba(240, 185, 11, 0.1);
-            outline: 1px dashed #f0b90b;
-            padding: 2px 4px;
-            border-radius: 4px;
+        /* Thumbnail list in admin */
+        .thumbnail-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 10px;
         }
-        .admin-mode img[contenteditable="false"] {
-            outline: 2px solid #f0b90b;
-            outline-offset: 2px;
+        .thumbnail-item {
+            display: flex;
+            gap: 10px;
+            align-items: center;
         }
-
+        .thumbnail-item input {
+            flex: 1;
+        }
+        .thumbnail-item button {
+            background: #ff4444;
+            color: white;
+            border: none;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+        .add-thumbnail {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
         /* Responsive */
         @media (max-width: 992px) {
             .suite-grid {
@@ -423,182 +491,181 @@
             }
             .booking-card {
                 position: static;
-                margin-top: 30px;
-            }
-        }
-        @media (max-width: 768px) {
-            .suite-title h1 {
-                font-size: 36px;
-            }
-            .suite-meta {
-                gap: 15px;
-            }
-            .amenities-grid {
-                grid-template-columns: 1fr;
             }
         }
     </style>
 </head>
 <body>
+    <!-- Header with dynamic navigation -->
     <header class="page-header">
         <div class="header-inner">
-            <div class="logo">Horizon Luxury Living</div>
+            <div class="logo" id="site-logo">Horizon Luxury Living</div>
+            <nav>
+                <ul class="nav-menu" id="nav-menu"></ul>
+            </nav>
         </div>
     </header>
 
-    <!-- Wrapper for all editable content (main + footer) -->
-    <div id="editable-content">
-        <main class="container" id="mainContent">
-            <div class="suite-grid">
-                <!-- Left Column: Details -->
-                <div class="suite-details">
-                    <!-- Image Gallery -->
-                    <div class="suite-gallery">
-                        <img id="mainImage" class="main-image editable-image" src="https://images.unsplash.com/photo-1566665797739-1674de7a421a?ixlib=rb-4.0.3&auto=format&fit=crop&w=1974&q=80" alt="The Horizon Suite">
-                        <div class="thumbnail-grid">
-                            <img src="https://images.unsplash.com/photo-1566665797739-1674de7a421a?ixlib=rb-4.0.3&auto=format&fit=crop&w=1974&q=80" alt="Suite View 1" class="editable-image" onclick="document.getElementById('mainImage').src=this.src">
-                            <img src="https://images.unsplash.com/photo-1595526114035-0d45ed16cfbf?ixlib=rb-4.0.3&auto=format&fit=crop&w=1974&q=80" alt="Suite View 2" class="editable-image" onclick="document.getElementById('mainImage').src=this.src">
-                            <img src="https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1950&q=80" alt="Suite View 3" class="editable-image" onclick="document.getElementById('mainImage').src=this.src">
-                            <img src="https://images.unsplash.com/photo-1578683010236-d716f9a3f461?ixlib=rb-4.0.3&auto=format&fit=crop&w=1950&q=80" alt="Suite View 4" class="editable-image" onclick="document.getElementById('mainImage').src=this.src">
-                        </div>
-                    </div>
+    <!-- Main Content (will be filled by JavaScript) -->
+    <main class="container" id="main-content"></main>
 
-                    <div class="suite-title">
-                        <h1 class="editable">The Horizon Suite</h1>
-                        <div class="suite-meta">
-                            <div class="meta-item"><i class="fas fa-user-friends"></i> <span class="editable">4 Guests</span></div>
-                            <div class="meta-item"><i class="fas fa-vector-square"></i> <span class="editable">65 m² / 700 ft²</span></div>
-                            <div class="meta-item"><i class="fas fa-bed"></i> <span class="editable">King Size Bed</span></div>
-                            <div class="meta-item"><i class="fas fa-city"></i> <span class="editable">City & Sea View</span></div>
-                        </div>
-                    </div>
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content" id="footer-content"></div>
+        </div>
+    </footer>
 
-                    <div class="suite-description">
-                        <p class="editable">Designed for families or small groups seeking uncompromising luxury, The Horizon Suite offers a perfect blend of space, elegance, and breathtaking views. The suite features a separate living area, a master bedroom with a king-size bed, and a luxurious marble bathroom with a soaking tub. Every detail is curated for an unforgettable stay.</p>
-                        <p class="editable">Floor-to-ceiling windows frame stunning panoramic views of the city skyline and the sea. Guests can enjoy premium amenities, including a Nespresso machine, smart home controls, and a dedicated workspace. The Horizon Suite represents the pinnacle of urban coastal living.</p>
-                    </div>
+    <!-- Admin Icon -->
+    <div class="admin-icon" id="adminIcon"><i class="fas fa-cog"></i></div>
 
-                    <!-- Amenities Section (Two Columns) -->
-                    <div class="amenities-section">
-                        <h2 class="editable">Room Amenities</h2>
-                        <div class="amenities-grid">
-                            <div class="amenity-item"><i class="fas fa-wifi"></i> <span class="editable">Free High-Speed Wi-Fi</span></div>
-                            <div class="amenity-item"><i class="fas fa-tv"></i> <span class="editable">65" Smart OLED TV</span></div>
-                            <div class="amenity-item"><i class="fas fa-glass-cheers"></i> <span class="editable">Fully Stocked Minibar</span></div>
-                            <div class="amenity-item"><i class="fas fa-mug-hot"></i> <span class="editable">Nespresso Machine</span></div>
-                            <div class="amenity-item"><i class="fas fa-shield-alt"></i> <span class="editable">Safe Deposit Box</span></div>
-                            <div class="amenity-item"><i class="fas fa-shower"></i> <span class="editable">Rainfall Shower</span></div>
-                            <div class="amenity-item"><i class="fas fa-bed"></i> <span class="editable">Premium King Bed</span></div>
-                            <div class="amenity-item"><i class="fas fa-bath"></i> <span class="editable">Deep Soaking Tub</span></div>
-                            <div class="amenity-item"><i class="fas fa-spa"></i> <span class="editable">Luxury Toiletries</span></div>
-                            <div class="amenity-item"><i class="fas fa-laptop"></i> <span class="editable">Ergonomic Workspace</span></div>
-                            <div class="amenity-item"><i class="fas fa-wind"></i> <span class="editable">Smart Climate Control</span></div>
-                            <div class="amenity-item"><i class="fas fa-concierge-bell"></i> <span class="editable">24/7 In-Room Dining</span></div>
-                        </div>
-                    </div>
+    <!-- Admin Panel Overlay -->
+    <div class="admin-overlay" id="adminOverlay">
+        <div class="admin-panel">
+            <h2>Admin Dashboard</h2>
+            <div class="admin-tabs" id="adminTabs">
+                <div class="admin-tab active" data-tab="titles">Titles</div>
+                <div class="admin-tab" data-tab="photos">Photos</div>
+                <div class="admin-tab" data-tab="menu">Menu</div>
+                <div class="admin-tab" data-tab="settings">Settings</div>
+                <div class="admin-tab" data-tab="reservations">Reservations</div>
+                <div class="admin-tab" data-tab="availability">Availability</div>
+            </div>
 
-                    <!-- Availability Calendar -->
-                    <div class="calendar-section">
-                        <h2 class="editable">Availability Calendar</h2>
-                        <div class="calendar-placeholder">
-                            <i class="fas fa-calendar-alt"></i> <span class="editable">Interactive calendar would be integrated here (e.g., from a booking plugin)</span>
-                        </div>
-                    </div>
+            <!-- Titles Tab -->
+            <div class="admin-tab-content active" id="tab-titles">
+                <div class="admin-field">
+                    <label>Site Name</label>
+                    <input type="text" id="input-siteName" value="Horizon Luxury Living">
                 </div>
-
-                <!-- Right Column: Booking Card -->
-                <div class="booking-card">
-                    <div class="price-box">
-                        <div class="price"><span class="editable">$429</span> <span>/ night</span></div>
-                        <div class="rating"><i class="fas fa-star"></i> <span class="editable">4.9</span> (<span class="editable">128</span> reviews)</div>
-                    </div>
-
-                    <div class="booking-form">
-                        <div class="form-row">
-                            <label>Check In</label>
-                            <input type="date" value="2026-06-01">
-                        </div>
-                        <div class="form-row">
-                            <label>Check Out</label>
-                            <input type="date" value="2026-06-05">
-                        </div>
-                        
-                        <div class="form-row">
-                            <label>Adults</label>
-                            <div class="counter-row">
-                                <span>Number of adults</span>
-                                <div class="counter-controls">
-                                    <button class="counter-btn" onclick="changeValue('adults', -1)">−</button>
-                                    <span id="adults-value" class="counter-value">2</span>
-                                    <button class="counter-btn" onclick="changeValue('adults', 1)">+</button>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="form-row">
-                            <label>Children</label>
-                            <div class="counter-row">
-                                <span>Ages 0–17</span>
-                                <div class="counter-controls">
-                                    <button class="counter-btn" onclick="changeValue('children', -1)">−</button>
-                                    <span id="children-value" class="counter-value">0</span>
-                                    <button class="counter-btn" onclick="changeValue('children', 1)">+</button>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="form-row">
-                            <label>Rooms</label>
-                            <div class="counter-row">
-                                <span>Number of rooms</span>
-                                <div class="counter-controls">
-                                    <button class="counter-btn" onclick="changeValue('rooms', -1)">−</button>
-                                    <span id="rooms-value" class="counter-value">1</span>
-                                    <button class="counter-btn" onclick="changeValue('rooms', 1)">+</button>
-                                </div>
-                            </div>
-                        </div>
-
-                        <button class="check-availability-btn">Check Availability</button>
-                    </div>
-
-                    <div class="extra-info">
-                        <div class="extra-row">
-                            <span class="editable">Extra bed</span>
-                            <span class="editable">$50 / night</span>
-                        </div>
-                        <div class="extra-row">
-                            <span class="editable">Pet fee</span>
-                            <span class="editable">$75 / stay</span>
-                        </div>
-                        <div class="extra-row">
-                            <span class="editable">Breakfast</span>
-                            <span class="editable">Included</span>
-                        </div>
-                    </div>
+                <div class="admin-field">
+                    <label>Suite Name</label>
+                    <input type="text" id="input-suiteName" value="The Horizon Suite">
+                </div>
+                <div class="admin-field">
+                    <label>Meta - Guests</label>
+                    <input type="text" id="input-metaGuests" value="4 Guests">
+                </div>
+                <div class="admin-field">
+                    <label>Meta - Size</label>
+                    <input type="text" id="input-metaSize" value="65 m² / 700 ft²">
+                </div>
+                <div class="admin-field">
+                    <label>Meta - Bed</label>
+                    <input type="text" id="input-metaBed" value="King Size Bed">
+                </div>
+                <div class="admin-field">
+                    <label>Meta - View</label>
+                    <input type="text" id="input-metaView" value="City & Sea View">
+                </div>
+                <div class="admin-field">
+                    <label>Description Paragraph 1</label>
+                    <textarea id="input-desc1">Designed for families or small groups seeking uncompromising luxury, The Horizon Suite offers a perfect blend of space, elegance, and breathtaking views. The suite features a separate living area, a master bedroom with a king-size bed, and a luxurious marble bathroom with a soaking tub. Every detail is curated for an unforgettable stay.</textarea>
+                </div>
+                <div class="admin-field">
+                    <label>Description Paragraph 2</label>
+                    <textarea id="input-desc2">Floor-to-ceiling windows frame stunning panoramic views of the city skyline and the sea. Guests can enjoy premium amenities, including a Nespresso machine, smart home controls, and a dedicated workspace. The Horizon Suite represents the pinnacle of urban coastal living.</textarea>
+                </div>
+                <div class="admin-field">
+                    <label>Amenities Title</label>
+                    <input type="text" id="input-amenitiesTitle" value="Room Amenities">
+                </div>
+                <div class="admin-field">
+                    <label>Calendar Title</label>
+                    <input type="text" id="input-calendarTitle" value="Availability Calendar">
+                </div>
+                <div class="admin-field">
+                    <label>Footer Text</label>
+                    <input type="text" id="input-footerText" value="© 2026 Horizon Luxury Living. All rights reserved.">
                 </div>
             </div>
-        </main>
 
-        <footer>
-            <div class="container">
-                <div class="footer-content">
-                    <p class="editable">&copy; 2026 Horizon Luxury Living. All rights reserved.</p>
+            <!-- Photos Tab -->
+            <div class="admin-tab-content" id="tab-photos">
+                <div class="admin-field">
+                    <label>Main Image URL</label>
+                    <input type="url" id="input-mainImage" value="https://images.unsplash.com/photo-1566665797739-1674de7a421a?ixlib=rb-4.0.3&auto=format&fit=crop&w=1974&q=80">
+                </div>
+                <label>Thumbnail URLs</label>
+                <div id="thumbnail-list" class="thumbnail-list"></div>
+                <button class="add-thumbnail" id="addThumbnail">+ Add Thumbnail</button>
+            </div>
+
+            <!-- Menu Tab -->
+            <div class="admin-tab-content" id="tab-menu">
+                <div id="menu-items"></div>
+                <button class="add-thumbnail" id="addMenuItem">+ Add Menu Item</button>
+            </div>
+
+            <!-- Settings Tab -->
+            <div class="admin-tab-content" id="tab-settings">
+                <div class="admin-field">
+                    <label>Primary Color (hex)</label>
+                    <input type="color" id="input-primaryColor" value="#f0b90b">
+                </div>
+                <div class="admin-field">
+                    <label>Font Family</label>
+                    <select id="input-fontFamily">
+                        <option value="'Montserrat', sans-serif">Montserrat</option>
+                        <option value="'Open Sans', sans-serif">Open Sans</option>
+                        <option value="'Roboto', sans-serif">Roboto</option>
+                    </select>
                 </div>
             </div>
-        </footer>
-    </div>
 
-    <!-- Admin Icon and Panel -->
-    <div id="adminIcon" class="admin-icon"><i class="fas fa-cog"></i></div>
-    <div id="adminPanel" class="admin-panel" style="display: none;">
-        <button id="saveToFirebase">💾 Save to Firebase</button>
-        <button id="resetDefault">↺ Reset to Default</button>
-        <button id="exitAdmin">🚪 Exit Admin</button>
+            <!-- Reservations Tab -->
+            <div class="admin-tab-content" id="tab-reservations">
+                <div class="admin-field">
+                    <label>Price (with $)</label>
+                    <input type="text" id="input-price" value="$429">
+                </div>
+                <div class="admin-field">
+                    <label>Rating</label>
+                    <input type="text" id="input-rating" value="4.9">
+                </div>
+                <div class="admin-field">
+                    <label>Review Count</label>
+                    <input type="text" id="input-reviews" value="128">
+                </div>
+                <div class="admin-field">
+                    <label>Check-In Date (default)</label>
+                    <input type="date" id="input-checkIn" value="2026-06-01">
+                </div>
+                <div class="admin-field">
+                    <label>Check-Out Date (default)</label>
+                    <input type="date" id="input-checkOut" value="2026-06-05">
+                </div>
+                <div class="admin-field">
+                    <label>Extra Bed</label>
+                    <input type="text" id="input-extraBed" value="$50 / night">
+                </div>
+                <div class="admin-field">
+                    <label>Pet Fee</label>
+                    <input type="text" id="input-petFee" value="$75 / stay">
+                </div>
+                <div class="admin-field">
+                    <label>Breakfast</label>
+                    <input type="text" id="input-breakfast" value="Included">
+                </div>
+            </div>
+
+            <!-- Availability Tab -->
+            <div class="admin-tab-content" id="tab-availability">
+                <div class="admin-field">
+                    <label>Calendar Placeholder Text</label>
+                    <textarea id="input-calendarText">Interactive calendar would be integrated here (e.g., from a booking plugin)</textarea>
+                </div>
+            </div>
+
+            <div class="admin-buttons">
+                <button class="btn-save" id="saveChanges">Save Changes</button>
+                <button class="btn-close" id="closeAdmin">Close</button>
+            </div>
+        </div>
     </div>
 
     <script>
-        // Firebase configuration (provided by user)
+        // Firebase config
         const firebaseConfig = {
             apiKey: "AIzaSyBMzcjbqruiE_nJXhEfUWaASHbKE8YM60E",
             authDomain: "horizonluxury-18b60.firebaseapp.com",
@@ -607,16 +674,400 @@
             messagingSenderId: "521174900591",
             appId: "1:521174900591:web:e7773cdd8052a6214b529a"
         };
-
-        // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
-
-        // Reference to the single document storing content
         const contentDoc = db.collection('website').doc('content');
 
-        // Counter functionality
-        function changeValue(id, delta) {
+        // Default data structure
+        let siteData = {
+            titles: {
+                siteName: "Horizon Luxury Living",
+                suiteName: "The Horizon Suite",
+                metaGuests: "4 Guests",
+                metaSize: "65 m² / 700 ft²",
+                metaBed: "King Size Bed",
+                metaView: "City & Sea View",
+                desc1: "Designed for families or small groups seeking uncompromising luxury, The Horizon Suite offers a perfect blend of space, elegance, and breathtaking views. The suite features a separate living area, a master bedroom with a king-size bed, and a luxurious marble bathroom with a soaking tub. Every detail is curated for an unforgettable stay.",
+                desc2: "Floor-to-ceiling windows frame stunning panoramic views of the city skyline and the sea. Guests can enjoy premium amenities, including a Nespresso machine, smart home controls, and a dedicated workspace. The Horizon Suite represents the pinnacle of urban coastal living.",
+                amenitiesTitle: "Room Amenities",
+                calendarTitle: "Availability Calendar",
+                footerText: "© 2026 Horizon Luxury Living. All rights reserved."
+            },
+            photos: {
+                main: "https://images.unsplash.com/photo-1566665797739-1674de7a421a?ixlib=rb-4.0.3&auto=format&fit=crop&w=1974&q=80",
+                thumbnails: [
+                    "https://images.unsplash.com/photo-1566665797739-1674de7a421a?ixlib=rb-4.0.3&auto=format&fit=crop&w=1974&q=80",
+                    "https://images.unsplash.com/photo-1595526114035-0d45ed16cfbf?ixlib=rb-4.0.3&auto=format&fit=crop&w=1974&q=80",
+                    "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1950&q=80",
+                    "https://images.unsplash.com/photo-1578683010236-d716f9a3f461?ixlib=rb-4.0.3&auto=format&fit=crop&w=1950&q=80"
+                ]
+            },
+            menu: {
+                items: [
+                    { text: "Home", url: "#home" },
+                    { text: "About", url: "#about" },
+                    { text: "Amenities", url: "#amenities" },
+                    { text: "Contact", url: "#contact" }
+                ]
+            },
+            settings: {
+                primaryColor: "#f0b90b",
+                fontFamily: "'Montserrat', sans-serif"
+            },
+            reservations: {
+                price: "$429",
+                rating: "4.9",
+                reviews: "128",
+                checkIn: "2026-06-01",
+                checkOut: "2026-06-05",
+                extraBed: "$50 / night",
+                petFee: "$75 / stay",
+                breakfast: "Included"
+            },
+            availability: {
+                calendarText: "Interactive calendar would be integrated here (e.g., from a booking plugin)"
+            }
+        };
+
+        // Load from Firebase
+        async function loadFromFirebase() {
+            try {
+                const doc = await contentDoc.get();
+                if (doc.exists) {
+                    siteData = doc.data();
+                }
+            } catch (error) {
+                console.error("Error loading from Firebase:", error);
+            }
+            renderSite();
+            populateAdminForms();
+        }
+
+        // Save to Firebase
+        async function saveToFirebase() {
+            try {
+                await contentDoc.set(siteData);
+                alert("Changes saved to Firebase!");
+            } catch (error) {
+                alert("Error saving: " + error.message);
+            }
+        }
+
+        // Render the site from siteData
+        function renderSite() {
+            // Update CSS variables
+            document.documentElement.style.setProperty('--primary-color', siteData.settings.primaryColor);
+            document.documentElement.style.setProperty('--font-family', siteData.settings.fontFamily);
+
+            // Header logo
+            document.getElementById('site-logo').textContent = siteData.titles.siteName;
+
+            // Navigation menu
+            const navMenu = document.getElementById('nav-menu');
+            navMenu.innerHTML = '';
+            siteData.menu.items.forEach(item => {
+                const li = document.createElement('li');
+                const a = document.createElement('a');
+                a.href = item.url;
+                a.textContent = item.text;
+                li.appendChild(a);
+                navMenu.appendChild(li);
+            });
+
+            // Main content
+            const main = document.getElementById('main-content');
+            main.innerHTML = `
+                <div class="suite-grid">
+                    <div class="suite-details">
+                        <div class="suite-gallery">
+                            <img id="mainImage" class="main-image" src="${siteData.photos.main}" alt="${siteData.titles.suiteName}">
+                            <div class="thumbnail-grid" id="thumbnail-grid">
+                                ${siteData.photos.thumbnails.map((url, index) => 
+                                    `<img src="${url}" alt="Thumbnail ${index+1}" onclick="document.getElementById('mainImage').src=this.src">`
+                                ).join('')}
+                            </div>
+                        </div>
+                        <div class="suite-title">
+                            <h1>${siteData.titles.suiteName}</h1>
+                            <div class="suite-meta">
+                                <div class="meta-item"><i class="fas fa-user-friends"></i> ${siteData.titles.metaGuests}</div>
+                                <div class="meta-item"><i class="fas fa-vector-square"></i> ${siteData.titles.metaSize}</div>
+                                <div class="meta-item"><i class="fas fa-bed"></i> ${siteData.titles.metaBed}</div>
+                                <div class="meta-item"><i class="fas fa-city"></i> ${siteData.titles.metaView}</div>
+                            </div>
+                        </div>
+                        <div class="suite-description">
+                            <p>${siteData.titles.desc1}</p>
+                            <p>${siteData.titles.desc2}</p>
+                        </div>
+                        <div class="amenities-section">
+                            <h2>${siteData.titles.amenitiesTitle}</h2>
+                            <div class="amenities-grid" id="amenities-grid">
+                                <!-- Amenities will be filled separately -->
+                            </div>
+                        </div>
+                        <div class="calendar-section">
+                            <h2>${siteData.titles.calendarTitle}</h2>
+                            <div class="calendar-placeholder">
+                                <i class="fas fa-calendar-alt"></i> ${siteData.availability.calendarText}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="booking-card">
+                        <div class="price-box">
+                            <div class="price">${siteData.reservations.price} <span>/ night</span></div>
+                            <div class="rating"><i class="fas fa-star"></i> ${siteData.reservations.rating} (${siteData.reservations.reviews} reviews)</div>
+                        </div>
+                        <div class="booking-form">
+                            <div class="form-row">
+                                <label>Check In</label>
+                                <input type="date" value="${siteData.reservations.checkIn}">
+                            </div>
+                            <div class="form-row">
+                                <label>Check Out</label>
+                                <input type="date" value="${siteData.reservations.checkOut}">
+                            </div>
+                            <div class="form-row">
+                                <label>Adults</label>
+                                <div class="counter-row">
+                                    <span>Number of adults</span>
+                                    <div class="counter-controls">
+                                        <button class="counter-btn" onclick="changeValue('adults', -1)">−</button>
+                                        <span id="adults-value" class="counter-value">2</span>
+                                        <button class="counter-btn" onclick="changeValue('adults', 1)">+</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <label>Children</label>
+                                <div class="counter-row">
+                                    <span>Ages 0–17</span>
+                                    <div class="counter-controls">
+                                        <button class="counter-btn" onclick="changeValue('children', -1)">−</button>
+                                        <span id="children-value" class="counter-value">0</span>
+                                        <button class="counter-btn" onclick="changeValue('children', 1)">+</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <label>Rooms</label>
+                                <div class="counter-row">
+                                    <span>Number of rooms</span>
+                                    <div class="counter-controls">
+                                        <button class="counter-btn" onclick="changeValue('rooms', -1)">−</button>
+                                        <span id="rooms-value" class="counter-value">1</span>
+                                        <button class="counter-btn" onclick="changeValue('rooms', 1)">+</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <button class="check-availability-btn">Check Availability</button>
+                        </div>
+                        <div class="extra-info">
+                            <div class="extra-row">
+                                <span>Extra bed</span>
+                                <span>${siteData.reservations.extraBed}</span>
+                            </div>
+                            <div class="extra-row">
+                                <span>Pet fee</span>
+                                <span>${siteData.reservations.petFee}</span>
+                            </div>
+                            <div class="extra-row">
+                                <span>Breakfast</span>
+                                <span>${siteData.reservations.breakfast}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            // Amenities (hardcoded for simplicity, could be made dynamic)
+            const amenitiesGrid = document.getElementById('amenities-grid');
+            if (amenitiesGrid) {
+                amenitiesGrid.innerHTML = `
+                    <div class="amenity-item"><i class="fas fa-wifi"></i> Free High-Speed Wi-Fi</div>
+                    <div class="amenity-item"><i class="fas fa-tv"></i> 65" Smart OLED TV</div>
+                    <div class="amenity-item"><i class="fas fa-glass-cheers"></i> Fully Stocked Minibar</div>
+                    <div class="amenity-item"><i class="fas fa-mug-hot"></i> Nespresso Machine</div>
+                    <div class="amenity-item"><i class="fas fa-shield-alt"></i> Safe Deposit Box</div>
+                    <div class="amenity-item"><i class="fas fa-shower"></i> Rainfall Shower</div>
+                    <div class="amenity-item"><i class="fas fa-bed"></i> Premium King Bed</div>
+                    <div class="amenity-item"><i class="fas fa-bath"></i> Deep Soaking Tub</div>
+                    <div class="amenity-item"><i class="fas fa-spa"></i> Luxury Toiletries</div>
+                    <div class="amenity-item"><i class="fas fa-laptop"></i> Ergonomic Workspace</div>
+                    <div class="amenity-item"><i class="fas fa-wind"></i> Smart Climate Control</div>
+                    <div class="amenity-item"><i class="fas fa-concierge-bell"></i> 24/7 In-Room Dining</div>
+                `;
+            }
+
+            // Footer
+            document.getElementById('footer-content').innerHTML = `<p>${siteData.titles.footerText}</p>`;
+        }
+
+        // Populate admin forms with current siteData
+        function populateAdminForms() {
+            // Titles
+            document.getElementById('input-siteName').value = siteData.titles.siteName;
+            document.getElementById('input-suiteName').value = siteData.titles.suiteName;
+            document.getElementById('input-metaGuests').value = siteData.titles.metaGuests;
+            document.getElementById('input-metaSize').value = siteData.titles.metaSize;
+            document.getElementById('input-metaBed').value = siteData.titles.metaBed;
+            document.getElementById('input-metaView').value = siteData.titles.metaView;
+            document.getElementById('input-desc1').value = siteData.titles.desc1;
+            document.getElementById('input-desc2').value = siteData.titles.desc2;
+            document.getElementById('input-amenitiesTitle').value = siteData.titles.amenitiesTitle;
+            document.getElementById('input-calendarTitle').value = siteData.titles.calendarTitle;
+            document.getElementById('input-footerText').value = siteData.titles.footerText;
+
+            // Photos
+            document.getElementById('input-mainImage').value = siteData.photos.main;
+            const thumbList = document.getElementById('thumbnail-list');
+            thumbList.innerHTML = '';
+            siteData.photos.thumbnails.forEach((url, index) => {
+                const div = document.createElement('div');
+                div.className = 'thumbnail-item';
+                div.innerHTML = `
+                    <input type="url" value="${url}" placeholder="Thumbnail URL" data-index="${index}">
+                    <button onclick="removeThumbnail(${index})"><i class="fas fa-times"></i></button>
+                `;
+                thumbList.appendChild(div);
+            });
+
+            // Menu
+            const menuItemsDiv = document.getElementById('menu-items');
+            menuItemsDiv.innerHTML = '';
+            siteData.menu.items.forEach((item, index) => {
+                const div = document.createElement('div');
+                div.className = 'thumbnail-item';
+                div.innerHTML = `
+                    <input type="text" value="${item.text}" placeholder="Text" data-index="${index}" class="menu-text">
+                    <input type="text" value="${item.url}" placeholder="URL" data-index="${index}" class="menu-url">
+                    <button onclick="removeMenuItem(${index})"><i class="fas fa-times"></i></button>
+                `;
+                menuItemsDiv.appendChild(div);
+            });
+
+            // Settings
+            document.getElementById('input-primaryColor').value = siteData.settings.primaryColor;
+            document.getElementById('input-fontFamily').value = siteData.settings.fontFamily;
+
+            // Reservations
+            document.getElementById('input-price').value = siteData.reservations.price;
+            document.getElementById('input-rating').value = siteData.reservations.rating;
+            document.getElementById('input-reviews').value = siteData.reservations.reviews;
+            document.getElementById('input-checkIn').value = siteData.reservations.checkIn;
+            document.getElementById('input-checkOut').value = siteData.reservations.checkOut;
+            document.getElementById('input-extraBed').value = siteData.reservations.extraBed;
+            document.getElementById('input-petFee').value = siteData.reservations.petFee;
+            document.getElementById('input-breakfast').value = siteData.reservations.breakfast;
+
+            // Availability
+            document.getElementById('input-calendarText').value = siteData.availability.calendarText;
+        }
+
+        // Update siteData from admin forms
+        function updateDataFromForms() {
+            // Titles
+            siteData.titles.siteName = document.getElementById('input-siteName').value;
+            siteData.titles.suiteName = document.getElementById('input-suiteName').value;
+            siteData.titles.metaGuests = document.getElementById('input-metaGuests').value;
+            siteData.titles.metaSize = document.getElementById('input-metaSize').value;
+            siteData.titles.metaBed = document.getElementById('input-metaBed').value;
+            siteData.titles.metaView = document.getElementById('input-metaView').value;
+            siteData.titles.desc1 = document.getElementById('input-desc1').value;
+            siteData.titles.desc2 = document.getElementById('input-desc2').value;
+            siteData.titles.amenitiesTitle = document.getElementById('input-amenitiesTitle').value;
+            siteData.titles.calendarTitle = document.getElementById('input-calendarTitle').value;
+            siteData.titles.footerText = document.getElementById('input-footerText').value;
+
+            // Photos
+            siteData.photos.main = document.getElementById('input-mainImage').value;
+            const thumbInputs = document.querySelectorAll('#thumbnail-list input');
+            siteData.photos.thumbnails = Array.from(thumbInputs).map(input => input.value);
+
+            // Menu
+            const menuTexts = document.querySelectorAll('#menu-items .menu-text');
+            const menuUrls = document.querySelectorAll('#menu-items .menu-url');
+            siteData.menu.items = Array.from(menuTexts).map((input, i) => ({
+                text: input.value,
+                url: menuUrls[i].value
+            }));
+
+            // Settings
+            siteData.settings.primaryColor = document.getElementById('input-primaryColor').value;
+            siteData.settings.fontFamily = document.getElementById('input-fontFamily').value;
+
+            // Reservations
+            siteData.reservations.price = document.getElementById('input-price').value;
+            siteData.reservations.rating = document.getElementById('input-rating').value;
+            siteData.reservations.reviews = document.getElementById('input-reviews').value;
+            siteData.reservations.checkIn = document.getElementById('input-checkIn').value;
+            siteData.reservations.checkOut = document.getElementById('input-checkOut').value;
+            siteData.reservations.extraBed = document.getElementById('input-extraBed').value;
+            siteData.reservations.petFee = document.getElementById('input-petFee').value;
+            siteData.reservations.breakfast = document.getElementById('input-breakfast').value;
+
+            // Availability
+            siteData.availability.calendarText = document.getElementById('input-calendarText').value;
+        }
+
+        // Thumbnail management
+        window.removeThumbnail = (index) => {
+            siteData.photos.thumbnails.splice(index, 1);
+            populateAdminForms();
+        };
+        document.getElementById('addThumbnail').addEventListener('click', () => {
+            siteData.photos.thumbnails.push('');
+            populateAdminForms();
+        });
+
+        // Menu management
+        window.removeMenuItem = (index) => {
+            siteData.menu.items.splice(index, 1);
+            populateAdminForms();
+        };
+        document.getElementById('addMenuItem').addEventListener('click', () => {
+            siteData.menu.items.push({ text: 'New Link', url: '#' });
+            populateAdminForms();
+        });
+
+        // Admin panel tabs
+        const tabs = document.querySelectorAll('.admin-tab');
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.admin-tab-content').forEach(c => c.classList.remove('active'));
+                tab.classList.add('active');
+                document.getElementById('tab-' + tab.dataset.tab).classList.add('active');
+            });
+        });
+
+        // Admin icon click
+        const adminIcon = document.getElementById('adminIcon');
+        const adminOverlay = document.getElementById('adminOverlay');
+        adminIcon.addEventListener('click', () => {
+            const password = prompt('Enter admin password:');
+            if (password === '6262') {
+                adminOverlay.style.display = 'flex';
+            } else {
+                alert('Incorrect password');
+            }
+        });
+
+        // Close admin
+        document.getElementById('closeAdmin').addEventListener('click', () => {
+            adminOverlay.style.display = 'none';
+        });
+
+        // Save changes
+        document.getElementById('saveChanges').addEventListener('click', async () => {
+            updateDataFromForms();
+            renderSite();
+            await saveToFirebase();
+            adminOverlay.style.display = 'none';
+        });
+
+        // Counter function (needed for frontend)
+        window.changeValue = (id, delta) => {
             const element = document.getElementById(id + '-value');
             let current = parseInt(element.innerText);
             let newValue = current + delta;
@@ -624,131 +1075,10 @@
             else if (newValue < 0) newValue = 0;
             if (id === 'rooms' && newValue < 1) newValue = 1;
             element.innerText = newValue;
-        }
+        };
 
-        // Global variables
-        const adminIcon = document.getElementById('adminIcon');
-        const adminPanel = document.getElementById('adminPanel');
-        const body = document.body;
-        const editableContentDiv = document.getElementById('editable-content');
-        let defaultHTML = editableContentDiv.innerHTML; // store default for reset
-        let adminMode = false;
-
-        // Load content from Firebase on page load
-        async function loadContentFromFirebase() {
-            try {
-                const doc = await contentDoc.get();
-                if (doc.exists) {
-                    const savedHTML = doc.data().html;
-                    editableContentDiv.innerHTML = savedHTML;
-                    // Reattach thumbnail click handlers and main image reference
-                    reattachThumbnailClicks();
-                } else {
-                    console.log('No saved content, using default.');
-                }
-            } catch (error) {
-                console.error('Error loading from Firebase:', error);
-            }
-        }
-
-        // Helper to reattach thumbnail click events (since innerHTML breaks them)
-        function reattachThumbnailClicks() {
-            const thumbnails = document.querySelectorAll('.thumbnail-grid img');
-            thumbnails.forEach(img => {
-                img.addEventListener('click', function() {
-                    const mainImage = document.getElementById('mainImage');
-                    if (mainImage) mainImage.src = this.src;
-                });
-            });
-        }
-
-        // Save current content to Firebase
-        async function saveToFirebase() {
-            const currentHTML = editableContentDiv.innerHTML;
-            try {
-                await contentDoc.set({ html: currentHTML });
-                alert('✅ Changes saved to Firebase! They will be live for all visitors.');
-            } catch (error) {
-                alert('❌ Error saving: ' + error.message);
-            }
-        }
-
-        // Reset to default (hardcoded initial HTML)
-        function resetToDefault() {
-            if (confirm('Reset all content to default? This will lose any unsaved changes.')) {
-                editableContentDiv.innerHTML = defaultHTML;
-                reattachThumbnailClicks();
-                if (adminMode) {
-                    enableAdminEditing();
-                }
-            }
-        }
-
-        // Enable admin editing features
-        function enableAdminEditing() {
-            // Make all .editable elements contenteditable
-            document.querySelectorAll('.editable').forEach(el => {
-                el.setAttribute('contenteditable', 'true');
-            });
-
-            // Make images clickable for URL change
-            document.querySelectorAll('.editable-image').forEach(img => {
-                img.style.cursor = 'pointer';
-                img.addEventListener('click', function(e) {
-                    e.stopPropagation();
-                    const newUrl = prompt('Enter new image URL:', this.src);
-                    if (newUrl) {
-                        this.src = newUrl;
-                        // If this is main image, nothing else; if thumbnail, also update its own src
-                    }
-                });
-            });
-        }
-
-        // Disable admin editing
-        function disableAdminMode() {
-            adminMode = false;
-            body.classList.remove('admin-mode');
-            adminPanel.style.display = 'none';
-
-            // Remove contenteditable
-            document.querySelectorAll('.editable').forEach(el => {
-                el.removeAttribute('contenteditable');
-            });
-
-            // Remove image click handlers by reloading page (simplest)
-            location.reload();
-        }
-
-        // Admin icon click – password and toggle panel
-        adminIcon.addEventListener('click', () => {
-            if (adminMode) {
-                adminPanel.style.display = adminPanel.style.display === 'none' ? 'flex' : 'none';
-                return;
-            }
-            const password = prompt('Enter admin password:');
-            if (password === '6262') {
-                adminMode = true;
-                body.classList.add('admin-mode');
-                adminPanel.style.display = 'flex';
-                enableAdminEditing();
-            } else {
-                alert('Incorrect password');
-            }
-        });
-
-        // Button event listeners
-        document.getElementById('saveToFirebase').addEventListener('click', saveToFirebase);
-        document.getElementById('resetDefault').addEventListener('click', resetToDefault);
-        document.getElementById('exitAdmin').addEventListener('click', disableAdminMode);
-
-        // Initial load
-        window.addEventListener('load', () => {
-            loadContentFromFirebase().then(() => {
-                // After loading, reattach thumbnail clicks again (in case they were overwritten)
-                reattachThumbnailClicks();
-            });
-        });
+        // Initialize
+        window.addEventListener('load', loadFromFirebase);
     </script>
 </body>
 </html>
