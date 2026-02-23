@@ -11,6 +11,7 @@
     <!-- Firebase -->
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
     <style>
         * {
             margin: 0;
@@ -441,10 +442,40 @@
             border-radius: 12px;
             padding: 30px;
             overflow-y: auto;
+            position: relative;
         }
         .admin-panel h2 {
             margin-bottom: 20px;
             color: #2c2c2c;
+        }
+        /* Login Form */
+        .login-form {
+            max-width: 400px;
+            margin: 50px auto;
+            text-align: center;
+        }
+        .login-form input {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-family: 'Montserrat', sans-serif;
+        }
+        .login-form button {
+            width: 100%;
+            padding: 12px;
+            background: #c9a86c;
+            color: #2c2c2c;
+            border: none;
+            border-radius: 30px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        .login-form .error {
+            color: red;
+            margin-top: 10px;
         }
         .admin-tabs {
             display: flex;
@@ -512,6 +543,15 @@
         .btn-close {
             background: #ddd;
             color: #333;
+        }
+        .btn-logout {
+            background: #ff4444;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            margin-left: 10px;
         }
         .thumbnail-list {
             display: flex;
@@ -595,105 +635,122 @@
     <!-- Admin Icon -->
     <div class="admin-icon" id="adminIcon"><i class="fas fa-cog"></i></div>
 
-    <!-- Admin Panel -->
+    <!-- Admin Overlay (contains login and admin panel) -->
     <div class="admin-overlay" id="adminOverlay">
-        <div class="admin-panel">
-            <h2>Admin Dashboard</h2>
-            <div class="admin-tabs">
-                <div class="admin-tab active" data-tab="hero">Hero</div>
-                <div class="admin-tab" data-tab="about">About</div>
-                <div class="admin-tab" data-tab="apartments">Apartments</div>
-                <div class="admin-tab" data-tab="dining">Dining</div>
-                <div class="admin-tab" data-tab="services">Services</div>
-                <div class="admin-tab" data-tab="testimonials">Testimonials</div>
-                <div class="admin-tab" data-tab="tours">Tours</div>
-                <div class="admin-tab" data-tab="menu">Menu</div>
-                <div class="admin-tab" data-tab="settings">Settings</div>
-                <div class="admin-tab" data-tab="footer">Footer</div>
-            </div>
-
-            <!-- Hero Tab -->
-            <div class="admin-tab-content active" id="tab-hero">
-                <div class="admin-field"><label>Subtitle</label><input type="text" id="hero-subtitle-input"></div>
-                <div class="admin-field"><label>Title</label><input type="text" id="hero-title-input"></div>
-                <div class="admin-field"><label>Text</label><input type="text" id="hero-text-input"></div>
-                <div class="admin-field"><label>Background Image URL</label><input type="url" id="hero-bg-input"></div>
-                <div class="admin-field"><label>Default Check-In Date</label><input type="date" id="hero-checkin-input"></div>
-                <div class="admin-field"><label>Default Check-Out Date</label><input type="date" id="hero-checkout-input"></div>
-            </div>
-
-            <!-- About Tab -->
-            <div class="admin-tab-content" id="tab-about">
-                <div class="admin-field"><label>Title</label><input type="text" id="about-title-input"></div>
-                <div class="admin-field"><label>Description 1</label><textarea id="about-desc1-input"></textarea></div>
-                <div class="admin-field"><label>Description 2</label><textarea id="about-desc2-input"></textarea></div>
-                <div class="admin-field"><label>Image URL</label><input type="url" id="about-image-input"></div>
-            </div>
-
-            <!-- Apartments Tab -->
-            <div class="admin-tab-content" id="tab-apartments">
-                <div id="apartments-list"></div>
-                <button class="add-btn" id="add-apartment">+ Add Apartment</button>
-            </div>
-
-            <!-- Dining Tab -->
-            <div class="admin-tab-content" id="tab-dining">
-                <div class="admin-field"><label>Title</label><input type="text" id="dining-title-input"></div>
-                <div class="admin-field"><label>Description</label><textarea id="dining-desc-input"></textarea></div>
-                <div class="admin-field"><label>Image URL</label><input type="url" id="dining-image-input"></div>
-            </div>
-
-            <!-- Services Tab -->
-            <div class="admin-tab-content" id="tab-services">
-                <div id="services-list"></div>
-                <button class="add-btn" id="add-service">+ Add Service</button>
-            </div>
-
-            <!-- Testimonials Tab -->
-            <div class="admin-tab-content" id="tab-testimonials">
-                <div id="testimonials-list"></div>
-                <button class="add-btn" id="add-testimonial">+ Add Testimonial</button>
-            </div>
-
-            <!-- Tours Tab -->
-            <div class="admin-tab-content" id="tab-tours">
-                <div class="admin-field"><label>Tours Title</label><input type="text" id="tours-title-input"></div>
-                <div class="admin-field"><label>Tours Description</label><textarea id="tours-desc-input"></textarea></div>
-                <div id="tours-list"></div>
-                <button class="add-btn" id="add-tour">+ Add Tour</button>
-            </div>
-
-            <!-- Menu Tab -->
-            <div class="admin-tab-content" id="tab-menu">
-                <div id="menu-list"></div>
-                <button class="add-btn" id="add-menu-item">+ Add Menu Item</button>
-            </div>
-
-            <!-- Settings Tab -->
-            <div class="admin-tab-content" id="tab-settings">
-                <div class="admin-field"><label>Primary Color</label><input type="color" id="settings-color" value="#c9a86c"></div>
-                <div class="admin-field">
-                    <label>Font Family</label>
-                    <select id="settings-font">
-                        <option value="'Montserrat', sans-serif">Montserrat</option>
-                        <option value="'Open Sans', sans-serif">Open Sans</option>
-                        <option value="'Roboto', sans-serif">Roboto</option>
-                    </select>
+        <div class="admin-panel" id="adminPanel">
+            <!-- Login Form (shown when not logged in) -->
+            <div id="loginContainer">
+                <h2>Admin Login</h2>
+                <div class="login-form">
+                    <input type="email" id="loginEmail" placeholder="Email" value="admin@example.com">
+                    <input type="password" id="loginPassword" placeholder="Password">
+                    <button id="loginBtn">Login</button>
+                    <div id="loginError" class="error"></div>
                 </div>
-                <div class="admin-field"><label>Max Guests (dropdown)</label><input type="number" id="settings-maxGuests" min="1" max="50" value="12"></div>
             </div>
 
-            <!-- Footer Tab -->
-            <div class="admin-tab-content" id="tab-footer">
-                <div class="admin-field"><label>Copyright Text</label><input type="text" id="copyright-input"></div>
-                <div class="admin-field"><label>Address</label><input type="text" id="footer-address"></div>
-                <div class="admin-field"><label>Phone</label><input type="text" id="footer-phone"></div>
-                <div class="admin-field"><label>Email</label><input type="email" id="footer-email"></div>
-            </div>
+            <!-- Admin Dashboard (shown after login) -->
+            <div id="adminDashboard" style="display: none;">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <h2>Admin Dashboard</h2>
+                    <button class="btn-logout" id="logoutBtn">Logout</button>
+                </div>
+                <div class="admin-tabs">
+                    <div class="admin-tab active" data-tab="hero">Hero</div>
+                    <div class="admin-tab" data-tab="about">About</div>
+                    <div class="admin-tab" data-tab="apartments">Apartments</div>
+                    <div class="admin-tab" data-tab="dining">Dining</div>
+                    <div class="admin-tab" data-tab="services">Services</div>
+                    <div class="admin-tab" data-tab="testimonials">Testimonials</div>
+                    <div class="admin-tab" data-tab="tours">Tours</div>
+                    <div class="admin-tab" data-tab="menu">Menu</div>
+                    <div class="admin-tab" data-tab="settings">Settings</div>
+                    <div class="admin-tab" data-tab="footer">Footer</div>
+                </div>
 
-            <div class="admin-buttons">
-                <button class="btn-save" id="saveChanges">Save Changes</button>
-                <button class="btn-close" id="closeAdmin">Close</button>
+                <!-- Hero Tab -->
+                <div class="admin-tab-content active" id="tab-hero">
+                    <div class="admin-field"><label>Subtitle</label><input type="text" id="hero-subtitle-input"></div>
+                    <div class="admin-field"><label>Title</label><input type="text" id="hero-title-input"></div>
+                    <div class="admin-field"><label>Text</label><input type="text" id="hero-text-input"></div>
+                    <div class="admin-field"><label>Background Image URL</label><input type="url" id="hero-bg-input"></div>
+                    <div class="admin-field"><label>Default Check-In Date</label><input type="date" id="hero-checkin-input"></div>
+                    <div class="admin-field"><label>Default Check-Out Date</label><input type="date" id="hero-checkout-input"></div>
+                </div>
+
+                <!-- About Tab -->
+                <div class="admin-tab-content" id="tab-about">
+                    <div class="admin-field"><label>Title</label><input type="text" id="about-title-input"></div>
+                    <div class="admin-field"><label>Description 1</label><textarea id="about-desc1-input"></textarea></div>
+                    <div class="admin-field"><label>Description 2</label><textarea id="about-desc2-input"></textarea></div>
+                    <div class="admin-field"><label>Image URL</label><input type="url" id="about-image-input"></div>
+                </div>
+
+                <!-- Apartments Tab -->
+                <div class="admin-tab-content" id="tab-apartments">
+                    <div id="apartments-list"></div>
+                    <button class="add-btn" id="add-apartment">+ Add Apartment</button>
+                </div>
+
+                <!-- Dining Tab -->
+                <div class="admin-tab-content" id="tab-dining">
+                    <div class="admin-field"><label>Title</label><input type="text" id="dining-title-input"></div>
+                    <div class="admin-field"><label>Description</label><textarea id="dining-desc-input"></textarea></div>
+                    <div class="admin-field"><label>Image URL</label><input type="url" id="dining-image-input"></div>
+                </div>
+
+                <!-- Services Tab -->
+                <div class="admin-tab-content" id="tab-services">
+                    <div id="services-list"></div>
+                    <button class="add-btn" id="add-service">+ Add Service</button>
+                </div>
+
+                <!-- Testimonials Tab -->
+                <div class="admin-tab-content" id="tab-testimonials">
+                    <div id="testimonials-list"></div>
+                    <button class="add-btn" id="add-testimonial">+ Add Testimonial</button>
+                </div>
+
+                <!-- Tours Tab -->
+                <div class="admin-tab-content" id="tab-tours">
+                    <div class="admin-field"><label>Tours Title</label><input type="text" id="tours-title-input"></div>
+                    <div class="admin-field"><label>Tours Description</label><textarea id="tours-desc-input"></textarea></div>
+                    <div id="tours-list"></div>
+                    <button class="add-btn" id="add-tour">+ Add Tour</button>
+                </div>
+
+                <!-- Menu Tab -->
+                <div class="admin-tab-content" id="tab-menu">
+                    <div id="menu-list"></div>
+                    <button class="add-btn" id="add-menu-item">+ Add Menu Item</button>
+                </div>
+
+                <!-- Settings Tab -->
+                <div class="admin-tab-content" id="tab-settings">
+                    <div class="admin-field"><label>Primary Color</label><input type="color" id="settings-color" value="#c9a86c"></div>
+                    <div class="admin-field">
+                        <label>Font Family</label>
+                        <select id="settings-font">
+                            <option value="'Montserrat', sans-serif">Montserrat</option>
+                            <option value="'Open Sans', sans-serif">Open Sans</option>
+                            <option value="'Roboto', sans-serif">Roboto</option>
+                        </select>
+                    </div>
+                    <div class="admin-field"><label>Max Guests (dropdown)</label><input type="number" id="settings-maxGuests" min="1" max="50" value="12"></div>
+                </div>
+
+                <!-- Footer Tab -->
+                <div class="admin-tab-content" id="tab-footer">
+                    <div class="admin-field"><label>Copyright Text</label><input type="text" id="copyright-input"></div>
+                    <div class="admin-field"><label>Address</label><input type="text" id="footer-address"></div>
+                    <div class="admin-field"><label>Phone</label><input type="text" id="footer-phone"></div>
+                    <div class="admin-field"><label>Email</label><input type="email" id="footer-email"></div>
+                </div>
+
+                <div class="admin-buttons">
+                    <button class="btn-save" id="saveChanges">Save Changes</button>
+                    <button class="btn-close" id="closeAdmin">Close</button>
+                </div>
             </div>
         </div>
     </div>
@@ -710,6 +767,7 @@
                 appId: "1:521174900591:web:e7773cdd8052a6214b529a"
             };
             firebase.initializeApp(firebaseConfig);
+            const auth = firebase.auth();
             const db = firebase.firestore();
             const contentDoc = db.collection('website').doc('content');
 
@@ -881,8 +939,8 @@
                     <!-- Apartments Section -->
                     <section class="container" id="apartments">
                         <div class="section-title">
-                            <div class="subtitle">Extraordinary Accommodation</div>
-                            <h2>Gallery</h2>
+                            <div class="subtitle">Extraordinary Accommodations</div>
+                            <h2>Choose Your Apartment Type</h2>
                         </div>
                         <div class="apartment-grid">
                             ${siteData.apartments.map(apt => `
@@ -1242,13 +1300,46 @@
             // Admin icon click
             const adminIcon = document.getElementById('adminIcon');
             const adminOverlay = document.getElementById('adminOverlay');
+            const loginContainer = document.getElementById('loginContainer');
+            const adminDashboard = document.getElementById('adminDashboard');
+
             adminIcon.addEventListener('click', () => {
-                const password = prompt('Enter admin password:');
-                if (password === '6262') {
+                // Check if user is already logged in
+                if (auth.currentUser) {
+                    // Show admin dashboard directly
+                    loginContainer.style.display = 'none';
+                    adminDashboard.style.display = 'block';
                     adminOverlay.style.display = 'flex';
                 } else {
-                    alert('Incorrect password');
+                    // Show login form
+                    loginContainer.style.display = 'block';
+                    adminDashboard.style.display = 'none';
+                    adminOverlay.style.display = 'flex';
                 }
+            });
+
+            // Login button
+            document.getElementById('loginBtn').addEventListener('click', async () => {
+                const email = document.getElementById('loginEmail').value;
+                const password = document.getElementById('loginPassword').value;
+                const errorDiv = document.getElementById('loginError');
+                try {
+                    await auth.signInWithEmailAndPassword(email, password);
+                    // Success
+                    loginContainer.style.display = 'none';
+                    adminDashboard.style.display = 'block';
+                    errorDiv.textContent = '';
+                } catch (error) {
+                    errorDiv.textContent = error.message;
+                }
+            });
+
+            // Logout button
+            document.getElementById('logoutBtn').addEventListener('click', async () => {
+                await auth.signOut();
+                adminOverlay.style.display = 'none';
+                loginContainer.style.display = 'block';
+                adminDashboard.style.display = 'none';
             });
 
             // Close admin
