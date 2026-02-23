@@ -519,9 +519,12 @@
             display: flex;
             gap: 10px;
             align-items: center;
+            flex-wrap: wrap;
         }
-        .thumbnail-item input {
+        .thumbnail-item input,
+        .thumbnail-item textarea {
             flex: 1;
+            min-width: 150px;
         }
         .thumbnail-item button {
             background: #ff4444;
@@ -962,7 +965,7 @@
                     const div = document.createElement('div');
                     div.className = 'thumbnail-item';
                     div.innerHTML = `
-                        <input type="text" value="${service.icon}" placeholder="Icon class" class="service-icon" data-index="${index}">
+                        <input type="text" value="${service.icon}" placeholder="Icon class (e.g., fas fa-wifi)" class="service-icon" data-index="${index}">
                         <input type="text" value="${service.title}" placeholder="Title" class="service-title" data-index="${index}">
                         <input type="text" value="${service.desc}" placeholder="Description" class="service-desc" data-index="${index}">
                         <button onclick="removeService(${index})"><i class="fas fa-times"></i></button>
@@ -1098,47 +1101,45 @@
                 siteData.footer.email = document.getElementById('footer-email').value;
             }
 
-            // Add/Remove functions
+            // Define global remove functions (so onclick works)
             window.removeApartment = (index) => {
                 siteData.apartments.splice(index, 1);
                 populateAdminForms();
             };
-            document.getElementById('add-apartment').addEventListener('click', () => {
-                siteData.apartments.push({ title: 'New Apartment', desc: 'Description', price: '$0/night', image: '' });
-                populateAdminForms();
-            });
-
             window.removeService = (index) => {
                 siteData.services.splice(index, 1);
                 populateAdminForms();
             };
-            document.getElementById('add-service').addEventListener('click', () => {
-                siteData.services.push({ icon: 'fas fa-star', title: 'New Service', desc: 'Description' });
-                populateAdminForms();
-            });
-
             window.removeTestimonial = (index) => {
                 siteData.testimonials.splice(index, 1);
                 populateAdminForms();
             };
-            document.getElementById('add-testimonial').addEventListener('click', () => {
-                siteData.testimonials.push({ text: 'New testimonial', author: 'Guest' });
-                populateAdminForms();
-            });
-
             window.removeTour = (index) => {
                 siteData.tours.items.splice(index, 1);
                 populateAdminForms();
             };
-            document.getElementById('add-tour').addEventListener('click', () => {
-                siteData.tours.items.push({ title: 'New Tour', desc: 'Description', image: '' });
-                populateAdminForms();
-            });
-
             window.removeMenuItem = (index) => {
                 siteData.menu.splice(index, 1);
                 populateAdminForms();
             };
+
+            // Add event listeners for add buttons
+            document.getElementById('add-apartment').addEventListener('click', () => {
+                siteData.apartments.push({ title: 'New Apartment', desc: 'Description', price: '$0/night', image: '' });
+                populateAdminForms();
+            });
+            document.getElementById('add-service').addEventListener('click', () => {
+                siteData.services.push({ icon: 'fas fa-star', title: 'New Service', desc: 'Description' });
+                populateAdminForms();
+            });
+            document.getElementById('add-testimonial').addEventListener('click', () => {
+                siteData.testimonials.push({ text: 'New testimonial', author: 'Guest' });
+                populateAdminForms();
+            });
+            document.getElementById('add-tour').addEventListener('click', () => {
+                siteData.tours.items.push({ title: 'New Tour', desc: 'Description', image: '' });
+                populateAdminForms();
+            });
             document.getElementById('add-menu-item').addEventListener('click', () => {
                 siteData.menu.push({ text: 'New Link', url: '#' });
                 populateAdminForms();
