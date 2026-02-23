@@ -156,7 +156,7 @@
             margin-left: auto;
             margin-right: auto;
         }
-        /* ---------- SEARCH FORM (with apartment dropdown) ---------- */
+        /* ---------- SEARCH FORM ---------- */
         .search-form {
             background: rgba(255,255,255,0.15);
             backdrop-filter: blur(15px);
@@ -213,7 +213,7 @@
             transform: translateY(-3px);
             box-shadow: 0 15px 30px -8px rgba(201,168,108,0.7);
         }
-        /* ---------- AVAILABILITY OVERVIEW (new) ---------- */
+        /* ---------- AVAILABILITY OVERVIEW ---------- */
         .availability-overview {
             margin-top: 30px;
             background: rgba(255,255,255,0.1);
@@ -320,14 +320,14 @@
             object-fit: cover;
             display: block;
         }
-        /* ---------- APARTMENT CARDS ---------- */
-        .apartment-grid {
+        /* ---------- GALLERY (was APARTMENT CARDS) ---------- */
+        .gallery-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
             gap: 30px;
             margin-top: 40px;
         }
-        .apartment-card {
+        .gallery-card {
             background: white;
             border-radius: 20px;
             overflow: hidden;
@@ -335,37 +335,21 @@
             transition: var(--transition);
             border: 1px solid rgba(0,0,0,0.03);
         }
-        .apartment-card:hover {
+        .gallery-card:hover {
             transform: translateY(-12px);
             box-shadow: var(--shadow-md);
         }
-        .apartment-card img {
+        .gallery-card img {
             width: 100%;
-            height: 260px;
+            height: 300px;
             object-fit: cover;
             transition: var(--transition);
+            display: block;
         }
-        .apartment-card:hover img {
+        .gallery-card:hover img {
             transform: scale(1.03);
         }
-        .apartment-info {
-            padding: 25px;
-        }
-        .apartment-info h3 {
-            font-size: 1.6rem;
-            margin-bottom: 8px;
-            font-weight: 600;
-        }
-        .apartment-info p {
-            color: var(--text-light);
-            margin-bottom: 15px;
-            font-size: 1rem;
-        }
-        .apartment-price {
-            font-size: 1.4rem;
-            font-weight: 600;
-            color: var(--primary);
-        }
+        /* No text under images */
         /* ---------- DINING ---------- */
         .dining {
             background: var(--light-gray);
@@ -954,12 +938,12 @@
                 <div class="admin-tabs">
                     <div class="admin-tab active" data-tab="hero">Hero</div>
                     <div class="admin-tab" data-tab="about">About</div>
-                    <div class="admin-tab" data-tab="apartment">Apartments</div>
+                    <div class="admin-tab" data-tab="apartment">Gallery</div>  <!-- renamed to Gallery -->
                     <div class="admin-tab" data-tab="dining">Dining</div>
                     <div class="admin-tab" data-tab="services">Services</div>
                     <div class="admin-tab" data-tab="testimonials">Testimonials</div>
                     <div class="admin-tab" data-tab="tours">Tours</div>
-                    <div class="admin-tab" data-tab="calendar">Calendar</div>  <!-- new -->
+                    <div class="admin-tab" data-tab="calendar">Calendar</div>
                     <div class="admin-tab" data-tab="menu">Menu</div>
                     <div class="admin-tab" data-tab="settings">Settings</div>
                     <div class="admin-tab" data-tab="footer">Footer</div>
@@ -1021,10 +1005,10 @@
                     </div>
                 </div>
 
-                <!-- Apartment Tab (with new fields) -->
+                <!-- Gallery Tab (was Apartment) - keep fields for managing images -->
                 <div class="admin-tab-content" id="tab-apartment">
                     <div id="apartment-list"></div>
-                    <button class="add-btn" id="add-apartment">+ Add Apartment</button>
+                    <button class="add-btn" id="add-apartment">+ Add Image</button>
                 </div>
 
                 <!-- Dining Tab -->
@@ -1073,7 +1057,7 @@
                     <button class="add-btn" id="add-tour">+ Add Tour</button>
                 </div>
 
-                <!-- NEW CALENDAR TAB -->
+                <!-- CALENDAR TAB -->
                 <div class="admin-tab-content" id="tab-calendar">
                     <div class="admin-field">
                         <label>Select Apartment:</label>
@@ -1177,9 +1161,9 @@
                     image: "https://images.unsplash.com/photo-1566665797739-1674de7a421a?ixlib=rb-4.0.3&auto=format&fit=crop&w=1974&q=80"
                 },
                 apartment: [
-                    { title: "Studio Apartment", desc: "Cozy space for 2 guests", basePrice: 199, maxGuests: 2, extraGuestFee: 20, image: "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?ixlib=rb-4.0.3&auto=format&fit=crop&w=1950&q=80" },
-                    { title: "One-Bedroom Suite", desc: "Spacious with separate living area", basePrice: 299, maxGuests: 3, extraGuestFee: 25, image: "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?ixlib=rb-4.0.3&auto=format&fit=crop&w=1950&q=80" },
-                    { title: "Penthouse", desc: "Panoramic city views", basePrice: 499, maxGuests: 4, extraGuestFee: 30, image: "https://images.unsplash.com/photo-1512918728675-ed5a9ecdebfd?ixlib=rb-4.0.3&auto=format&fit=crop&w=1950&q=80" }
+                    { title: "Living Room", desc: "Cozy space", basePrice: 199, maxGuests: 2, extraGuestFee: 20, image: "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?ixlib=rb-4.0.3&auto=format&fit=crop&w=1950&q=80" },
+                    { title: "Bedroom", desc: "Spacious bedroom", basePrice: 299, maxGuests: 3, extraGuestFee: 25, image: "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?ixlib=rb-4.0.3&auto=format&fit=crop&w=1950&q=80" },
+                    { title: "Kitchen", desc: "Modern kitchen", basePrice: 499, maxGuests: 4, extraGuestFee: 30, image: "https://images.unsplash.com/photo-1512918728675-ed5a9ecdebfd?ixlib=rb-4.0.3&auto=format&fit=crop&w=1950&q=80" }
                 ],
                 dining: {
                     title: "Experience exquisite cuisine from all over the world",
@@ -1206,7 +1190,7 @@
                 menu: [
                     { text: "Home", url: "#home" },
                     { text: "About", url: "#about" },
-                    { text: "Apartment", url: "#apartment" },
+                    { text: "Gallery", url: "#gallery" },        // updated link
                     { text: "Services", url: "#services" },
                     { text: "Contact", url: "#contact" }
                 ],
@@ -1341,20 +1325,17 @@
                         </div>
                     </section>
 
-                    <section class="container" id="apartment">
+                    <!-- GALLERY SECTION (was apartment) -->
+                    <section class="container" id="gallery">
                         <div class="section-title">
-                            <div class="subtitle">Extraordinary Accommodations</div>
-                            <h2>Choose Your Apartment Type</h2>
+                            <div class="subtitle">Our Space</div>
+                            <h2>Gallery</h2>
                         </div>
-                        <div class="apartment-grid">
+                        <div class="gallery-grid">
                             ${siteData.apartment.map(apt => `
-                                <div class="apartment-card">
+                                <div class="gallery-card">
                                     <img src="${apt.image}" alt="${apt.title}">
-                                    <div class="apartment-info">
-                                        <h3>${apt.title}</h3>
-                                        <p>${apt.desc}</p>
-                                        <div class="apartment-price">$${apt.basePrice}/night</div>
-                                    </div>
+                                    <!-- No text under images -->
                                 </div>
                             `).join('')}
                         </div>
@@ -1922,7 +1903,7 @@
 
             // Add event listeners for "Add" buttons
             document.getElementById('add-apartment').addEventListener('click', () => {
-                siteData.apartment.push({ title: 'New Apartment', desc: 'Description', basePrice: 200, maxGuests: 2, extraGuestFee: 20, image: '' });
+                siteData.apartment.push({ title: 'New Image', desc: 'Description', basePrice: 200, maxGuests: 2, extraGuestFee: 20, image: '' });
                 populateAdminForms(); populateApartmentSelect();
             });
             document.getElementById('add-service').addEventListener('click', () => {
