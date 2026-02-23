@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <!-- Google Fonts: Playfair Display + Inter -->
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
-    <!-- Firebase Compat (exactly as your config) -->
+    <!-- Firebase Compat -->
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
@@ -156,7 +156,7 @@
             margin-left: auto;
             margin-right: auto;
         }
-        /* ---------- SEARCH FORM ---------- */
+        /* ---------- SEARCH FORM (with apartment dropdown) ---------- */
         .search-form {
             background: rgba(255,255,255,0.15);
             backdrop-filter: blur(15px);
@@ -167,7 +167,7 @@
             flex-wrap: wrap;
             justify-content: center;
             gap: 8px;
-            max-width: 850px;
+            max-width: 950px;
             margin: 0 auto;
             border: 1px solid rgba(255,255,255,0.2);
             box-shadow: 0 20px 40px -10px rgba(0,0,0,0.3);
@@ -179,7 +179,7 @@
             border-radius: 50px;
             color: white;
             font-size: 15px;
-            min-width: 160px;
+            min-width: 140px;
             flex: 1;
             font-family: 'Inter', sans-serif;
             transition: var(--transition);
@@ -212,6 +212,52 @@
             background: var(--primary-dark);
             transform: translateY(-3px);
             box-shadow: 0 15px 30px -8px rgba(201,168,108,0.7);
+        }
+        /* ---------- AVAILABILITY OVERVIEW (new) ---------- */
+        .availability-overview {
+            margin-top: 30px;
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(8px);
+            border-radius: 30px;
+            padding: 20px;
+            max-width: 900px;
+            margin-left: auto;
+            margin-right: auto;
+            color: white;
+            border: 1px solid rgba(255,255,255,0.15);
+        }
+        .overview-title {
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            font-weight: 500;
+            letter-spacing: 1px;
+        }
+        .overview-days {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+        }
+        .day-card {
+            background: rgba(0,0,0,0.3);
+            border-radius: 20px;
+            padding: 10px;
+            min-width: 90px;
+            text-align: center;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        .day-card .date {
+            font-size: 0.8rem;
+            opacity: 0.8;
+        }
+        .day-card .price {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--primary);
+        }
+        .day-card.closed {
+            opacity: 0.4;
+            text-decoration: line-through;
         }
         /* ---------- SECTION TITLES ---------- */
         .section-title {
@@ -803,6 +849,29 @@
         .btn-logout:hover {
             background: #cc0000;
         }
+        /* Calendar grid */
+        .calendar-day {
+            background: #f9f9f9;
+            border-radius: 12px;
+            padding: 8px;
+            text-align: center;
+            border: 1px solid #eee;
+        }
+        .calendar-day .day-number {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        .calendar-day input[type="checkbox"] {
+            margin-right: 5px;
+        }
+        .calendar-day input[type="number"] {
+            width: 80px;
+            padding: 4px;
+            border-radius: 20px;
+            border: 1px solid #ccc;
+            text-align: center;
+            font-size: 0.9rem;
+        }
         @media (max-width: 992px) {
             .about-grid, .dining-grid { grid-template-columns: 1fr; }
             .nav-menu { display: none; }
@@ -827,7 +896,7 @@
         </div>
     </header>
 
-    <!-- Hero Section -->
+    <!-- Hero Section with search and availability overview -->
     <section class="hero" id="hero">
         <div class="hero-content">
             <div class="hero-subtitle" id="hero-subtitle">Welcome to Horizon, a luxury apartment in the heart of the city</div>
@@ -836,8 +905,14 @@
             <div class="search-form">
                 <input type="date" class="search-input" id="search-checkin" value="2026-06-01">
                 <input type="date" class="search-input" id="search-checkout" value="2026-06-05">
+                <select class="search-input" id="search-apartment"></select> <!-- apartment dropdown -->
                 <select class="search-input" id="search-guests"></select>
                 <button class="search-btn" id="search-btn">Search</button>
+            </div>
+            <!-- Availability overview (next 7 days) -->
+            <div class="availability-overview" id="availabilityOverview">
+                <div class="overview-title">📅 Next 7 days availability (first apartment)</div>
+                <div class="overview-days" id="overviewDays"></div>
             </div>
         </div>
     </section>
@@ -856,7 +931,7 @@
     <!-- Admin Icon -->
     <div class="admin-icon" id="adminIcon"><i class="fas fa-pen-to-square"></i></div>
 
-    <!-- Admin Overlay -->
+    <!-- Admin Overlay (full panel with all tabs) -->
     <div class="admin-overlay" id="adminOverlay">
         <div class="admin-panel" id="adminPanel">
             <!-- Login -->
@@ -870,7 +945,7 @@
                 </div>
             </div>
 
-            <!-- Dashboard -->
+            <!-- Dashboard (all tabs) -->
             <div id="adminDashboard" style="display: none;">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
                     <h2><i class="fas fa-crown" style="color: var(--primary);"></i> Dashboard</h2>
@@ -884,6 +959,7 @@
                     <div class="admin-tab" data-tab="services">Services</div>
                     <div class="admin-tab" data-tab="testimonials">Testimonials</div>
                     <div class="admin-tab" data-tab="tours">Tours</div>
+                    <div class="admin-tab" data-tab="calendar">Calendar</div>  <!-- new -->
                     <div class="admin-tab" data-tab="menu">Menu</div>
                     <div class="admin-tab" data-tab="settings">Settings</div>
                     <div class="admin-tab" data-tab="footer">Footer</div>
@@ -945,7 +1021,7 @@
                     </div>
                 </div>
 
-                <!-- Apartment Tab -->
+                <!-- Apartment Tab (with new fields) -->
                 <div class="admin-tab-content" id="tab-apartment">
                     <div id="apartment-list"></div>
                     <button class="add-btn" id="add-apartment">+ Add Apartment</button>
@@ -995,6 +1071,21 @@
                     </div>
                     <div id="tours-list"></div>
                     <button class="add-btn" id="add-tour">+ Add Tour</button>
+                </div>
+
+                <!-- NEW CALENDAR TAB -->
+                <div class="admin-tab-content" id="tab-calendar">
+                    <div class="admin-field">
+                        <label>Select Apartment:</label>
+                        <select id="calendar-apartment-select"></select>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin: 20px 0;">
+                        <button class="upload-btn" id="calendar-prev-month"><i class="fas fa-chevron-left"></i> Prev</button>
+                        <span id="calendar-month-year"></span>
+                        <button class="upload-btn" id="calendar-next-month">Next <i class="fas fa-chevron-right"></i></button>
+                    </div>
+                    <div id="calendar-grid" style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px;"></div>
+                    <p style="margin-top: 10px; color: #666;">✓ = available, empty = closed. Set price per night (leave empty to use base price).</p>
                 </div>
 
                 <!-- Menu Tab -->
@@ -1053,7 +1144,7 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Your exact Firebase configuration
+            // Firebase config
             const firebaseConfig = {
                 apiKey: "AIzaSyBMzcjbqruiE_nJXhEfUWaASHbKE8YM60E",
                 authDomain: "horizonluxury-18b60.firebaseapp.com",
@@ -1063,14 +1154,13 @@
                 appId: "1:521174900591:web:e7773cdd8052a6214b529a"
             };
 
-            // Initialize Firebase (compat)
             firebase.initializeApp(firebaseConfig);
             const auth = firebase.auth();
             const db = firebase.firestore();
             const storage = firebase.storage();
             const contentDoc = db.collection('website').doc('content');
 
-            // ---------- DEFAULT DATA (with correct "apartment" field) ----------
+            // ---------- DEFAULT DATA (with new apartment fields and availability) ----------
             const defaultData = {
                 hero: {
                     subtitle: "Welcome to Horizon, a luxury apartment in the heart of the city",
@@ -1086,10 +1176,10 @@
                     desc2: "We proudly offers a full range of complimentary amenities and services that provide you with everything you need for an inspiring stay.",
                     image: "https://images.unsplash.com/photo-1566665797739-1674de7a421a?ixlib=rb-4.0.3&auto=format&fit=crop&w=1974&q=80"
                 },
-                apartment: [  // ✅ correct field name (singular)
-                    { title: "Studio Apartment", desc: "Cozy space for 2 guests", price: "$199/night", image: "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?ixlib=rb-4.0.3&auto=format&fit=crop&w=1950&q=80" },
-                    { title: "One-Bedroom Suite", desc: "Spacious with separate living area", price: "$299/night", image: "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?ixlib=rb-4.0.3&auto=format&fit=crop&w=1950&q=80" },
-                    { title: "Penthouse", desc: "Panoramic city views", price: "$499/night", image: "https://images.unsplash.com/photo-1512918728675-ed5a9ecdebfd?ixlib=rb-4.0.3&auto=format&fit=crop&w=1950&q=80" }
+                apartment: [
+                    { title: "Studio Apartment", desc: "Cozy space for 2 guests", basePrice: 199, maxGuests: 2, extraGuestFee: 20, image: "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?ixlib=rb-4.0.3&auto=format&fit=crop&w=1950&q=80" },
+                    { title: "One-Bedroom Suite", desc: "Spacious with separate living area", basePrice: 299, maxGuests: 3, extraGuestFee: 25, image: "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?ixlib=rb-4.0.3&auto=format&fit=crop&w=1950&q=80" },
+                    { title: "Penthouse", desc: "Panoramic city views", basePrice: 499, maxGuests: 4, extraGuestFee: 30, image: "https://images.unsplash.com/photo-1512918728675-ed5a9ecdebfd?ixlib=rb-4.0.3&auto=format&fit=crop&w=1950&q=80" }
                 ],
                 dining: {
                     title: "Experience exquisite cuisine from all over the world",
@@ -1130,7 +1220,9 @@
                     address: "123 Luxury Avenue, New York, NY 10001",
                     phone: "+1 (212) 555-7890",
                     email: "stay@horizonluxury.com"
-                }
+                },
+                // NEW: availability per apartment index
+                availability: {}
             };
 
             let siteData = JSON.parse(JSON.stringify(defaultData));
@@ -1165,6 +1257,9 @@
                 renderSite();
                 populateAdminForms();
                 updatePreviews();
+                populateApartmentSelect();
+                renderCalendar();
+                updateAvailabilityOverview();
             }
 
             // Save to Firestore
@@ -1172,7 +1267,7 @@
                 await contentDoc.set(siteData);
             }
 
-            // Helper: populate guest dropdown
+            // Populate guest dropdown
             function populateGuestDropdown(maxGuests) {
                 const select = document.getElementById('search-guests');
                 if (!select) return;
@@ -1186,9 +1281,29 @@
                 select.value = 2;
             }
 
+            // Populate apartment dropdowns (search + calendar)
+            function populateApartmentSelect() {
+                const searchSelect = document.getElementById('search-apartment');
+                const calendarSelect = document.getElementById('calendar-apartment-select');
+                if (!searchSelect || !calendarSelect) return;
+                searchSelect.innerHTML = '';
+                calendarSelect.innerHTML = '';
+                siteData.apartment.forEach((apt, idx) => {
+                    const opt1 = document.createElement('option');
+                    opt1.value = idx;
+                    opt1.textContent = apt.title;
+                    searchSelect.appendChild(opt1);
+
+                    const opt2 = document.createElement('option');
+                    opt2.value = idx;
+                    opt2.textContent = apt.title;
+                    calendarSelect.appendChild(opt2);
+                });
+            }
+
             // Render the public website
             function renderSite() {
-                // Hero background
+                // Hero
                 document.getElementById('hero').style.backgroundImage = `linear-gradient(135deg, rgba(0,0,0,0.4), rgba(0,0,0,0.2)), url('${siteData.hero.bgImage}')`;
                 document.getElementById('hero-subtitle').textContent = siteData.hero.subtitle;
                 document.getElementById('hero-title').textContent = siteData.hero.title;
@@ -1196,8 +1311,9 @@
                 document.getElementById('search-checkin').value = siteData.hero.checkIn;
                 document.getElementById('search-checkout').value = siteData.hero.checkOut;
                 populateGuestDropdown(siteData.settings.maxGuests);
+                populateApartmentSelect();
 
-                // Navigation menu
+                // Navigation
                 const navMenu = document.getElementById('nav-menu');
                 navMenu.innerHTML = '';
                 siteData.menu.forEach(item => {
@@ -1237,7 +1353,7 @@
                                     <div class="apartment-info">
                                         <h3>${apt.title}</h3>
                                         <p>${apt.desc}</p>
-                                        <div class="apartment-price">${apt.price}</div>
+                                        <div class="apartment-price">$${apt.basePrice}/night</div>
                                     </div>
                                 </div>
                             `).join('')}
@@ -1334,7 +1450,7 @@
                 document.getElementById('copyright').textContent = siteData.footer.copyright;
             }
 
-            // Populate admin forms with current siteData
+            // Populate admin forms (all tabs)
             function populateAdminForms() {
                 // Hero
                 document.getElementById('hero-subtitle-input').value = siteData.hero.subtitle;
@@ -1350,7 +1466,7 @@
                 document.getElementById('about-desc2-input').value = siteData.about.desc2;
                 document.getElementById('about-image-input').value = siteData.about.image;
 
-                // Apartments
+                // Apartments (with new fields)
                 const aptList = document.getElementById('apartment-list');
                 aptList.innerHTML = '';
                 siteData.apartment.forEach((apt, index) => {
@@ -1360,7 +1476,9 @@
                         <div style="flex:1">
                             <div class="image-upload-row"><input type="text" value="${apt.title}" placeholder="Title" class="apt-title" data-index="${index}"></div>
                             <div class="image-upload-row"><input type="text" value="${apt.desc}" placeholder="Description" class="apt-desc" data-index="${index}"></div>
-                            <div class="image-upload-row"><input type="text" value="${apt.price}" placeholder="Price" class="apt-price" data-index="${index}"></div>
+                            <div class="image-upload-row"><input type="number" value="${apt.basePrice}" placeholder="Base price ($)" class="apt-baseprice" data-index="${index}" step="1" min="0"></div>
+                            <div class="image-upload-row"><input type="number" value="${apt.maxGuests}" placeholder="Max guests" class="apt-maxguests" data-index="${index}" min="1"></div>
+                            <div class="image-upload-row"><input type="number" value="${apt.extraGuestFee || 0}" placeholder="Extra guest fee ($)" class="apt-extrafee" data-index="${index}" min="0" step="1"></div>
                             <div class="image-upload-row">
                                 <input type="url" value="${apt.image}" placeholder="Image URL" class="apt-image" data-index="${index}">
                                 <button class="upload-btn" onclick="window.uploadApartmentImage(${index})">Upload</button>
@@ -1461,7 +1579,7 @@
                 document.getElementById('footer-email').value = siteData.footer.email;
             }
 
-            // Update image previews
+            // Update image previews for hero, about, dining
             function updatePreviews() {
                 const heroBg = document.getElementById('hero-bg-input').value;
                 const heroPreview = document.getElementById('hero-bg-preview');
@@ -1491,7 +1609,7 @@
                 });
             }
 
-            // Expose functions globally for dynamic buttons
+            // Expose upload functions globally
             window.uploadApartmentImage = async (index) => {
                 const input = document.createElement('input');
                 input.type = 'file';
@@ -1529,7 +1647,7 @@
             };
 
             // Remove item functions
-            window.removeApartment = (index) => { siteData.apartment.splice(index, 1); populateAdminForms(); };
+            window.removeApartment = (index) => { siteData.apartment.splice(index, 1); if (siteData.availability) delete siteData.availability[index]; populateAdminForms(); populateApartmentSelect(); };
             window.removeService = (index) => { siteData.services.splice(index, 1); populateAdminForms(); };
             window.removeTestimonial = (index) => { siteData.testimonials.splice(index, 1); populateAdminForms(); };
             window.removeTour = (index) => { siteData.tours.items.splice(index, 1); populateAdminForms(); };
@@ -1598,7 +1716,7 @@
                 });
             }
 
-            // Collect data from admin forms into siteData
+            // Collect data from admin forms into siteData (full update)
             function updateDataFromForms() {
                 // Hero
                 siteData.hero.subtitle = document.getElementById('hero-subtitle-input').value;
@@ -1614,15 +1732,19 @@
                 siteData.about.desc2 = document.getElementById('about-desc2-input').value;
                 siteData.about.image = document.getElementById('about-image-input').value;
 
-                // Apartment
+                // Apartment (with new fields)
                 const aptTitles = document.querySelectorAll('.apt-title');
                 const aptDescs = document.querySelectorAll('.apt-desc');
-                const aptPrices = document.querySelectorAll('.apt-price');
+                const aptBasePrices = document.querySelectorAll('.apt-baseprice');
+                const aptMaxGuests = document.querySelectorAll('.apt-maxguests');
+                const aptExtraFees = document.querySelectorAll('.apt-extrafee');
                 const aptImages = document.querySelectorAll('.apt-image');
                 siteData.apartment = Array.from(aptTitles).map((el, i) => ({
                     title: el.value,
                     desc: aptDescs[i].value,
-                    price: aptPrices[i].value,
+                    basePrice: parseFloat(aptBasePrices[i].value) || 0,
+                    maxGuests: parseInt(aptMaxGuests[i].value) || 2,
+                    extraGuestFee: parseFloat(aptExtraFees[i].value) || 0,
                     image: aptImages[i].value
                 }));
 
@@ -1681,10 +1803,127 @@
                 siteData.footer.email = document.getElementById('footer-email').value;
             }
 
+            // Calendar functions
+            let currentCalendarDate = new Date();
+
+            function renderCalendar() {
+                const aptIndex = document.getElementById('calendar-apartment-select').value;
+                if (aptIndex === null || aptIndex === '') return;
+                const year = currentCalendarDate.getFullYear();
+                const month = currentCalendarDate.getMonth();
+                const firstDay = new Date(year, month, 1);
+                const lastDay = new Date(year, month + 1, 0);
+                const startDayOfWeek = firstDay.getDay(); // 0 = Sunday
+                const daysInMonth = lastDay.getDate();
+
+                document.getElementById('calendar-month-year').textContent = firstDay.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+
+                let gridHtml = '';
+                const dayLabels = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+                dayLabels.forEach(label => { gridHtml += `<div style="font-weight:600; text-align:center;">${label}</div>`; });
+
+                for (let i = 0; i < startDayOfWeek; i++) { gridHtml += '<div></div>'; }
+
+                for (let d = 1; d <= daysInMonth; d++) {
+                    const dateStr = `${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+                    const dayData = siteData.availability?.[aptIndex]?.[dateStr] || {};
+                    const available = dayData.available !== false;
+                    const price = dayData.price || '';
+                    gridHtml += `
+                        <div class="calendar-day">
+                            <div class="day-number">${d}</div>
+                            <label><input type="checkbox" class="cal-available" data-date="${dateStr}" ${available ? 'checked' : ''}> Open</label>
+                            <input type="number" class="cal-price" data-date="${dateStr}" placeholder="Price" value="${price}" min="0" step="1">
+                        </div>
+                    `;
+                }
+                document.getElementById('calendar-grid').innerHTML = gridHtml;
+            }
+
+            function collectCalendarData() {
+                const aptIndex = document.getElementById('calendar-apartment-select').value;
+                if (!aptIndex) return;
+                if (!siteData.availability) siteData.availability = {};
+                if (!siteData.availability[aptIndex]) siteData.availability[aptIndex] = {};
+
+                const checkboxes = document.querySelectorAll('.cal-available');
+                const priceInputs = document.querySelectorAll('.cal-price');
+                checkboxes.forEach(cb => {
+                    const date = cb.dataset.date;
+                    const available = cb.checked;
+                    const priceInput = Array.from(priceInputs).find(inp => inp.dataset.date === date);
+                    const price = priceInput.value ? parseFloat(priceInput.value) : null;
+
+                    if (!available && price === null) {
+                        delete siteData.availability[aptIndex][date];
+                    } else {
+                        siteData.availability[aptIndex][date] = { available, price };
+                    }
+                });
+            }
+
+            // Update availability overview (first apartment)
+            function updateAvailabilityOverview() {
+                const aptIndex = 0; // first apartment
+                const today = new Date();
+                const days = [];
+                for (let i = 0; i < 7; i++) {
+                    const date = new Date(today);
+                    date.setDate(today.getDate() + i);
+                    const dateStr = date.toISOString().split('T')[0];
+                    const aptData = siteData.apartment[aptIndex] || {};
+                    const basePrice = aptData.basePrice || 0;
+                    const dayData = siteData.availability?.[aptIndex]?.[dateStr] || {};
+                    const available = dayData.available !== false;
+                    const price = dayData.price || basePrice;
+                    days.push({ dateStr, available, price });
+                }
+                const overviewDiv = document.getElementById('overviewDays');
+                overviewDiv.innerHTML = days.map(day => `
+                    <div class="day-card ${!day.available ? 'closed' : ''}">
+                        <div class="date">${day.dateStr.slice(5)}</div>
+                        <div class="price">${day.available ? '$'+day.price : 'Closed'}</div>
+                    </div>
+                `).join('');
+            }
+
+            // Search button logic
+            document.getElementById('search-btn').addEventListener('click', () => {
+                const checkin = document.getElementById('search-checkin').value;
+                const checkout = document.getElementById('search-checkout').value;
+                const aptIndex = document.getElementById('search-apartment').value;
+                const guests = parseInt(document.getElementById('search-guests').value);
+
+                if (!checkin || !checkout) { alert('Please select dates'); return; }
+                if (new Date(checkin) >= new Date(checkout)) { alert('Check-out must be after check-in'); return; }
+
+                const apt = siteData.apartment[aptIndex];
+                if (guests > apt.maxGuests) { alert(`This apartment max guests is ${apt.maxGuests}`); return; }
+
+                let total = 0;
+                let current = new Date(checkin);
+                const end = new Date(checkout);
+                while (current < end) {
+                    const dateStr = current.toISOString().split('T')[0];
+                    const dayData = siteData.availability?.[aptIndex]?.[dateStr] || {};
+                    const available = dayData.available !== false;
+                    if (!available) { alert(`Apartment not available on ${dateStr}`); return; }
+                    const price = dayData.price || apt.basePrice;
+                    total += price;
+                    current.setDate(current.getDate() + 1);
+                }
+
+                // Extra guest fee
+                const extraGuests = Math.max(0, guests - 2);
+                total += extraGuests * (apt.extraGuestFee || 0);
+
+                alert(`Total for ${guests} guest(s): $${total}`);
+            });
+
             // Add event listeners for "Add" buttons
             document.getElementById('add-apartment').addEventListener('click', () => {
-                siteData.apartment.push({ title: 'New Apartment', desc: 'Description', price: '$0/night', image: '' });
-                populateAdminForms();
+                siteData.apartment.push({ title: 'New Apartment', desc: 'Description', basePrice: 200, maxGuests: 2, extraGuestFee: 20, image: '' });
+                populateAdminForms(); populateApartmentSelect();
             });
             document.getElementById('add-service').addEventListener('click', () => {
                 siteData.services.push({ icon: 'fas fa-star', title: 'New Service', desc: 'Description' });
@@ -1711,8 +1950,23 @@
                     document.querySelectorAll('.admin-tab-content').forEach(c => c.classList.remove('active'));
                     tab.classList.add('active');
                     document.getElementById('tab-' + tab.dataset.tab).classList.add('active');
+                    if (tab.dataset.tab === 'calendar') {
+                        populateApartmentSelect();
+                        renderCalendar();
+                    }
                 });
             });
+
+            // Calendar navigation
+            document.getElementById('calendar-prev-month').addEventListener('click', () => {
+                currentCalendarDate.setMonth(currentCalendarDate.getMonth() - 1);
+                renderCalendar();
+            });
+            document.getElementById('calendar-next-month').addEventListener('click', () => {
+                currentCalendarDate.setMonth(currentCalendarDate.getMonth() + 1);
+                renderCalendar();
+            });
+            document.getElementById('calendar-apartment-select').addEventListener('change', renderCalendar);
 
             // Admin icon click
             const adminIcon = document.getElementById('adminIcon');
@@ -1725,7 +1979,11 @@
                     loginContainer.style.display = 'none';
                     adminDashboard.style.display = 'block';
                     adminOverlay.style.display = 'flex';
-                    setTimeout(setupUploadButtons, 100); // ensure buttons attached
+                    setTimeout(() => {
+                        setupUploadButtons();
+                        populateApartmentSelect();
+                        renderCalendar();
+                    }, 100);
                 } else {
                     loginContainer.style.display = 'block';
                     adminDashboard.style.display = 'none';
@@ -1744,6 +2002,8 @@
                     adminDashboard.style.display = 'block';
                     errorDiv.textContent = '';
                     setupUploadButtons();
+                    populateApartmentSelect();
+                    renderCalendar();
                 } catch (error) {
                     errorDiv.textContent = error.message;
                 }
@@ -1768,10 +2028,12 @@
                 saveBtn.disabled = true; saveBtn.textContent = 'Saving...';
                 try {
                     updateDataFromForms();
+                    collectCalendarData();
                     renderSite();
                     await saveToFirebase();
                     alert('Changes saved successfully!');
                     adminOverlay.style.display = 'none';
+                    updateAvailabilityOverview();
                 } catch (error) {
                     alert('Error saving: ' + error.message);
                 } finally {
