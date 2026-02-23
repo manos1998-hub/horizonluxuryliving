@@ -156,8 +156,8 @@
             margin-left: auto;
             margin-right: auto;
         }
-        /* ---------- SEARCH FORM ---------- */
-        .search-form {
+        /* ---------- AVAILABILITY & BOOKING BAR ---------- */
+        .booking-bar {
             background: rgba(255,255,255,0.15);
             backdrop-filter: blur(15px);
             -webkit-backdrop-filter: blur(15px);
@@ -167,12 +167,12 @@
             flex-wrap: wrap;
             justify-content: center;
             gap: 8px;
-            max-width: 950px;
+            max-width: 1000px;
             margin: 0 auto;
             border: 1px solid rgba(255,255,255,0.2);
             box-shadow: 0 20px 40px -10px rgba(0,0,0,0.3);
         }
-        .search-input {
+        .booking-input {
             background: rgba(255,255,255,0.2);
             border: 1px solid rgba(255,255,255,0.3);
             padding: 15px 25px;
@@ -184,18 +184,18 @@
             font-family: 'Inter', sans-serif;
             transition: var(--transition);
         }
-        .search-input:focus {
+        .booking-input:focus {
             outline: none;
             border-color: var(--primary);
             background: rgba(255,255,255,0.25);
         }
-        .search-input::placeholder {
+        .booking-input::placeholder {
             color: rgba(255,255,255,0.8);
         }
-        .search-input option {
+        .booking-input option {
             color: var(--dark);
         }
-        .search-btn {
+        .book-btn {
             background: var(--primary);
             border: none;
             padding: 15px 40px;
@@ -208,7 +208,7 @@
             letter-spacing: 1px;
             box-shadow: 0 8px 20px -8px rgba(201,168,108,0.5);
         }
-        .search-btn:hover {
+        .book-btn:hover {
             background: var(--primary-dark);
             transform: translateY(-3px);
             box-shadow: 0 15px 30px -8px rgba(201,168,108,0.7);
@@ -320,7 +320,7 @@
             object-fit: cover;
             display: block;
         }
-        /* ---------- GALLERY (was APARTMENT CARDS) ---------- */
+        /* ---------- GALLERY (images only) ---------- */
         .gallery-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
@@ -349,7 +349,6 @@
         .gallery-card:hover img {
             transform: scale(1.03);
         }
-        /* No text under images */
         /* ---------- DINING ---------- */
         .dining {
             background: var(--light-gray);
@@ -856,16 +855,41 @@
             text-align: center;
             font-size: 0.9rem;
         }
+        /* Reservation list */
+        .reservation-item {
+            background: #f9f9f9;
+            border-radius: 16px;
+            padding: 15px;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .reservation-details {
+            flex: 1;
+        }
+        .reservation-actions button {
+            background: #ff4d4d;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 30px;
+            cursor: pointer;
+        }
+        .reservation-actions button:hover {
+            background: #cc0000;
+        }
         @media (max-width: 992px) {
             .about-grid, .dining-grid { grid-template-columns: 1fr; }
             .nav-menu { display: none; }
-            .search-form { border-radius: 40px; }
-            .search-input { min-width: 140px; }
+            .booking-bar { border-radius: 40px; }
+            .booking-input { min-width: 140px; }
         }
         @media (max-width: 600px) {
             .hero h1 { font-size: 3rem; }
-            .search-form { flex-direction: column; background: transparent; backdrop-filter: none; }
-            .search-input { width: 100%; }
+            .booking-bar { flex-direction: column; background: transparent; backdrop-filter: none; }
+            .booking-input { width: 100%; }
         }
     </style>
 </head>
@@ -880,20 +904,20 @@
         </div>
     </header>
 
-    <!-- Hero Section with search and availability overview -->
+    <!-- Hero Section with BOOKING BAR -->
     <section class="hero" id="hero">
         <div class="hero-content">
             <div class="hero-subtitle" id="hero-subtitle">Welcome to Horizon, a luxury apartment in the heart of the city</div>
             <h1 id="hero-title">Your Next Boutique Apartment</h1>
             <p id="hero-text">Stay in the heart of the city</p>
-            <div class="search-form">
-                <input type="date" class="search-input" id="search-checkin" value="2026-06-01">
-                <input type="date" class="search-input" id="search-checkout" value="2026-06-05">
-                <select class="search-input" id="search-apartment"></select> <!-- apartment dropdown -->
-                <select class="search-input" id="search-guests"></select>
-                <button class="search-btn" id="search-btn">Search</button>
+            <div class="booking-bar">
+                <input type="date" class="booking-input" id="booking-checkin" value="2026-06-01">
+                <input type="date" class="booking-input" id="booking-checkout" value="2026-06-05">
+                <select class="booking-input" id="booking-apartment"></select>
+                <select class="booking-input" id="booking-guests"></select>
+                <button class="book-btn" id="book-btn">Check Availability & Book</button>
             </div>
-            <!-- Availability overview (next 7 days) -->
+            <!-- Availability overview -->
             <div class="availability-overview" id="availabilityOverview">
                 <div class="overview-title">📅 Next 7 days availability (first apartment)</div>
                 <div class="overview-days" id="overviewDays"></div>
@@ -915,7 +939,7 @@
     <!-- Admin Icon -->
     <div class="admin-icon" id="adminIcon"><i class="fas fa-pen-to-square"></i></div>
 
-    <!-- Admin Overlay (full panel with all tabs) -->
+    <!-- Admin Overlay (full panel) -->
     <div class="admin-overlay" id="adminOverlay">
         <div class="admin-panel" id="adminPanel">
             <!-- Login -->
@@ -929,7 +953,7 @@
                 </div>
             </div>
 
-            <!-- Dashboard (all tabs) -->
+            <!-- Dashboard -->
             <div id="adminDashboard" style="display: none;">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
                     <h2><i class="fas fa-crown" style="color: var(--primary);"></i> Dashboard</h2>
@@ -938,12 +962,14 @@
                 <div class="admin-tabs">
                     <div class="admin-tab active" data-tab="hero">Hero</div>
                     <div class="admin-tab" data-tab="about">About</div>
-                    <div class="admin-tab" data-tab="apartment">Gallery</div>  <!-- renamed to Gallery -->
+                    <div class="admin-tab" data-tab="gallery">Gallery</div>
+                    <div class="admin-tab" data-tab="pricing">Pricing</div>
                     <div class="admin-tab" data-tab="dining">Dining</div>
                     <div class="admin-tab" data-tab="services">Services</div>
                     <div class="admin-tab" data-tab="testimonials">Testimonials</div>
                     <div class="admin-tab" data-tab="tours">Tours</div>
                     <div class="admin-tab" data-tab="calendar">Calendar</div>
+                    <div class="admin-tab" data-tab="reservations">Reservations</div>
                     <div class="admin-tab" data-tab="menu">Menu</div>
                     <div class="admin-tab" data-tab="settings">Settings</div>
                     <div class="admin-tab" data-tab="footer">Footer</div>
@@ -1005,10 +1031,45 @@
                     </div>
                 </div>
 
-                <!-- Gallery Tab (was Apartment) - keep fields for managing images -->
-                <div class="admin-tab-content" id="tab-apartment">
-                    <div id="apartment-list"></div>
-                    <button class="add-btn" id="add-apartment">+ Add Image</button>
+                <!-- Gallery Tab (images only) -->
+                <div class="admin-tab-content" id="tab-gallery">
+                    <div id="gallery-list"></div>
+                    <button class="add-btn" id="add-gallery-image">+ Add Image</button>
+                </div>
+
+                <!-- Pricing Tab -->
+                <div class="admin-tab-content" id="tab-pricing">
+                    <div class="admin-field">
+                        <label>Select Apartment:</label>
+                        <select id="pricing-apartment-select"></select>
+                    </div>
+                    <div class="admin-field">
+                        <label>Base Price ($ per night)</label>
+                        <input type="number" id="pricing-basePrice" min="0" step="1">
+                    </div>
+                    <div class="admin-field">
+                        <label>Max Guests</label>
+                        <input type="number" id="pricing-maxGuests" min="1" step="1">
+                    </div>
+                    <div class="admin-field">
+                        <label>Extra Guest Fee ($ per extra guest beyond 2)</label>
+                        <input type="number" id="pricing-extraFee" min="0" step="1">
+                    </div>
+                    <hr style="margin: 30px 0;">
+                    <h3>Bulk Date Pricing</h3>
+                    <div class="admin-field">
+                        <label>From Date</label>
+                        <input type="date" id="bulk-from">
+                    </div>
+                    <div class="admin-field">
+                        <label>To Date</label>
+                        <input type="date" id="bulk-to">
+                    </div>
+                    <div class="admin-field">
+                        <label>Set Price ($ per night)</label>
+                        <input type="number" id="bulk-price" min="0" step="1">
+                    </div>
+                    <button class="upload-btn" id="apply-bulk-pricing">Apply to Selected Dates</button>
                 </div>
 
                 <!-- Dining Tab -->
@@ -1057,7 +1118,7 @@
                     <button class="add-btn" id="add-tour">+ Add Tour</button>
                 </div>
 
-                <!-- CALENDAR TAB -->
+                <!-- Calendar Tab -->
                 <div class="admin-tab-content" id="tab-calendar">
                     <div class="admin-field">
                         <label>Select Apartment:</label>
@@ -1070,6 +1131,11 @@
                     </div>
                     <div id="calendar-grid" style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px;"></div>
                     <p style="margin-top: 10px; color: #666;">✓ = available, empty = closed. Set price per night (leave empty to use base price).</p>
+                </div>
+
+                <!-- Reservations Tab -->
+                <div class="admin-tab-content" id="tab-reservations">
+                    <div id="reservations-list"></div>
                 </div>
 
                 <!-- Menu Tab -->
@@ -1143,8 +1209,9 @@
             const db = firebase.firestore();
             const storage = firebase.storage();
             const contentDoc = db.collection('website').doc('content');
+            const reservationsCol = db.collection('reservations');
 
-            // ---------- DEFAULT DATA (with new apartment fields and availability) ----------
+            // ---------- DEFAULT DATA ----------
             const defaultData = {
                 hero: {
                     subtitle: "Welcome to Horizon, a luxury apartment in the heart of the city",
@@ -1160,10 +1227,15 @@
                     desc2: "We proudly offers a full range of complimentary amenities and services that provide you with everything you need for an inspiring stay.",
                     image: "https://images.unsplash.com/photo-1566665797739-1674de7a421a?ixlib=rb-4.0.3&auto=format&fit=crop&w=1974&q=80"
                 },
-                apartment: [
-                    { title: "Living Room", desc: "Cozy space", basePrice: 199, maxGuests: 2, extraGuestFee: 20, image: "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?ixlib=rb-4.0.3&auto=format&fit=crop&w=1950&q=80" },
-                    { title: "Bedroom", desc: "Spacious bedroom", basePrice: 299, maxGuests: 3, extraGuestFee: 25, image: "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?ixlib=rb-4.0.3&auto=format&fit=crop&w=1950&q=80" },
-                    { title: "Kitchen", desc: "Modern kitchen", basePrice: 499, maxGuests: 4, extraGuestFee: 30, image: "https://images.unsplash.com/photo-1512918728675-ed5a9ecdebfd?ixlib=rb-4.0.3&auto=format&fit=crop&w=1950&q=80" }
+                gallery: [
+                    { title: "Living Room", desc: "Cozy space", image: "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?ixlib=rb-4.0.3&auto=format&fit=crop&w=1950&q=80" },
+                    { title: "Bedroom", desc: "Spacious bedroom", image: "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?ixlib=rb-4.0.3&auto=format&fit=crop&w=1950&q=80" },
+                    { title: "Kitchen", desc: "Modern kitchen", image: "https://images.unsplash.com/photo-1512918728675-ed5a9ecdebfd?ixlib=rb-4.0.3&auto=format&fit=crop&w=1950&q=80" }
+                ],
+                pricing: [
+                    { basePrice: 199, maxGuests: 2, extraGuestFee: 20 },
+                    { basePrice: 299, maxGuests: 3, extraGuestFee: 25 },
+                    { basePrice: 499, maxGuests: 4, extraGuestFee: 30 }
                 ],
                 dining: {
                     title: "Experience exquisite cuisine from all over the world",
@@ -1190,7 +1262,7 @@
                 menu: [
                     { text: "Home", url: "#home" },
                     { text: "About", url: "#about" },
-                    { text: "Gallery", url: "#gallery" },        // updated link
+                    { text: "Gallery", url: "#gallery" },
                     { text: "Services", url: "#services" },
                     { text: "Contact", url: "#contact" }
                 ],
@@ -1205,13 +1277,13 @@
                     phone: "+1 (212) 555-7890",
                     email: "stay@horizonluxury.com"
                 },
-                // NEW: availability per apartment index
                 availability: {}
             };
 
             let siteData = JSON.parse(JSON.stringify(defaultData));
+            let reservations = [];
 
-            // Deep merge utility
+            // ---------- Helper functions ----------
             function mergeDeep(target, source) {
                 for (const key in source) {
                     if (source[key] && typeof source[key] === 'object' && !Array.isArray(source[key])) {
@@ -1223,7 +1295,6 @@
                 }
             }
 
-            // Load from Firestore
             async function loadFromFirebase() {
                 try {
                     const doc = await contentDoc.get();
@@ -1235,69 +1306,67 @@
                     } else {
                         console.log('No document, using defaults');
                     }
+                    const resSnapshot = await reservationsCol.orderBy('createdAt', 'desc').get();
+                    reservations = resSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
                 } catch (error) {
                     console.error('Error loading from Firestore:', error);
                 }
                 renderSite();
                 populateAdminForms();
                 updatePreviews();
-                populateApartmentSelect();
+                populateSelects();
                 renderCalendar();
                 updateAvailabilityOverview();
+                renderReservationsList();
             }
 
-            // Save to Firestore
             async function saveToFirebase() {
                 await contentDoc.set(siteData);
             }
 
-            // Populate guest dropdown
-            function populateGuestDropdown(maxGuests) {
-                const select = document.getElementById('search-guests');
-                if (!select) return;
-                select.innerHTML = '';
-                for (let i = 1; i <= maxGuests; i++) {
-                    const option = document.createElement('option');
-                    option.value = i;
-                    option.textContent = i + (i === 1 ? ' Guest' : ' Guests');
-                    select.appendChild(option);
-                }
-                select.value = 2;
-            }
-
-            // Populate apartment dropdowns (search + calendar)
-            function populateApartmentSelect() {
-                const searchSelect = document.getElementById('search-apartment');
+            function populateSelects() {
+                const bookingSelect = document.getElementById('booking-apartment');
+                const pricingSelect = document.getElementById('pricing-apartment-select');
                 const calendarSelect = document.getElementById('calendar-apartment-select');
-                if (!searchSelect || !calendarSelect) return;
-                searchSelect.innerHTML = '';
-                calendarSelect.innerHTML = '';
-                siteData.apartment.forEach((apt, idx) => {
-                    const opt1 = document.createElement('option');
-                    opt1.value = idx;
-                    opt1.textContent = apt.title;
-                    searchSelect.appendChild(opt1);
-
-                    const opt2 = document.createElement('option');
-                    opt2.value = idx;
-                    opt2.textContent = apt.title;
-                    calendarSelect.appendChild(opt2);
-                });
+                if (bookingSelect) {
+                    bookingSelect.innerHTML = '';
+                    siteData.gallery.forEach((item, idx) => {
+                        const opt = document.createElement('option');
+                        opt.value = idx;
+                        opt.textContent = item.title;
+                        bookingSelect.appendChild(opt);
+                    });
+                }
+                if (pricingSelect) {
+                    pricingSelect.innerHTML = '';
+                    siteData.gallery.forEach((item, idx) => {
+                        const opt = document.createElement('option');
+                        opt.value = idx;
+                        opt.textContent = item.title;
+                        pricingSelect.appendChild(opt);
+                    });
+                }
+                if (calendarSelect) {
+                    calendarSelect.innerHTML = '';
+                    siteData.gallery.forEach((item, idx) => {
+                        const opt = document.createElement('option');
+                        opt.value = idx;
+                        opt.textContent = item.title;
+                        calendarSelect.appendChild(opt);
+                    });
+                }
             }
 
-            // Render the public website
             function renderSite() {
-                // Hero
                 document.getElementById('hero').style.backgroundImage = `linear-gradient(135deg, rgba(0,0,0,0.4), rgba(0,0,0,0.2)), url('${siteData.hero.bgImage}')`;
                 document.getElementById('hero-subtitle').textContent = siteData.hero.subtitle;
                 document.getElementById('hero-title').textContent = siteData.hero.title;
                 document.getElementById('hero-text').textContent = siteData.hero.text;
-                document.getElementById('search-checkin').value = siteData.hero.checkIn;
-                document.getElementById('search-checkout').value = siteData.hero.checkOut;
+                document.getElementById('booking-checkin').value = siteData.hero.checkIn;
+                document.getElementById('booking-checkout').value = siteData.hero.checkOut;
                 populateGuestDropdown(siteData.settings.maxGuests);
-                populateApartmentSelect();
+                populateSelects();
 
-                // Navigation
                 const navMenu = document.getElementById('nav-menu');
                 navMenu.innerHTML = '';
                 siteData.menu.forEach(item => {
@@ -1309,7 +1378,6 @@
                     navMenu.appendChild(li);
                 });
 
-                // Main content sections
                 const main = document.getElementById('main-content');
                 main.innerHTML = `
                     <section class="container" id="about">
@@ -1325,17 +1393,15 @@
                         </div>
                     </section>
 
-                    <!-- GALLERY SECTION (was apartment) -->
                     <section class="container" id="gallery">
                         <div class="section-title">
                             <div class="subtitle">Our Space</div>
                             <h2>Gallery</h2>
                         </div>
                         <div class="gallery-grid">
-                            ${siteData.apartment.map(apt => `
+                            ${siteData.gallery.map(item => `
                                 <div class="gallery-card">
-                                    <img src="${apt.image}" alt="${apt.title}">
-                                    <!-- No text under images -->
+                                    <img src="${item.image}" alt="${item.title}">
                                 </div>
                             `).join('')}
                         </div>
@@ -1405,7 +1471,6 @@
                     </section>
                 `;
 
-                // Footer
                 const footerGrid = document.getElementById('footer-grid');
                 footerGrid.innerHTML = `
                     <div class="footer-col">
@@ -1431,7 +1496,19 @@
                 document.getElementById('copyright').textContent = siteData.footer.copyright;
             }
 
-            // Populate admin forms (all tabs)
+            function populateGuestDropdown(maxGuests) {
+                const select = document.getElementById('booking-guests');
+                if (!select) return;
+                select.innerHTML = '';
+                for (let i = 1; i <= maxGuests; i++) {
+                    const option = document.createElement('option');
+                    option.value = i;
+                    option.textContent = i + (i === 1 ? ' Guest' : ' Guests');
+                    select.appendChild(option);
+                }
+                select.value = 2;
+            }
+
             function populateAdminForms() {
                 // Hero
                 document.getElementById('hero-subtitle-input').value = siteData.hero.subtitle;
@@ -1447,30 +1524,28 @@
                 document.getElementById('about-desc2-input').value = siteData.about.desc2;
                 document.getElementById('about-image-input').value = siteData.about.image;
 
-                // Apartments (with new fields)
-                const aptList = document.getElementById('apartment-list');
-                aptList.innerHTML = '';
-                siteData.apartment.forEach((apt, index) => {
+                // Gallery
+                const galleryList = document.getElementById('gallery-list');
+                galleryList.innerHTML = '';
+                siteData.gallery.forEach((item, index) => {
                     const div = document.createElement('div');
                     div.className = 'thumbnail-item';
                     div.innerHTML = `
                         <div style="flex:1">
-                            <div class="image-upload-row"><input type="text" value="${apt.title}" placeholder="Title" class="apt-title" data-index="${index}"></div>
-                            <div class="image-upload-row"><input type="text" value="${apt.desc}" placeholder="Description" class="apt-desc" data-index="${index}"></div>
-                            <div class="image-upload-row"><input type="number" value="${apt.basePrice}" placeholder="Base price ($)" class="apt-baseprice" data-index="${index}" step="1" min="0"></div>
-                            <div class="image-upload-row"><input type="number" value="${apt.maxGuests}" placeholder="Max guests" class="apt-maxguests" data-index="${index}" min="1"></div>
-                            <div class="image-upload-row"><input type="number" value="${apt.extraGuestFee || 0}" placeholder="Extra guest fee ($)" class="apt-extrafee" data-index="${index}" min="0" step="1"></div>
+                            <div class="image-upload-row"><input type="text" value="${item.title}" placeholder="Title" class="gallery-title" data-index="${index}"></div>
+                            <div class="image-upload-row"><input type="text" value="${item.desc}" placeholder="Description" class="gallery-desc" data-index="${index}"></div>
                             <div class="image-upload-row">
-                                <input type="url" value="${apt.image}" placeholder="Image URL" class="apt-image" data-index="${index}">
-                                <button class="upload-btn" onclick="window.uploadApartmentImage(${index})">Upload</button>
+                                <input type="url" value="${item.image}" placeholder="Image URL" class="gallery-image" data-index="${index}">
+                                <button class="upload-btn" onclick="window.uploadGalleryImage(${index})">Upload</button>
                             </div>
                         </div>
-                        <img class="image-preview" id="apt-preview-${index}" src="${apt.image}" style="display: ${apt.image ? 'block' : 'none'};">
-                        <button onclick="window.removeApartment(${index})"><i class="fas fa-times"></i></button>
+                        <img class="image-preview" id="gallery-preview-${index}" src="${item.image}" style="display: ${item.image ? 'block' : 'none'};">
+                        <button onclick="window.removeGalleryImage(${index})"><i class="fas fa-times"></i></button>
                     `;
-                    aptList.appendChild(div);
+                    galleryList.appendChild(div);
                 });
 
+                // Pricing (populate later on tab change)
                 // Dining
                 document.getElementById('dining-title-input').value = siteData.dining.title;
                 document.getElementById('dining-desc-input').value = siteData.dining.desc;
@@ -1560,7 +1635,6 @@
                 document.getElementById('footer-email').value = siteData.footer.email;
             }
 
-            // Update image previews for hero, about, dining
             function updatePreviews() {
                 const heroBg = document.getElementById('hero-bg-input').value;
                 const heroPreview = document.getElementById('hero-bg-preview');
@@ -1575,7 +1649,6 @@
                 if (diningImg) { diningPreview.src = diningImg; diningPreview.style.display = 'block'; } else diningPreview.style.display = 'none';
             }
 
-            // Upload image to Firebase Storage
             async function uploadImage(file, path) {
                 return new Promise((resolve, reject) => {
                     if (!file) reject('No file selected');
@@ -1590,8 +1663,7 @@
                 });
             }
 
-            // Expose upload functions globally
-            window.uploadApartmentImage = async (index) => {
+            window.uploadGalleryImage = async (index) => {
                 const input = document.createElement('input');
                 input.type = 'file';
                 input.accept = 'image/*';
@@ -1599,14 +1671,21 @@
                     const file = e.target.files[0];
                     if (!file) return;
                     try {
-                        const url = await uploadImage(file, 'apartment');
-                        const aptImageInput = document.querySelector(`.apt-image[data-index="${index}"]`);
-                        if (aptImageInput) aptImageInput.value = url;
-                        const preview = document.getElementById(`apt-preview-${index}`);
+                        const url = await uploadImage(file, 'gallery');
+                        const imgInput = document.querySelector(`.gallery-image[data-index="${index}"]`);
+                        if (imgInput) imgInput.value = url;
+                        const preview = document.getElementById(`gallery-preview-${index}`);
                         if (preview) { preview.src = url; preview.style.display = 'block'; }
                     } catch (error) { alert('Upload failed: ' + error); }
                 };
                 input.click();
+            };
+
+            window.removeGalleryImage = (index) => {
+                siteData.gallery.splice(index, 1);
+                siteData.pricing.splice(index, 1); // keep sync
+                populateAdminForms();
+                populateSelects();
             };
 
             window.uploadTourImage = async (index) => {
@@ -1627,8 +1706,6 @@
                 input.click();
             };
 
-            // Remove item functions
-            window.removeApartment = (index) => { siteData.apartment.splice(index, 1); if (siteData.availability) delete siteData.availability[index]; populateAdminForms(); populateApartmentSelect(); };
             window.removeService = (index) => { siteData.services.splice(index, 1); populateAdminForms(); };
             window.removeTestimonial = (index) => { siteData.testimonials.splice(index, 1); populateAdminForms(); };
             window.removeTour = (index) => { siteData.tours.items.splice(index, 1); populateAdminForms(); };
@@ -1697,8 +1774,375 @@
                 });
             }
 
-            // Collect data from admin forms into siteData (full update)
-            function updateDataFromForms() {
+            // Pricing tab: update when apartment changes
+            document.getElementById('pricing-apartment-select').addEventListener('change', function() {
+                const idx = this.value;
+                if (idx !== '') {
+                    document.getElementById('pricing-basePrice').value = siteData.pricing[idx]?.basePrice || 0;
+                    document.getElementById('pricing-maxGuests').value = siteData.pricing[idx]?.maxGuests || 2;
+                    document.getElementById('pricing-extraFee').value = siteData.pricing[idx]?.extraGuestFee || 0;
+                }
+            });
+
+            // Bulk pricing
+            document.getElementById('apply-bulk-pricing').addEventListener('click', function() {
+                const aptIdx = document.getElementById('pricing-apartment-select').value;
+                const from = document.getElementById('bulk-from').value;
+                const to = document.getElementById('bulk-to').value;
+                const price = parseFloat(document.getElementById('bulk-price').value);
+                if (!aptIdx || !from || !to || isNaN(price)) { alert('Please fill all fields'); return; }
+                if (new Date(from) > new Date(to)) { alert('From date must be before To date'); return; }
+
+                if (!siteData.availability) siteData.availability = {};
+                if (!siteData.availability[aptIdx]) siteData.availability[aptIdx] = {};
+
+                let current = new Date(from);
+                const end = new Date(to);
+                while (current <= end) {
+                    const dateStr = current.toISOString().split('T')[0];
+                    const existing = siteData.availability[aptIdx][dateStr] || {};
+                    siteData.availability[aptIdx][dateStr] = { ...existing, price: price };
+                    current.setDate(current.getDate() + 1);
+                }
+                alert('Bulk pricing applied');
+                renderCalendar();
+            });
+
+            // Booking logic
+            document.getElementById('book-btn').addEventListener('click', async () => {
+                const checkin = document.getElementById('booking-checkin').value;
+                const checkout = document.getElementById('booking-checkout').value;
+                const aptIdx = document.getElementById('booking-apartment').value;
+                const guests = parseInt(document.getElementById('booking-guests').value);
+
+                if (!checkin || !checkout) { alert('Please select dates'); return; }
+                if (new Date(checkin) >= new Date(checkout)) { alert('Check-out must be after check-in'); return; }
+
+                const aptPricing = siteData.pricing[aptIdx];
+                if (!aptPricing) { alert('Apartment pricing not found'); return; }
+                if (guests > aptPricing.maxGuests) { alert(`Max guests for this apartment is ${aptPricing.maxGuests}`); return; }
+
+                let total = 0;
+                let current = new Date(checkin);
+                const end = new Date(checkout);
+                const nights = [];
+                while (current < end) {
+                    const dateStr = current.toISOString().split('T')[0];
+                    const dayData = siteData.availability?.[aptIdx]?.[dateStr] || {};
+                    const available = dayData.available !== false;
+                    if (!available) {
+                        alert(`Apartment not available on ${dateStr}`);
+                        return;
+                    }
+                    const price = dayData.price || aptPricing.basePrice;
+                    total += price;
+                    nights.push(dateStr);
+                    current.setDate(current.getDate() + 1);
+                }
+
+                const extraGuests = Math.max(0, guests - 2);
+                total += extraGuests * (aptPricing.extraGuestFee || 0);
+
+                if (!confirm(`Total for ${guests} guest(s): $${total}. Confirm booking?`)) return;
+
+                const reservation = {
+                    apartmentIndex: aptIdx,
+                    apartmentTitle: siteData.gallery[aptIdx].title,
+                    checkIn: checkin,
+                    checkOut: checkout,
+                    guests,
+                    totalPrice: total,
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                    status: 'confirmed'
+                };
+
+                try {
+                    await reservationsCol.add(reservation);
+                    nights.forEach(date => {
+                        if (!siteData.availability) siteData.availability = {};
+                        if (!siteData.availability[aptIdx]) siteData.availability[aptIdx] = {};
+                        siteData.availability[aptIdx][date] = { ...siteData.availability[aptIdx][date], available: false };
+                    });
+                    await saveToFirebase();
+                    const resSnapshot = await reservationsCol.orderBy('createdAt', 'desc').get();
+                    reservations = resSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                    renderReservationsList();
+                    updateAvailabilityOverview();
+                    renderCalendar();
+                    alert('Booking confirmed!');
+                } catch (error) {
+                    alert('Error creating reservation: ' + error.message);
+                }
+            });
+
+            function renderReservationsList() {
+                const container = document.getElementById('reservations-list');
+                if (!container) return;
+                container.innerHTML = '';
+                if (reservations.length === 0) {
+                    container.innerHTML = '<p>No reservations yet.</p>';
+                    return;
+                }
+                reservations.forEach(res => {
+                    const div = document.createElement('div');
+                    div.className = 'reservation-item';
+                    div.innerHTML = `
+                        <div class="reservation-details">
+                            <strong>${res.apartmentTitle}</strong><br>
+                            ${res.checkIn} to ${res.checkOut} · ${res.guests} guests · $${res.totalPrice}<br>
+                            <small>Booked: ${res.createdAt ? new Date(res.createdAt.toDate()).toLocaleString() : 'just now'}</small>
+                        </div>
+                        <div class="reservation-actions">
+                            <button onclick="window.cancelReservation('${res.id}', ${res.apartmentIndex}, '${res.checkIn}', '${res.checkOut}')">Cancel</button>
+                        </div>
+                    `;
+                    container.appendChild(div);
+                });
+            }
+
+            window.cancelReservation = async (resId, aptIdx, checkin, checkout) => {
+                if (!confirm('Cancel this reservation? Dates will become available again.')) return;
+                try {
+                    await reservationsCol.doc(resId).delete();
+                    let current = new Date(checkin);
+                    const end = new Date(checkout);
+                    while (current < end) {
+                        const dateStr = current.toISOString().split('T')[0];
+                        if (siteData.availability && siteData.availability[aptIdx] && siteData.availability[aptIdx][dateStr]) {
+                            delete siteData.availability[aptIdx][dateStr];
+                        }
+                        current.setDate(current.getDate() + 1);
+                    }
+                    await saveToFirebase();
+                    const resSnapshot = await reservationsCol.orderBy('createdAt', 'desc').get();
+                    reservations = resSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                    renderReservationsList();
+                    updateAvailabilityOverview();
+                    renderCalendar();
+                    alert('Reservation cancelled');
+                } catch (error) {
+                    alert('Error cancelling: ' + error.message);
+                }
+            };
+
+            function updateAvailabilityOverview() {
+                const aptIdx = 0;
+                const today = new Date();
+                const days = [];
+                for (let i = 0; i < 7; i++) {
+                    const date = new Date(today);
+                    date.setDate(today.getDate() + i);
+                    const dateStr = date.toISOString().split('T')[0];
+                    const aptPricing = siteData.pricing[aptIdx] || { basePrice: 0 };
+                    const basePrice = aptPricing.basePrice;
+                    const dayData = siteData.availability?.[aptIdx]?.[dateStr] || {};
+                    const available = dayData.available !== false;
+                    const price = dayData.price || basePrice;
+                    days.push({ dateStr, available, price });
+                }
+                const overviewDiv = document.getElementById('overviewDays');
+                overviewDiv.innerHTML = days.map(day => `
+                    <div class="day-card ${!day.available ? 'closed' : ''}">
+                        <div class="date">${day.dateStr.slice(5)}</div>
+                        <div class="price">${day.available ? '$'+day.price : 'Closed'}</div>
+                    </div>
+                `).join('');
+            }
+
+            let currentCalendarDate = new Date();
+
+            function renderCalendar() {
+                const aptIndex = document.getElementById('calendar-apartment-select').value;
+                if (aptIndex === null || aptIndex === '') return;
+                const year = currentCalendarDate.getFullYear();
+                const month = currentCalendarDate.getMonth();
+                const firstDay = new Date(year, month, 1);
+                const lastDay = new Date(year, month + 1, 0);
+                const startDayOfWeek = firstDay.getDay();
+                const daysInMonth = lastDay.getDate();
+
+                document.getElementById('calendar-month-year').textContent = firstDay.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+
+                let gridHtml = '';
+                const dayLabels = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+                dayLabels.forEach(label => { gridHtml += `<div style="font-weight:600; text-align:center;">${label}</div>`; });
+
+                for (let i = 0; i < startDayOfWeek; i++) { gridHtml += '<div></div>'; }
+
+                for (let d = 1; d <= daysInMonth; d++) {
+                    const dateStr = `${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+                    const dayData = siteData.availability?.[aptIndex]?.[dateStr] || {};
+                    const available = dayData.available !== false;
+                    const price = dayData.price || '';
+                    gridHtml += `
+                        <div class="calendar-day">
+                            <div class="day-number">${d}</div>
+                            <label><input type="checkbox" class="cal-available" data-date="${dateStr}" ${available ? 'checked' : ''}> Open</label>
+                            <input type="number" class="cal-price" data-date="${dateStr}" placeholder="Price" value="${price}" min="0" step="1">
+                        </div>
+                    `;
+                }
+                document.getElementById('calendar-grid').innerHTML = gridHtml;
+            }
+
+            function collectCalendarData() {
+                const aptIndex = document.getElementById('calendar-apartment-select').value;
+                if (!aptIndex) return;
+                if (!siteData.availability) siteData.availability = {};
+                if (!siteData.availability[aptIndex]) siteData.availability[aptIndex] = {};
+
+                const checkboxes = document.querySelectorAll('.cal-available');
+                const priceInputs = document.querySelectorAll('.cal-price');
+                checkboxes.forEach(cb => {
+                    const date = cb.dataset.date;
+                    const available = cb.checked;
+                    const priceInput = Array.from(priceInputs).find(inp => inp.dataset.date === date);
+                    const price = priceInput.value ? parseFloat(priceInput.value) : null;
+
+                    if (!available && price === null) {
+                        delete siteData.availability[aptIndex][date];
+                    } else {
+                        siteData.availability[aptIndex][date] = { available, price };
+                    }
+                });
+            }
+
+            // Add event listeners for add buttons
+            document.getElementById('add-gallery-image').addEventListener('click', () => {
+                siteData.gallery.push({ title: 'New Image', desc: '', image: '' });
+                siteData.pricing.push({ basePrice: 200, maxGuests: 2, extraGuestFee: 20 });
+                populateAdminForms();
+                populateSelects();
+            });
+
+            document.getElementById('add-service').addEventListener('click', () => {
+                siteData.services.push({ icon: 'fas fa-star', title: 'New Service', desc: 'Description' });
+                populateAdminForms();
+            });
+
+            document.getElementById('add-testimonial').addEventListener('click', () => {
+                siteData.testimonials.push({ text: 'New testimonial', author: 'Guest' });
+                populateAdminForms();
+            });
+
+            document.getElementById('add-tour').addEventListener('click', () => {
+                siteData.tours.items.push({ title: 'New Tour', desc: 'Description', image: '' });
+                populateAdminForms();
+            });
+
+            document.getElementById('add-menu-item').addEventListener('click', () => {
+                siteData.menu.push({ text: 'New Link', url: '#' });
+                populateAdminForms();
+            });
+
+            // Tab switching
+            const tabs = document.querySelectorAll('.admin-tab');
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
+                    document.querySelectorAll('.admin-tab-content').forEach(c => c.classList.remove('active'));
+                    tab.classList.add('active');
+                    document.getElementById('tab-' + tab.dataset.tab).classList.add('active');
+                    if (tab.dataset.tab === 'calendar') {
+                        populateSelects();
+                        renderCalendar();
+                    }
+                    if (tab.dataset.tab === 'pricing') {
+                        populateSelects();
+                        const event = new Event('change');
+                        document.getElementById('pricing-apartment-select').dispatchEvent(event);
+                    }
+                    if (tab.dataset.tab === 'reservations') {
+                        renderReservationsList();
+                    }
+                });
+            });
+
+            // Calendar navigation
+            document.getElementById('calendar-prev-month').addEventListener('click', () => {
+                currentCalendarDate.setMonth(currentCalendarDate.getMonth() - 1);
+                renderCalendar();
+            });
+            document.getElementById('calendar-next-month').addEventListener('click', () => {
+                currentCalendarDate.setMonth(currentCalendarDate.getMonth() + 1);
+                renderCalendar();
+            });
+            document.getElementById('calendar-apartment-select').addEventListener('change', renderCalendar);
+
+            // Admin login/logout
+            const adminIcon = document.getElementById('adminIcon');
+            const adminOverlay = document.getElementById('adminOverlay');
+            const loginContainer = document.getElementById('loginContainer');
+            const adminDashboard = document.getElementById('adminDashboard');
+
+            adminIcon.addEventListener('click', () => {
+                if (auth.currentUser) {
+                    loginContainer.style.display = 'none';
+                    adminDashboard.style.display = 'block';
+                    adminOverlay.style.display = 'flex';
+                    setTimeout(() => {
+                        setupUploadButtons();
+                        populateSelects();
+                        renderCalendar();
+                    }, 100);
+                } else {
+                    loginContainer.style.display = 'block';
+                    adminDashboard.style.display = 'none';
+                    adminOverlay.style.display = 'flex';
+                }
+            });
+
+            document.getElementById('loginBtn').addEventListener('click', async () => {
+                const email = document.getElementById('loginEmail').value;
+                const password = document.getElementById('loginPassword').value;
+                const errorDiv = document.getElementById('loginError');
+                try {
+                    await auth.signInWithEmailAndPassword(email, password);
+                    loginContainer.style.display = 'none';
+                    adminDashboard.style.display = 'block';
+                    errorDiv.textContent = '';
+                    setupUploadButtons();
+                    populateSelects();
+                    renderCalendar();
+                } catch (error) {
+                    errorDiv.textContent = error.message;
+                }
+            });
+
+            document.getElementById('logoutBtn').addEventListener('click', async () => {
+                await auth.signOut();
+                adminOverlay.style.display = 'none';
+                loginContainer.style.display = 'block';
+                adminDashboard.style.display = 'none';
+            });
+
+            document.getElementById('closeAdmin').addEventListener('click', () => {
+                adminOverlay.style.display = 'none';
+            });
+
+            // Save changes
+            document.getElementById('saveChanges').addEventListener('click', async () => {
+                // Update gallery from forms
+                const galleryTitles = document.querySelectorAll('.gallery-title');
+                const galleryDescs = document.querySelectorAll('.gallery-desc');
+                const galleryImages = document.querySelectorAll('.gallery-image');
+                siteData.gallery = Array.from(galleryTitles).map((el, i) => ({
+                    title: el.value,
+                    desc: galleryDescs[i].value,
+                    image: galleryImages[i].value
+                }));
+
+                // Update pricing from current form
+                const aptIdx = document.getElementById('pricing-apartment-select').value;
+                if (aptIdx !== '') {
+                    siteData.pricing[aptIdx] = {
+                        basePrice: parseFloat(document.getElementById('pricing-basePrice').value) || 0,
+                        maxGuests: parseInt(document.getElementById('pricing-maxGuests').value) || 2,
+                        extraGuestFee: parseFloat(document.getElementById('pricing-extraFee').value) || 0
+                    };
+                }
+
+                // Collect other form data (hero, about, dining, services, etc.)
                 // Hero
                 siteData.hero.subtitle = document.getElementById('hero-subtitle-input').value;
                 siteData.hero.title = document.getElementById('hero-title-input').value;
@@ -1712,22 +2156,6 @@
                 siteData.about.desc1 = document.getElementById('about-desc1-input').value;
                 siteData.about.desc2 = document.getElementById('about-desc2-input').value;
                 siteData.about.image = document.getElementById('about-image-input').value;
-
-                // Apartment (with new fields)
-                const aptTitles = document.querySelectorAll('.apt-title');
-                const aptDescs = document.querySelectorAll('.apt-desc');
-                const aptBasePrices = document.querySelectorAll('.apt-baseprice');
-                const aptMaxGuests = document.querySelectorAll('.apt-maxguests');
-                const aptExtraFees = document.querySelectorAll('.apt-extrafee');
-                const aptImages = document.querySelectorAll('.apt-image');
-                siteData.apartment = Array.from(aptTitles).map((el, i) => ({
-                    title: el.value,
-                    desc: aptDescs[i].value,
-                    basePrice: parseFloat(aptBasePrices[i].value) || 0,
-                    maxGuests: parseInt(aptMaxGuests[i].value) || 2,
-                    extraGuestFee: parseFloat(aptExtraFees[i].value) || 0,
-                    image: aptImages[i].value
-                }));
 
                 // Dining
                 siteData.dining.title = document.getElementById('dining-title-input').value;
@@ -1782,244 +2210,15 @@
                 siteData.footer.address = document.getElementById('footer-address').value;
                 siteData.footer.phone = document.getElementById('footer-phone').value;
                 siteData.footer.email = document.getElementById('footer-email').value;
-            }
 
-            // Calendar functions
-            let currentCalendarDate = new Date();
+                // Calendar data
+                collectCalendarData();
 
-            function renderCalendar() {
-                const aptIndex = document.getElementById('calendar-apartment-select').value;
-                if (aptIndex === null || aptIndex === '') return;
-                const year = currentCalendarDate.getFullYear();
-                const month = currentCalendarDate.getMonth();
-                const firstDay = new Date(year, month, 1);
-                const lastDay = new Date(year, month + 1, 0);
-                const startDayOfWeek = firstDay.getDay(); // 0 = Sunday
-                const daysInMonth = lastDay.getDate();
-
-                document.getElementById('calendar-month-year').textContent = firstDay.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
-
-                let gridHtml = '';
-                const dayLabels = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-                dayLabels.forEach(label => { gridHtml += `<div style="font-weight:600; text-align:center;">${label}</div>`; });
-
-                for (let i = 0; i < startDayOfWeek; i++) { gridHtml += '<div></div>'; }
-
-                for (let d = 1; d <= daysInMonth; d++) {
-                    const dateStr = `${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
-                    const dayData = siteData.availability?.[aptIndex]?.[dateStr] || {};
-                    const available = dayData.available !== false;
-                    const price = dayData.price || '';
-                    gridHtml += `
-                        <div class="calendar-day">
-                            <div class="day-number">${d}</div>
-                            <label><input type="checkbox" class="cal-available" data-date="${dateStr}" ${available ? 'checked' : ''}> Open</label>
-                            <input type="number" class="cal-price" data-date="${dateStr}" placeholder="Price" value="${price}" min="0" step="1">
-                        </div>
-                    `;
-                }
-                document.getElementById('calendar-grid').innerHTML = gridHtml;
-            }
-
-            function collectCalendarData() {
-                const aptIndex = document.getElementById('calendar-apartment-select').value;
-                if (!aptIndex) return;
-                if (!siteData.availability) siteData.availability = {};
-                if (!siteData.availability[aptIndex]) siteData.availability[aptIndex] = {};
-
-                const checkboxes = document.querySelectorAll('.cal-available');
-                const priceInputs = document.querySelectorAll('.cal-price');
-                checkboxes.forEach(cb => {
-                    const date = cb.dataset.date;
-                    const available = cb.checked;
-                    const priceInput = Array.from(priceInputs).find(inp => inp.dataset.date === date);
-                    const price = priceInput.value ? parseFloat(priceInput.value) : null;
-
-                    if (!available && price === null) {
-                        delete siteData.availability[aptIndex][date];
-                    } else {
-                        siteData.availability[aptIndex][date] = { available, price };
-                    }
-                });
-            }
-
-            // Update availability overview (first apartment)
-            function updateAvailabilityOverview() {
-                const aptIndex = 0; // first apartment
-                const today = new Date();
-                const days = [];
-                for (let i = 0; i < 7; i++) {
-                    const date = new Date(today);
-                    date.setDate(today.getDate() + i);
-                    const dateStr = date.toISOString().split('T')[0];
-                    const aptData = siteData.apartment[aptIndex] || {};
-                    const basePrice = aptData.basePrice || 0;
-                    const dayData = siteData.availability?.[aptIndex]?.[dateStr] || {};
-                    const available = dayData.available !== false;
-                    const price = dayData.price || basePrice;
-                    days.push({ dateStr, available, price });
-                }
-                const overviewDiv = document.getElementById('overviewDays');
-                overviewDiv.innerHTML = days.map(day => `
-                    <div class="day-card ${!day.available ? 'closed' : ''}">
-                        <div class="date">${day.dateStr.slice(5)}</div>
-                        <div class="price">${day.available ? '$'+day.price : 'Closed'}</div>
-                    </div>
-                `).join('');
-            }
-
-            // Search button logic
-            document.getElementById('search-btn').addEventListener('click', () => {
-                const checkin = document.getElementById('search-checkin').value;
-                const checkout = document.getElementById('search-checkout').value;
-                const aptIndex = document.getElementById('search-apartment').value;
-                const guests = parseInt(document.getElementById('search-guests').value);
-
-                if (!checkin || !checkout) { alert('Please select dates'); return; }
-                if (new Date(checkin) >= new Date(checkout)) { alert('Check-out must be after check-in'); return; }
-
-                const apt = siteData.apartment[aptIndex];
-                if (guests > apt.maxGuests) { alert(`This apartment max guests is ${apt.maxGuests}`); return; }
-
-                let total = 0;
-                let current = new Date(checkin);
-                const end = new Date(checkout);
-                while (current < end) {
-                    const dateStr = current.toISOString().split('T')[0];
-                    const dayData = siteData.availability?.[aptIndex]?.[dateStr] || {};
-                    const available = dayData.available !== false;
-                    if (!available) { alert(`Apartment not available on ${dateStr}`); return; }
-                    const price = dayData.price || apt.basePrice;
-                    total += price;
-                    current.setDate(current.getDate() + 1);
-                }
-
-                // Extra guest fee
-                const extraGuests = Math.max(0, guests - 2);
-                total += extraGuests * (apt.extraGuestFee || 0);
-
-                alert(`Total for ${guests} guest(s): $${total}`);
-            });
-
-            // Add event listeners for "Add" buttons
-            document.getElementById('add-apartment').addEventListener('click', () => {
-                siteData.apartment.push({ title: 'New Image', desc: 'Description', basePrice: 200, maxGuests: 2, extraGuestFee: 20, image: '' });
-                populateAdminForms(); populateApartmentSelect();
-            });
-            document.getElementById('add-service').addEventListener('click', () => {
-                siteData.services.push({ icon: 'fas fa-star', title: 'New Service', desc: 'Description' });
-                populateAdminForms();
-            });
-            document.getElementById('add-testimonial').addEventListener('click', () => {
-                siteData.testimonials.push({ text: 'New testimonial', author: 'Guest' });
-                populateAdminForms();
-            });
-            document.getElementById('add-tour').addEventListener('click', () => {
-                siteData.tours.items.push({ title: 'New Tour', desc: 'Description', image: '' });
-                populateAdminForms();
-            });
-            document.getElementById('add-menu-item').addEventListener('click', () => {
-                siteData.menu.push({ text: 'New Link', url: '#' });
-                populateAdminForms();
-            });
-
-            // Tab switching
-            const tabs = document.querySelectorAll('.admin-tab');
-            tabs.forEach(tab => {
-                tab.addEventListener('click', () => {
-                    document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
-                    document.querySelectorAll('.admin-tab-content').forEach(c => c.classList.remove('active'));
-                    tab.classList.add('active');
-                    document.getElementById('tab-' + tab.dataset.tab).classList.add('active');
-                    if (tab.dataset.tab === 'calendar') {
-                        populateApartmentSelect();
-                        renderCalendar();
-                    }
-                });
-            });
-
-            // Calendar navigation
-            document.getElementById('calendar-prev-month').addEventListener('click', () => {
-                currentCalendarDate.setMonth(currentCalendarDate.getMonth() - 1);
-                renderCalendar();
-            });
-            document.getElementById('calendar-next-month').addEventListener('click', () => {
-                currentCalendarDate.setMonth(currentCalendarDate.getMonth() + 1);
-                renderCalendar();
-            });
-            document.getElementById('calendar-apartment-select').addEventListener('change', renderCalendar);
-
-            // Admin icon click
-            const adminIcon = document.getElementById('adminIcon');
-            const adminOverlay = document.getElementById('adminOverlay');
-            const loginContainer = document.getElementById('loginContainer');
-            const adminDashboard = document.getElementById('adminDashboard');
-
-            adminIcon.addEventListener('click', () => {
-                if (auth.currentUser) {
-                    loginContainer.style.display = 'none';
-                    adminDashboard.style.display = 'block';
-                    adminOverlay.style.display = 'flex';
-                    setTimeout(() => {
-                        setupUploadButtons();
-                        populateApartmentSelect();
-                        renderCalendar();
-                    }, 100);
-                } else {
-                    loginContainer.style.display = 'block';
-                    adminDashboard.style.display = 'none';
-                    adminOverlay.style.display = 'flex';
-                }
-            });
-
-            // Login button
-            document.getElementById('loginBtn').addEventListener('click', async () => {
-                const email = document.getElementById('loginEmail').value;
-                const password = document.getElementById('loginPassword').value;
-                const errorDiv = document.getElementById('loginError');
-                try {
-                    await auth.signInWithEmailAndPassword(email, password);
-                    loginContainer.style.display = 'none';
-                    adminDashboard.style.display = 'block';
-                    errorDiv.textContent = '';
-                    setupUploadButtons();
-                    populateApartmentSelect();
-                    renderCalendar();
-                } catch (error) {
-                    errorDiv.textContent = error.message;
-                }
-            });
-
-            // Logout button
-            document.getElementById('logoutBtn').addEventListener('click', async () => {
-                await auth.signOut();
+                await saveToFirebase();
+                renderSite();
+                updateAvailabilityOverview();
+                alert('Changes saved');
                 adminOverlay.style.display = 'none';
-                loginContainer.style.display = 'block';
-                adminDashboard.style.display = 'none';
-            });
-
-            // Close admin
-            document.getElementById('closeAdmin').addEventListener('click', () => {
-                adminOverlay.style.display = 'none';
-            });
-
-            // Save changes
-            document.getElementById('saveChanges').addEventListener('click', async () => {
-                const saveBtn = document.getElementById('saveChanges');
-                saveBtn.disabled = true; saveBtn.textContent = 'Saving...';
-                try {
-                    updateDataFromForms();
-                    collectCalendarData();
-                    renderSite();
-                    await saveToFirebase();
-                    alert('Changes saved successfully!');
-                    adminOverlay.style.display = 'none';
-                    updateAvailabilityOverview();
-                } catch (error) {
-                    alert('Error saving: ' + error.message);
-                } finally {
-                    saveBtn.disabled = false; saveBtn.textContent = 'Save Changes';
-                }
             });
 
             // Start
