@@ -41,12 +41,19 @@
             font-weight: 700;
             color: #1a1a1a;
             letter-spacing: 2px;
-            margin-bottom: 20px;
+            margin-bottom: 5px;
+        }
+        .loader-sub {
+            font-size: clamp(1rem, 4vw, 1.5rem);
+            color: #c9a86c;
+            letter-spacing: 2px;
+            text-transform: uppercase;
         }
         .loader-spinner {
             font-size: clamp(1.5rem, 5vw, 2rem);
             color: #c9a86c;
             animation: spin 1s infinite linear;
+            margin-top: 20px;
         }
         @keyframes spin {
             0% { transform: rotate(0deg); }
@@ -150,21 +157,42 @@
         .about-image { border-radius: 16px; overflow: hidden; box-shadow: var(--shadow-md); transform: perspective(1000px) rotateY(0deg); transition: var(--transition); }
         .about-image:hover { transform: perspective(1000px) rotateY(-2deg); }
         .about-image img { width: 100%; height: auto; object-fit: cover; display: block; }
-        /* ---------- GALLERY ---------- */
-        .gallery-grid { display: grid; grid-template-columns: 1fr; gap: 20px; margin-top: 30px; }
+        /* ---------- GALLERY (mobile first: 2 columns) ---------- */
+        .gallery-grid { 
+            display: grid; 
+            grid-template-columns: repeat(2, 1fr); 
+            gap: 15px; 
+            margin-top: 30px; 
+        }
         @media (min-width: 640px) {
-            .gallery-grid { grid-template-columns: repeat(2, 1fr); gap: 25px; }
+            .gallery-grid { 
+                grid-template-columns: repeat(3, 1fr); 
+                gap: 20px; 
+            }
         }
-        @media (min-width: 1024px) {
-            .gallery-grid { grid-template-columns: repeat(3, 1fr); gap: 30px; }
+        .gallery-card { 
+            background: white; 
+            border-radius: 16px; 
+            overflow: hidden; 
+            box-shadow: var(--shadow-sm); 
+            transition: var(--transition); 
+            border: 1px solid rgba(0,0,0,0.03); 
+            aspect-ratio: 4/3; 
         }
-        .gallery-card { background: white; border-radius: 20px; overflow: hidden; box-shadow: var(--shadow-sm); transition: var(--transition); border: 1px solid rgba(0,0,0,0.03); }
-        .gallery-card:hover { transform: translateY(-8px); box-shadow: var(--shadow-md); }
-        .gallery-card img { width: 100%; height: 250px; object-fit: cover; transition: var(--transition); display: block; }
-        @media (min-width: 768px) {
-            .gallery-card img { height: 300px; }
+        .gallery-card:hover { 
+            transform: translateY(-5px); 
+            box-shadow: var(--shadow-md); 
         }
-        .gallery-card:hover img { transform: scale(1.03); }
+        .gallery-card img { 
+            width: 100%; 
+            height: 100%; 
+            object-fit: cover; 
+            transition: var(--transition); 
+            display: block; 
+        }
+        .gallery-card:hover img { 
+            transform: scale(1.03); 
+        }
         /* Centered plus button below gallery */
         .gallery-plus-container {
             display: flex;
@@ -224,20 +252,90 @@
             .service-card i { font-size: 3.2rem; }
             .service-card h3 { font-size: 1.5rem; }
         }
-        /* ---------- TESTIMONIALS ---------- */
-        .testimonials { background: var(--dark); color: white; position: relative; overflow: hidden; padding: 60px 0; }
-        .testimonials::before { content: ''; position: absolute; top: -30%; right: -10%; width: 400px; height: 400px; background: var(--primary); opacity: 0.05; border-radius: 50%; }
-        .testimonials .section-title h2, .testimonials .section-title p { color: white; }
-        .testimonial-card { max-width: 800px; margin: 0 auto; text-align: center; padding: 30px 20px; background: rgba(255,255,255,0.03); backdrop-filter: blur(10px); border-radius: 30px; border: 1px solid rgba(255,255,255,0.05); }
-        @media (min-width: 768px) {
-            .testimonial-card { padding: 40px; }
+        /* ---------- TESTIMONIALS CAROUSEL ---------- */
+        .testimonials {
+            background: var(--dark);
+            color: white;
+            position: relative;
+            overflow: hidden;
+            padding: 60px 0;
         }
-        .testimonial-card i { font-size: 2.5rem; color: var(--primary); margin-bottom: 20px; opacity: 0.5; }
-        .testimonial-card p { font-size: 1.3rem; font-family: 'Playfair Display', serif; margin-bottom: 20px; line-height: 1.5; font-style: italic; }
-        .testimonial-author { font-weight: 600; color: var(--primary); font-size: 1.1rem; }
-        @media (min-width: 768px) {
-            .testimonial-card p { font-size: 1.6rem; }
-            .testimonial-author { font-size: 1.2rem; }
+        .testimonials .section-title h2,
+        .testimonials .section-title p {
+            color: white;
+        }
+        .testimonials-carousel {
+            position: relative;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 40px;
+        }
+        .testimonials-track {
+            display: flex;
+            overflow: hidden;
+            scroll-behavior: smooth;
+            gap: 20px;
+        }
+        .testimonial-card {
+            flex: 0 0 calc(33.333% - 14px);
+            min-width: 250px;
+            background: rgba(255,255,255,0.03);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 25px 20px;
+            border: 1px solid rgba(255,255,255,0.05);
+            text-align: center;
+            transition: var(--transition);
+        }
+        @media (max-width: 768px) {
+            .testimonial-card {
+                flex: 0 0 calc(100% - 20px);
+            }
+        }
+        .testimonial-card i {
+            font-size: 2rem;
+            color: var(--primary);
+            margin-bottom: 15px;
+            opacity: 0.5;
+        }
+        .testimonial-card p {
+            font-size: 1rem;
+            font-family: 'Playfair Display', serif;
+            margin-bottom: 15px;
+            line-height: 1.5;
+            font-style: italic;
+        }
+        .testimonial-author {
+            font-weight: 600;
+            color: var(--primary);
+        }
+        .carousel-arrow {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 40px;
+            height: 40px;
+            background: var(--primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--dark);
+            cursor: pointer;
+            transition: var(--transition);
+            z-index: 10;
+            border: none;
+            font-size: 1.2rem;
+        }
+        .carousel-arrow:hover {
+            background: var(--primary-dark);
+            transform: translateY(-50%) scale(1.1);
+        }
+        .carousel-arrow.left {
+            left: 0;
+        }
+        .carousel-arrow.right {
+            right: 0;
         }
         /* ---------- TOURS ---------- */
         .tours-grid { display: grid; grid-template-columns: 1fr; gap: 20px; margin-top: 30px; }
@@ -254,7 +352,7 @@
         .tour-info h4 { font-size: 1.3rem; margin-bottom: 8px; }
         .tour-info p { color: var(--text-light); font-size: 0.95rem; }
 
-        /* ---------- PREMIUM 3D SOCIAL TILES ---------- */
+        /* ---------- PREMIUM 3D SOCIAL TILES (Instagram & Facebook only) ---------- */
         .social-tiles-wrapper {
             text-align: center;
             margin-bottom: 40px;
@@ -318,10 +416,6 @@
             background: linear-gradient(145deg, #f5f8ff, #ffffff);
             border-color: rgba(66, 103, 178, 0.2);
         }
-        .premium-social-tile.tiktok {
-            background: linear-gradient(145deg, #f5f5f5, #ffffff);
-            border-color: rgba(0, 0, 0, 0.1);
-        }
         .premium-social-tile i {
             font-size: 3.5rem;
             margin-bottom: 0.5rem;
@@ -332,7 +426,6 @@
         }
         .premium-social-tile.instagram i { color: #e1306c; }
         .premium-social-tile.facebook i { color: #4267B2; }
-        .premium-social-tile.tiktok i { color: #010101; }
         .premium-social-tile span {
             font-weight: 500;
             font-size: 1.1rem;
@@ -364,10 +457,6 @@
         .premium-social-tile.facebook:hover {
             box-shadow: 0 40px 50px -15px rgba(66, 103, 178, 0.25), 
                         0 0 0 1px rgba(66, 103, 178, 0.15) inset;
-        }
-        .premium-social-tile.tiktok:hover {
-            box-shadow: 0 40px 50px -15px rgba(0, 0, 0, 0.3), 
-                        0 0 0 1px rgba(0, 0, 0, 0.1) inset;
         }
         .premium-social-tile:hover::before {
             opacity: 0.6;
@@ -572,6 +661,7 @@
     <!-- LOADER -->
     <div id="loader">
         <div class="loader-logo">Horizon</div>
+        <div class="loader-sub">Luxury Living</div>
         <div class="loader-spinner"><i class="fas fa-spinner"></i></div>
     </div>
 
@@ -603,7 +693,7 @@
     <!-- Main Content (dynamic) -->
     <main id="main-content"></main>
 
-    <!-- Premium 3D Social Tiles Section -->
+    <!-- Premium 3D Social Tiles Section (Instagram & Facebook only) -->
     <div class="container" style="padding-bottom: 20px;">
         <div class="social-tiles-wrapper">
             <h3>Connect With Us</h3>
@@ -615,10 +705,6 @@
                 <a href="#" class="premium-social-tile facebook" target="_blank">
                     <i class="fab fa-facebook-f"></i>
                     <span>Facebook</span>
-                </a>
-                <a href="#" class="premium-social-tile tiktok" target="_blank">
-                    <i class="fab fa-tiktok"></i>
-                    <span>TikTok</span>
                 </a>
             </div>
         </div>
@@ -779,7 +865,7 @@
                     <button class="add-btn" id="add-menu-item">+ Add Menu Item</button>
                 </div>
 
-                <!-- Settings Tab -->
+                <!-- Settings Tab (Instagram & Facebook only) -->
                 <div class="admin-tab-content" id="tab-settings">
                     <div class="admin-field"><label>Primary Color</label><input type="color" id="settings-color" value="#c9a86c"></div>
                     <div class="admin-field">
@@ -792,7 +878,7 @@
                     </div>
                     <div class="admin-field"><label>Max Guests</label><input type="number" id="settings-maxGuests" value="12"></div>
                     
-                    <!-- Social Links Fields -->
+                    <!-- Social Links Fields (no TikTok) -->
                     <hr>
                     <h3>Social Media Links</h3>
                     <div class="admin-field">
@@ -802,10 +888,6 @@
                     <div class="admin-field">
                         <label>Facebook URL</label>
                         <input type="url" id="settings-social-facebook" placeholder="https://facebook.com/...">
-                    </div>
-                    <div class="admin-field">
-                        <label>TikTok URL</label>
-                        <input type="url" id="settings-social-tiktok" placeholder="https://tiktok.com/...">
                     </div>
                     <hr>
 
@@ -907,7 +989,7 @@
             emailjsInitialized = true;
         }
 
-        // Default data (note: menu includes "Gallery" instead of "Apartment")
+        // Default data (TikTok removed from social)
         const defaultData = {
             hero: {
                 subtitle: "Welcome to Horizon, a luxury apartment in the heart of the city",
@@ -942,7 +1024,9 @@
                 { icon: "fas fa-dumbbell", title: "Fitness Center", desc: "Fully equipped gym, yoga room and dance studio with stunning views." }
             ],
             testimonials: [
-                { text: "The hotel is well located. Rooms are very clean. Great services. Very kind people from front desk and delicious breakfast. And I really love the spa!", author: "Sarah Johnson" }
+                { text: "The hotel is well located. Rooms are very clean. Great services. Very kind people from front desk and delicious breakfast. And I really love the spa!", author: "Sarah Johnson" },
+                { text: "Amazing experience! The staff went above and beyond to make our stay memorable.", author: "Michael Chen" },
+                { text: "Perfect location, beautiful rooms, and exceptional service. Will definitely return!", author: "Emma Williams" }
             ],
             tours: {
                 title: "Discover The City",
@@ -956,7 +1040,7 @@
             menu: [
                 { text: "Home", url: "#home" },
                 { text: "About", url: "#about" },
-                { text: "Gallery", url: "#gallery" },   // changed from "Apartment" to "Gallery"
+                { text: "Gallery", url: "#gallery" },
                 { text: "Services", url: "#services" },
                 { text: "Contact", url: "#contact" }
             ],
@@ -970,8 +1054,7 @@
                 emailjsTemplate: "",
                 social: {
                     instagram: "#",
-                    facebook: "#",
-                    tiktok: "#"
+                    facebook: "#"
                 }
             },
             footer: {
@@ -1052,6 +1135,9 @@
                 navMenu.appendChild(li);
             });
 
+            // Gallery: only first 9 images
+            const displayedImages = siteData.gallery.slice(0, 9);
+
             const main = document.getElementById('main-content');
             main.innerHTML = `
                 <section class="container" id="about">
@@ -1073,13 +1159,12 @@
                         <h2>Gallery</h2>
                     </div>
                     <div class="gallery-grid" id="galleryGrid">
-                        ${siteData.gallery.map(item => `
+                        ${displayedImages.map(item => `
                             <div class="gallery-card">
                                 <img src="${item.image}" alt="${item.title}">
                             </div>
                         `).join('')}
                     </div>
-                    <!-- Centered plus button below gallery -->
                     <div class="gallery-plus-container">
                         <div class="gallery-plus" id="viewAllGallery">
                             <i class="fas fa-plus"></i>
@@ -1121,12 +1206,20 @@
                     <div class="container">
                         <div class="section-title">
                             <div class="subtitle">High standards of hospitality</div>
-                            <h2>We strive to provide our guests with luxury, comfort & tailor-made service.</h2>
+                            <h2>What Our Guests Say</h2>
                         </div>
-                        <div class="testimonial-card">
-                            <i class="fas fa-quote-left"></i>
-                            <p>${siteData.testimonials[0].text}</p>
-                            <div class="testimonial-author">— ${siteData.testimonials[0].author}</div>
+                        <div class="testimonials-carousel">
+                            <button class="carousel-arrow left" id="testimonialPrev"><i class="fas fa-chevron-left"></i></button>
+                            <div class="testimonials-track" id="testimonialTrack">
+                                ${siteData.testimonials.map(t => `
+                                    <div class="testimonial-card">
+                                        <i class="fas fa-quote-left"></i>
+                                        <p>${t.text}</p>
+                                        <div class="testimonial-author">— ${t.author}</div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                            <button class="carousel-arrow right" id="testimonialNext"><i class="fas fa-chevron-right"></i></button>
                         </div>
                     </div>
                 </section>
@@ -1151,8 +1244,22 @@
                 </section>
             `;
 
-            // Attach event listener to the plus button
+            // Attach gallery plus button
             document.getElementById('viewAllGallery')?.addEventListener('click', openFullGallery);
+
+            // Testimonials carousel
+            const track = document.getElementById('testimonialTrack');
+            const prevBtn = document.getElementById('testimonialPrev');
+            const nextBtn = document.getElementById('testimonialNext');
+            if (track && prevBtn && nextBtn) {
+                const scrollAmount = 300; // Adjust as needed
+                prevBtn.addEventListener('click', () => {
+                    track.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+                });
+                nextBtn.addEventListener('click', () => {
+                    track.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+                });
+            }
 
             const footerGrid = document.getElementById('footer-grid');
             footerGrid.innerHTML = `
@@ -1173,32 +1280,12 @@
             `;
             document.getElementById('copyright').textContent = siteData.footer.copyright;
 
-            // Update social media links
+            // Update social media links (Instagram & Facebook)
             const instaTile = document.querySelector('.premium-social-tile.instagram');
             const fbTile = document.querySelector('.premium-social-tile.facebook');
-            const tiktokTile = document.querySelector('.premium-social-tile.tiktok');
-            
             if (instaTile) instaTile.href = siteData.settings.social?.instagram || '#';
             if (fbTile) fbTile.href = siteData.settings.social?.facebook || '#';
-            if (tiktokTile) tiktokTile.href = siteData.settings.social?.tiktok || '#';
         }
-
-        // Open full gallery modal
-        function openFullGallery() {
-            const modal = document.getElementById('fullGalleryModal');
-            const grid = document.getElementById('fullGalleryGrid');
-            grid.innerHTML = siteData.gallery.map(item => `<img src="${item.image}" alt="${item.title}" onclick="window.open(this.src)">`).join('');
-            modal.style.display = 'flex';
-        }
-
-        // Close full gallery modal
-        document.getElementById('closeFullGallery').addEventListener('click', () => {
-            document.getElementById('fullGalleryModal').style.display = 'none';
-        });
-        window.addEventListener('click', (e) => {
-            const modal = document.getElementById('fullGalleryModal');
-            if (e.target === modal) modal.style.display = 'none';
-        });
 
         function populateGuestDropdown(maxGuests) {
             const select = document.getElementById('booking-guests');
@@ -1340,10 +1427,9 @@
             document.getElementById('settings-emailjs-service').value = siteData.settings.emailjsService || '';
             document.getElementById('settings-emailjs-template').value = siteData.settings.emailjsTemplate || '';
 
-            // Social links
+            // Social links (Instagram & Facebook only)
             document.getElementById('settings-social-instagram').value = siteData.settings.social?.instagram || '#';
             document.getElementById('settings-social-facebook').value = siteData.settings.social?.facebook || '#';
-            document.getElementById('settings-social-tiktok').value = siteData.settings.social?.tiktok || '#';
 
             // Footer
             document.getElementById('copyright-input').value = siteData.footer.copyright;
@@ -2085,11 +2171,10 @@ END:VEVENT
             siteData.settings.emailjsService = document.getElementById('settings-emailjs-service').value;
             siteData.settings.emailjsTemplate = document.getElementById('settings-emailjs-template').value;
 
-            // Social links
+            // Social links (Instagram & Facebook only)
             if (!siteData.settings.social) siteData.settings.social = {};
             siteData.settings.social.instagram = document.getElementById('settings-social-instagram').value;
             siteData.settings.social.facebook = document.getElementById('settings-social-facebook').value;
-            siteData.settings.social.tiktok = document.getElementById('settings-social-tiktok').value;
 
             // Footer
             siteData.footer.copyright = document.getElementById('copyright-input').value;
@@ -2104,6 +2189,22 @@ END:VEVENT
             renderSite();
             alert('Changes saved');
             adminOverlay.style.display = 'none';
+        });
+
+        // Full gallery modal functions
+        function openFullGallery() {
+            const modal = document.getElementById('fullGalleryModal');
+            const grid = document.getElementById('fullGalleryGrid');
+            grid.innerHTML = siteData.gallery.map(item => `<img src="${item.image}" alt="${item.title}" onclick="window.open(this.src)">`).join('');
+            modal.style.display = 'flex';
+        }
+
+        document.getElementById('closeFullGallery').addEventListener('click', () => {
+            document.getElementById('fullGalleryModal').style.display = 'none';
+        });
+        window.addEventListener('click', (e) => {
+            const modal = document.getElementById('fullGalleryModal');
+            if (e.target === modal) modal.style.display = 'none';
         });
 
         // Start
