@@ -362,6 +362,7 @@
             transition: var(--transition); 
             border: 1px solid rgba(0,0,0,0.03); 
             aspect-ratio: 4/3; 
+            cursor: pointer; /* indicate clickable */
         }
         .gallery-card:hover { 
             transform: translateY(-5px); 
@@ -885,6 +886,42 @@
             transform: scale(1.05);
         }
 
+        /* ---------- LIGHTBOX (new) ---------- */
+        .lightbox-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.95);
+            z-index: 5000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .lightbox-content {
+            max-width: 90vw;
+            max-height: 90vh;
+            object-fit: contain;
+            border-radius: 8px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+        }
+        .lightbox-close {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            color: white;
+            font-size: 40px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+            z-index: 5010;
+        }
+        .lightbox-close:hover {
+            color: var(--primary);
+        }
+
         /* ---------- GALLERY ORDER (new) ---------- */
         .gallery-order-list {
             display: flex;
@@ -1233,6 +1270,12 @@
         </div>
     </div>
 
+    <!-- LIGHTBOX MODAL (new) -->
+    <div class="lightbox-modal" id="lightboxModal">
+        <span class="lightbox-close" id="lightboxClose">&times;</span>
+        <img class="lightbox-content" id="lightboxImage" src="" alt="Enlarged view">
+    </div>
+
     <script>
         // Hide loader after 4 seconds
         setTimeout(() => {
@@ -1434,6 +1477,20 @@
             updateMobile();
         }
 
+        // Lightbox function
+        function openLightbox(src) {
+            document.getElementById('lightboxImage').src = src;
+            document.getElementById('lightboxModal').style.display = 'flex';
+        }
+
+        document.getElementById('lightboxClose').addEventListener('click', () => {
+            document.getElementById('lightboxModal').style.display = 'none';
+        });
+        window.addEventListener('click', (e) => {
+            const modal = document.getElementById('lightboxModal');
+            if (e.target === modal) modal.style.display = 'none';
+        });
+
         function renderSite() {
             document.getElementById('hero').style.backgroundImage = `linear-gradient(135deg, rgba(0,0,0,0.4), rgba(0,0,0,0.2)), url('${siteData.hero.bgImage}')`;
             document.getElementById('hero-subtitle').textContent = siteData.hero.subtitle;
@@ -1492,7 +1549,7 @@
                     </div>
                     <div class="gallery-grid" id="galleryGrid">
                         ${displayedImages.map(item => `
-                            <div class="gallery-card">
+                            <div class="gallery-card" onclick="openLightbox('${item.image}')">
                                 <img src="${item.image}" alt="${item.title}">
                             </div>
                         `).join('')}
@@ -2546,7 +2603,8 @@ END:VEVENT
         function openFullGallery() {
             const modal = document.getElementById('fullGalleryModal');
             const grid = document.getElementById('fullGalleryGrid');
-            grid.innerHTML = siteData.gallery.map(item => `<img src="${item.image}" alt="${item.title}" onclick="window.open(this.src)">`).join('');
+            // Generate images with lightbox click
+            grid.innerHTML = siteData.gallery.map(item => `<img src="${item.image}" alt="${item.title}" onclick="openLightbox('${item.image}')">`).join('');
             modal.style.display = 'flex';
         }
 
