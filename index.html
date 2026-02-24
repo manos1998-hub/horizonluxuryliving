@@ -165,26 +165,29 @@
             .gallery-card img { height: 300px; }
         }
         .gallery-card:hover img { transform: scale(1.03); }
-        /* Plus tile for "View all" */
-        .gallery-card.plus-tile {
+        /* Centered plus button below gallery */
+        .gallery-plus-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 30px;
+        }
+        .gallery-plus {
+            width: 60px;
+            height: 60px;
+            background: var(--primary);
+            border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            background: #f8f8f8;
-            cursor: pointer;
-            font-size: 4rem;
-            color: var(--primary);
-            transition: var(--transition);
-            height: 250px;
-        }
-        @media (min-width: 768px) {
-            .gallery-card.plus-tile { height: 300px; }
-        }
-        .gallery-card.plus-tile:hover {
-            background: var(--primary);
             color: white;
-            transform: translateY(-8px);
-            box-shadow: var(--shadow-md);
+            font-size: 2rem;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: var(--shadow-sm);
+        }
+        .gallery-plus:hover {
+            background: var(--primary-dark);
+            transform: scale(1.1) rotate(90deg);
         }
         /* ---------- DINING ---------- */
         .dining { background: var(--light-gray); }
@@ -1075,8 +1078,10 @@
                                 <img src="${item.image}" alt="${item.title}">
                             </div>
                         `).join('')}
-                        <!-- Plus tile for "View all" -->
-                        <div class="gallery-card plus-tile" id="viewAllGallery">
+                    </div>
+                    <!-- Centered plus button below gallery -->
+                    <div class="gallery-plus-container">
+                        <div class="gallery-plus" id="viewAllGallery">
                             <i class="fas fa-plus"></i>
                         </div>
                     </div>
@@ -1146,7 +1151,7 @@
                 </section>
             `;
 
-            // Attach event listener to the plus tile
+            // Attach event listener to the plus button
             document.getElementById('viewAllGallery')?.addEventListener('click', openFullGallery);
 
             const footerGrid = document.getElementById('footer-grid');
