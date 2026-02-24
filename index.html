@@ -79,64 +79,248 @@
             .container { padding: 60px 0; }
         }
         /* ---------- HEADER ---------- */
-        .site-header { position: absolute; top: 0; left: 0; width: 100%; z-index: 100; padding: 20px 0; background: transparent; }
-        .header-inner { display: flex; justify-content: space-between; align-items: center; width: 90%; max-width: 1400px; margin: 0 auto; }
-        .logo { font-family: 'Playfair Display', serif; font-size: 24px; font-weight: 700; color: white; text-shadow: 0 4px 20px rgba(0,0,0,0.3); letter-spacing: 1px; }
+        .site-header {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 100;
+            padding: 15px 0;
+            background: transparent;
+        }
+        .header-inner {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 90%;
+            max-width: 1400px;
+            margin: 0 auto;
+            gap: 10px;
+        }
+        @media (min-width: 769px) {
+            .header-inner {
+                flex-direction: row;
+                justify-content: space-between;
+            }
+        }
+        .logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 24px;
+            font-weight: 700;
+            color: white;
+            text-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            letter-spacing: 1px;
+        }
         @media (min-width: 768px) {
             .logo { font-size: 28px; }
         }
-        .nav-menu { display: none; }
-        @media (min-width: 992px) {
-            .nav-menu { display: flex; list-style: none; gap: 40px; }
+        /* Mobile booking bar (visible only on mobile) */
+        .mobile-booking-bar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            width: 100%;
+            background: rgba(255,255,255,0.2);
+            backdrop-filter: blur(10px);
+            border-radius: 40px;
+            padding: 8px;
+            border: 1px solid rgba(255,255,255,0.3);
         }
-        .nav-menu a { color: white; text-decoration: none; font-weight: 500; font-size: 15px; transition: var(--transition); text-shadow: 0 2px 8px rgba(0,0,0,0.3); position: relative; }
-        .nav-menu a::after { content: ''; position: absolute; bottom: -4px; left: 0; width: 0%; height: 2px; background: var(--primary); transition: var(--transition); }
-        .nav-menu a:hover::after { width: 100%; }
+        .mobile-booking-bar .booking-input {
+            background: rgba(255,255,255,0.2);
+            border: 1px solid rgba(255,255,255,0.3);
+            padding: 10px 12px;
+            border-radius: 40px;
+            color: white;
+            font-size: 14px;
+            flex: 1 1 120px;
+            min-width: 0;
+        }
+        .mobile-booking-bar .book-btn {
+            background: var(--primary);
+            border: none;
+            padding: 10px 16px;
+            border-radius: 40px;
+            color: var(--dark);
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+        @media (min-width: 769px) {
+            .mobile-booking-bar {
+                display: none;
+            }
+        }
+        .nav-menu {
+            display: none;
+        }
+        @media (min-width: 992px) {
+            .nav-menu {
+                display: flex;
+                list-style: none;
+                gap: 40px;
+            }
+        }
+        .nav-menu a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 15px;
+            transition: var(--transition);
+            text-shadow: 0 2px 8px rgba(0,0,0,0.3);
+            position: relative;
+        }
+        .nav-menu a::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0%;
+            height: 2px;
+            background: var(--primary);
+            transition: var(--transition);
+        }
+        .nav-menu a:hover::after {
+            width: 100%;
+        }
+        /* Hide hero booking bar on mobile */
+        @media (max-width: 768px) {
+            .hero .booking-bar {
+                display: none;
+            }
+        }
         /* ---------- HERO ---------- */
         .hero {
             height: 100vh;
             min-height: 600px;
             background: linear-gradient(135deg, rgba(0,0,0,0.4), rgba(0,0,0,0.2)), 
                         url('https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?ixlib=rb-4.0.3&auto=format&fit=crop&w=1950&q=80') center/cover no-repeat;
-            display: flex; align-items: center; text-align: center; color: white; position: relative;
+            display: flex;
+            align-items: center;
+            text-align: center;
+            color: white;
+            position: relative;
         }
-        .hero::before { content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 150px; background: linear-gradient(to top, rgba(0,0,0,0.4), transparent); z-index: 1; }
-        .hero-content { position: relative; z-index: 2; max-width: 1000px; margin: 0 auto; padding: 0 20px; width: 100%; }
-        .hero-subtitle { font-size: 12px; letter-spacing: 3px; text-transform: uppercase; margin-bottom: 15px; font-weight: 400; color: rgba(255,255,255,0.9); }
+        .hero::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 150px;
+            background: linear-gradient(to top, rgba(0,0,0,0.4), transparent);
+            z-index: 1;
+        }
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0 20px;
+            width: 100%;
+        }
+        .hero-subtitle {
+            font-size: 12px;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            margin-bottom: 15px;
+            font-weight: 400;
+            color: rgba(255,255,255,0.9);
+        }
         @media (min-width: 768px) {
             .hero-subtitle { font-size: 14px; letter-spacing: 4px; }
         }
-        .hero h1 { font-size: clamp(2.2rem, 8vw, 5.5rem); margin-bottom: 15px; line-height: 1.1; font-weight: 700; text-shadow: 0 4px 30px rgba(0,0,0,0.3); }
-        .hero p { font-size: 1rem; margin-bottom: 30px; font-weight: 300; opacity: 0.95; max-width: 600px; margin-left: auto; margin-right: auto; }
+        .hero h1 {
+            font-size: clamp(2.2rem, 8vw, 5.5rem);
+            margin-bottom: 15px;
+            line-height: 1.1;
+            font-weight: 700;
+            text-shadow: 0 4px 30px rgba(0,0,0,0.3);
+        }
+        .hero p {
+            font-size: 1rem;
+            margin-bottom: 30px;
+            font-weight: 300;
+            opacity: 0.95;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
         @media (min-width: 768px) {
             .hero p { font-size: 1.2rem; margin-bottom: 40px; }
         }
-        /* ---------- AVAILABILITY & BOOKING BAR ---------- */
+        /* ---------- BOOKING BAR (desktop) ---------- */
         .booking-bar {
-            background: rgba(255,255,255,0.15); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
-            border-radius: 30px; padding: 10px; display: flex; flex-direction: column; gap: 10px;
-            max-width: 100%; margin: 0 auto; border: 1px solid rgba(255,255,255,0.2); box-shadow: 0 20px 40px -10px rgba(0,0,0,0.3);
+            background: rgba(255,255,255,0.15);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border-radius: 30px;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-width: 100%;
+            margin: 0 auto;
+            border: 1px solid rgba(255,255,255,0.2);
+            box-shadow: 0 20px 40px -10px rgba(0,0,0,0.3);
         }
         @media (min-width: 768px) {
-            .booking-bar { border-radius: 60px; padding: 8px; flex-direction: row; align-items: center; }
+            .booking-bar {
+                border-radius: 60px;
+                padding: 8px;
+                flex-direction: row;
+                align-items: center;
+            }
         }
         .booking-input {
-            background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.3); padding: 15px 20px;
-            border-radius: 50px; color: white; font-size: 16px; width: 100%; font-family: 'Inter', sans-serif;
-            transition: var(--transition); -webkit-appearance: none;
+            background: rgba(255,255,255,0.2);
+            border: 1px solid rgba(255,255,255,0.3);
+            padding: 15px 20px;
+            border-radius: 50px;
+            color: white;
+            font-size: 16px;
+            width: 100%;
+            font-family: 'Inter', sans-serif;
+            transition: var(--transition);
+            -webkit-appearance: none;
         }
-        .booking-input:focus { outline: none; border-color: var(--primary); background: rgba(255,255,255,0.25); }
-        .booking-input::placeholder { color: rgba(255,255,255,0.8); }
-        .booking-input option { color: var(--dark); }
+        .booking-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: rgba(255,255,255,0.25);
+        }
+        .booking-input::placeholder {
+            color: rgba(255,255,255,0.8);
+        }
+        .booking-input option {
+            color: var(--dark);
+        }
         .book-btn {
-            background: var(--primary); border: none; padding: 15px 25px; border-radius: 50px; color: var(--dark);
-            font-weight: 600; cursor: pointer; transition: var(--transition); font-size: 16px; letter-spacing: 1px;
-            box-shadow: 0 8px 20px -8px rgba(201,168,108,0.5); width: 100%;
+            background: var(--primary);
+            border: none;
+            padding: 15px 25px;
+            border-radius: 50px;
+            color: var(--dark);
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 16px;
+            letter-spacing: 1px;
+            box-shadow: 0 8px 20px -8px rgba(201,168,108,0.5);
+            width: 100%;
         }
         @media (min-width: 768px) {
-            .book-btn { width: auto; padding: 15px 40px; }
+            .book-btn {
+                width: auto;
+                padding: 15px 40px;
+            }
         }
-        .book-btn:hover { background: var(--primary-dark); transform: translateY(-3px); box-shadow: 0 15px 30px -8px rgba(201,168,108,0.7); }
+        .book-btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px -8px rgba(201,168,108,0.7);
+        }
         /* ---------- SECTION TITLES ---------- */
         .section-title { text-align: center; margin-bottom: 50px; }
         .section-title .subtitle { font-size: 12px; letter-spacing: 2px; text-transform: uppercase; color: var(--primary); margin-bottom: 10px; font-weight: 500; }
@@ -252,7 +436,7 @@
             .service-card i { font-size: 3.2rem; }
             .service-card h3 { font-size: 1.5rem; }
         }
-        /* ---------- TESTIMONIALS CAROUSEL ---------- */
+        /* ---------- TESTIMONIALS CAROUSEL (fixed mobile) ---------- */
         .testimonials {
             background: var(--dark);
             color: white;
@@ -272,13 +456,28 @@
         }
         .testimonials-track {
             display: flex;
-            overflow: hidden;
-            scroll-behavior: smooth;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            -webkit-overflow-scrolling: touch;
             gap: 20px;
+            padding-bottom: 10px; /* space for scrollbar */
+            scrollbar-width: thin;
+            scrollbar-color: var(--primary) #333;
+        }
+        .testimonials-track::-webkit-scrollbar {
+            height: 6px;
+        }
+        .testimonials-track::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 10px;
+        }
+        .testimonials-track::-webkit-scrollbar-track {
+            background: #333;
+            border-radius: 10px;
         }
         .testimonial-card {
-            flex: 0 0 calc(33.333% - 14px);
-            min-width: 250px;
+            flex: 0 0 calc(100% - 20px);
+            scroll-snap-align: start;
             background: rgba(255,255,255,0.03);
             backdrop-filter: blur(10px);
             border-radius: 20px;
@@ -287,9 +486,9 @@
             text-align: center;
             transition: var(--transition);
         }
-        @media (max-width: 768px) {
+        @media (min-width: 768px) {
             .testimonial-card {
-                flex: 0 0 calc(100% - 20px);
+                flex: 0 0 calc(33.333% - 14px);
             }
         }
         .testimonial-card i {
@@ -304,6 +503,7 @@
             margin-bottom: 15px;
             line-height: 1.5;
             font-style: italic;
+            word-break: break-word;
         }
         .testimonial-author {
             font-weight: 600;
@@ -698,13 +898,20 @@
     <header class="site-header">
         <div class="header-inner">
             <div class="logo" id="site-logo">Horizon</div>
+            <!-- Mobile booking bar (visible only on mobile) -->
+            <div class="mobile-booking-bar" id="mobileBookingBar">
+                <input type="date" class="booking-input" id="mobile-booking-checkin" value="2026-06-01">
+                <input type="date" class="booking-input" id="mobile-booking-checkout" value="2026-06-05">
+                <select class="booking-input" id="mobile-booking-guests"></select>
+                <button class="book-btn" id="mobile-book-btn">Book</button>
+            </div>
             <nav>
                 <ul class="nav-menu" id="nav-menu"></ul>
             </nav>
         </div>
     </header>
 
-    <!-- Hero Section with BOOKING BAR -->
+    <!-- Hero Section with BOOKING BAR (desktop only) -->
     <section class="hero" id="hero">
         <div class="hero-content">
             <div class="hero-subtitle" id="hero-subtitle">Welcome to Horizon, a luxury apartment in the heart of the city</div>
@@ -1136,6 +1343,7 @@
             updatePreviews();
             renderReservationsList();
             renderCalendar();
+            syncBookingBars(); // keep both bars in sync
         }
 
         async function saveToFirebase() {
@@ -1143,6 +1351,42 @@
             if (siteData.settings.emailjsPublic) {
                 initEmailJS(siteData.settings.emailjsPublic);
             }
+        }
+
+        // Sync mobile and desktop booking bars
+        function syncBookingBars() {
+            const desktopCheckin = document.getElementById('booking-checkin');
+            const desktopCheckout = document.getElementById('booking-checkout');
+            const desktopGuests = document.getElementById('booking-guests');
+            const mobileCheckin = document.getElementById('mobile-booking-checkin');
+            const mobileCheckout = document.getElementById('mobile-booking-checkout');
+            const mobileGuests = document.getElementById('mobile-booking-guests');
+
+            if (!desktopCheckin || !mobileCheckin) return;
+
+            // Function to update mobile from desktop
+            const updateMobile = () => {
+                mobileCheckin.value = desktopCheckin.value;
+                mobileCheckout.value = desktopCheckout.value;
+                mobileGuests.value = desktopGuests.value;
+            };
+            // Function to update desktop from mobile
+            const updateDesktop = () => {
+                desktopCheckin.value = mobileCheckin.value;
+                desktopCheckout.value = mobileCheckout.value;
+                desktopGuests.value = mobileGuests.value;
+            };
+
+            desktopCheckin.addEventListener('change', updateMobile);
+            desktopCheckout.addEventListener('change', updateMobile);
+            desktopGuests.addEventListener('change', updateMobile);
+
+            mobileCheckin.addEventListener('change', updateDesktop);
+            mobileCheckout.addEventListener('change', updateDesktop);
+            mobileGuests.addEventListener('change', updateDesktop);
+
+            // Initial sync
+            updateMobile();
         }
 
         function renderSite() {
@@ -1153,6 +1397,19 @@
             document.getElementById('booking-checkin').value = siteData.hero.checkIn;
             document.getElementById('booking-checkout').value = siteData.hero.checkOut;
             populateGuestDropdown(siteData.settings.maxGuests);
+
+            // Also populate mobile dropdown
+            const mobileGuests = document.getElementById('mobile-booking-guests');
+            if (mobileGuests) {
+                mobileGuests.innerHTML = '';
+                for (let i = 1; i <= siteData.settings.maxGuests; i++) {
+                    const option = document.createElement('option');
+                    option.value = i;
+                    option.textContent = i + (i === 1 ? ' Guest' : ' Guests');
+                    mobileGuests.appendChild(option);
+                }
+                mobileGuests.value = 2;
+            }
 
             const navMenu = document.getElementById('nav-menu');
             navMenu.innerHTML = '';
@@ -1277,7 +1534,7 @@
             // Attach gallery plus button
             document.getElementById('viewAllGallery')?.addEventListener('click', openFullGallery);
 
-            // Testimonials carousel
+            // Testimonials carousel arrows
             const track = document.getElementById('testimonialTrack');
             const prevBtn = document.getElementById('testimonialPrev');
             const nextBtn = document.getElementById('testimonialNext');
@@ -1633,11 +1890,13 @@
         const modal = document.getElementById('bookingModal');
         const closeModal = document.getElementById('closeModal');
         const bookBtn = document.getElementById('book-btn');
+        const mobileBookBtn = document.getElementById('mobile-book-btn');
         const bookingForm = document.getElementById('booking-form');
 
         let currentBooking = { checkin: '', checkout: '', guests: 0, total: 0, aptIdx: 0, nights: [] };
 
-        bookBtn.addEventListener('click', async () => {
+        function openBookingModal() {
+            // Use current values from either bar (they are synced)
             const checkin = document.getElementById('booking-checkin').value;
             const checkout = document.getElementById('booking-checkout').value;
             const guests = parseInt(document.getElementById('booking-guests').value);
@@ -1679,7 +1938,10 @@
             document.getElementById('modal-total').value = `$${total}`;
 
             modal.style.display = 'flex';
-        });
+        }
+
+        bookBtn.addEventListener('click', openBookingModal);
+        mobileBookBtn.addEventListener('click', openBookingModal);
 
         closeModal.addEventListener('click', () => { modal.style.display = 'none'; });
         window.addEventListener('click', (e) => { if (e.target === modal) modal.style.display = 'none'; });
@@ -2221,7 +2483,7 @@ END:VEVENT
             adminOverlay.style.display = 'none';
         });
 
-        // Full gallery modal functions (with improved close)
+        // Full gallery modal functions
         function openFullGallery() {
             const modal = document.getElementById('fullGalleryModal');
             const grid = document.getElementById('fullGalleryGrid');
@@ -2229,17 +2491,12 @@ END:VEVENT
             modal.style.display = 'flex';
         }
 
-        // Close via X button
         document.getElementById('closeFullGallery').addEventListener('click', () => {
             document.getElementById('fullGalleryModal').style.display = 'none';
         });
-
-        // Close via bottom button
         document.getElementById('closeFullGalleryBottom').addEventListener('click', () => {
             document.getElementById('fullGalleryModal').style.display = 'none';
         });
-
-        // Close via overlay click
         window.addEventListener('click', (e) => {
             const modal = document.getElementById('fullGalleryModal');
             if (e.target === modal) modal.style.display = 'none';
