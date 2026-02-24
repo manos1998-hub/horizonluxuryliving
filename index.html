@@ -558,6 +558,9 @@
             let emailjsInitialized = false;
             function initEmailJS(publicKey) { if(publicKey) { emailjs.init(publicKey); emailjsInitialized = true; } }
 
+            // Real-time listener for reservations
+            let unsubscribeReservations = null;
+
             // ---------- DEFAULT DATA ----------
             const defaultData = {
                 hero: {
@@ -621,7 +624,7 @@
             };
 
             let siteData = JSON.parse(JSON.stringify(defaultData));
-            let reservations = [];
+            let reservations = [];  // will be kept in sync by listener
 
             function mergeDeep(target, source) {
                 for(const key in source) {
@@ -652,6 +655,7 @@
                         mergeDeep(siteData, saved);
                     }
                     setDefaultDates(); // always override with current live dates
+                    // Initial load of reservations (listener will also pick them up later)
                     const resSnapshot = await reservationsCol.orderBy('createdAt','desc').get();
                     reservations = resSnapshot.docs.map(doc=>({ id:doc.id, ...doc.data() }));
                     if(siteData.settings.emailjsPublic) initEmailJS(siteData.settings.emailjsPublic);
@@ -1133,19 +1137,14 @@
                 };
                 try {
                     await reservationsCol.add(inquiry);
-                    const snap = await reservationsCol.orderBy('createdAt','desc').get();
-                    reservations = snap.docs.map(d=>({ id:d.id, ...d.data() }));
-                    renderReservationsList(); renderCalendar();
-
-                    // Send email notification
+                    // No need to manually fetch – listener will update UI
                     await sendAdminEmail(inquiry);
-
                     modal.style.display='none'; alert('Inquiry sent! You will be contacted shortly.');
                     bookingForm.reset();
                 } catch(err) { alert('Error: '+err.message); }
             });
 
-            // ---------- RESERVATION ACTIONS ----------
+            // ---------- RESERVATION ACTIONS (these update Firestore, listener will refresh UI) ----------
             window.confirmInquiry = async (resId, aptIdx, checkin, checkout) => {
                 if(!confirm('Confirm this inquiry? Dates will be blocked.')) return;
                 try {
@@ -1159,15 +1158,12 @@
                     }
                     await saveToFirebase();
                     await reservationsCol.doc(resId).update({ status:'confirmed' });
-                    const snap = await reservationsCol.orderBy('createdAt','desc').get();
-                    reservations = snap.docs.map(d=>({ id:d.id, ...d.data() }));
-                    renderReservationsList(); renderCalendar();
-                    alert('Inquiry confirmed.');
+                    // Listener will update reservations list and calendar will be re-rendered by listener's call to renderCalendar
                 } catch(err) { alert('Error: '+err.message); }
             };
             window.declineInquiry = async (resId) => {
                 if(!confirm('Decline this inquiry?')) return;
-                try { await reservationsCol.doc(resId).delete(); const snap = await reservationsCol.orderBy('createdAt','desc').get(); reservations = snap.docs.map(d=>({ id:d.id, ...d.data() })); renderReservationsList(); alert('Inquiry declined.'); } catch(err) { alert('Error: '+err.message); }
+                try { await reservationsCol.doc(resId).delete(); } catch(err) { alert('Error: '+err.message); }
             };
             window.cancelReservation = async (resId, aptIdx, checkin, checkout) => {
                 if(!confirm('Cancel confirmed reservation? Dates will become available.')) return;
@@ -1180,10 +1176,6 @@
                         cur.setDate(cur.getDate()+1);
                     }
                     await saveToFirebase();
-                    const snap = await reservationsCol.orderBy('createdAt','desc').get();
-                    reservations = snap.docs.map(d=>({ id:d.id, ...d.data() }));
-                    renderReservationsList(); renderCalendar();
-                    alert('Reservation cancelled.');
                 } catch(err) { alert('Error: '+err.message); }
             };
 
@@ -1262,7 +1254,7 @@
                 alert('Bulk pricing applied'); renderCalendar();
             });
 
-            // ---------- ADMIN LOGIN / LOGOUT ----------
+            // ---------- ADMIN LOGIN / LOGOUT with real-time listener setup ----------
             const adminIcon = document.getElementById('adminIcon');
             const adminOverlay = document.getElementById('adminOverlay');
             const loginContainer = document.getElementById('loginContainer');
@@ -1272,6 +1264,14 @@
                     loginContainer.style.display='none';
                     adminDashboard.style.display='block';
                     adminOverlay.style.display='flex';
+                    // Set up real-time listener if not already
+                    if (!unsubscribeReservations) {
+                        unsubscribeReservations = reservationsCol.orderBy('createdAt', 'desc').onSnapshot(snapshot => {
+                            reservations = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                            renderReservationsList();
+                            renderCalendar(); // because availability might have changed due to confirmations
+                        }, error => console.error("Listener error:", error));
+                    }
                     setTimeout(()=>{ renderCalendar(); renderGalleryOrderList(); },100);
                 } else {
                     loginContainer.style.display='block';
@@ -1287,11 +1287,23 @@
                     loginContainer.style.display='none';
                     adminDashboard.style.display='block';
                     document.getElementById('loginError').textContent='';
+                    // Set up real-time listener
+                    if (!unsubscribeReservations) {
+                        unsubscribeReservations = reservationsCol.orderBy('createdAt', 'desc').onSnapshot(snapshot => {
+                            reservations = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                            renderReservationsList();
+                            renderCalendar();
+                        }, error => console.error("Listener error:", error));
+                    }
                     renderCalendar(); renderGalleryOrderList();
                 } catch(err){ document.getElementById('loginError').textContent=err.message; }
             });
             document.getElementById('logoutBtn').addEventListener('click', async ()=>{
                 await auth.signOut();
+                if (unsubscribeReservations) {
+                    unsubscribeReservations();
+                    unsubscribeReservations = null;
+                }
                 adminOverlay.style.display='none';
                 loginContainer.style.display='block';
                 adminDashboard.style.display='none';
