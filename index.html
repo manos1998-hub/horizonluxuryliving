@@ -1089,6 +1089,32 @@
             closeModal.addEventListener('click', ()=>modal.style.display='none');
             window.addEventListener('click', e=>{ if(e.target===modal) modal.style.display='none'; });
 
+            // ---------- EMAIL SENDING FUNCTION ----------
+            async function sendAdminEmail(inquiry) {
+                if (!siteData.settings.adminEmail || !siteData.settings.emailjsService || !siteData.settings.emailjsTemplate || !emailjsInitialized) {
+                    console.warn('EmailJS not fully configured. Email not sent.');
+                    return;
+                }
+                const templateParams = {
+                    to_email: siteData.settings.adminEmail,
+                    apartment: inquiry.apartmentTitle,
+                    checkin: inquiry.checkIn,
+                    checkout: inquiry.checkOut,
+                    guests: inquiry.guests,
+                    total: inquiry.totalPrice,
+                    firstName: inquiry.firstName,
+                    lastName: inquiry.lastName,
+                    email: inquiry.email,
+                    phone: inquiry.phone
+                };
+                try {
+                    await emailjs.send(siteData.settings.emailjsService, siteData.settings.emailjsTemplate, templateParams);
+                    console.log('Admin email sent successfully.');
+                } catch (error) {
+                    console.error('Failed to send admin email:', error);
+                }
+            }
+
             bookingForm.addEventListener('submit', async (e)=>{
                 e.preventDefault();
                 const first = document.getElementById('modal-firstname').value.trim();
@@ -1110,10 +1136,12 @@
                     const snap = await reservationsCol.orderBy('createdAt','desc').get();
                     reservations = snap.docs.map(d=>({ id:d.id, ...d.data() }));
                     renderReservationsList(); renderCalendar();
-                    if(siteData.settings.adminEmail && siteData.settings.emailjsService && siteData.settings.emailjsTemplate && emailjsInitialized) {
-                        // simplified email send
-                    }
-                    modal.style.display='none'; alert('Inquiry sent!'); bookingForm.reset();
+
+                    // Send email notification
+                    await sendAdminEmail(inquiry);
+
+                    modal.style.display='none'; alert('Inquiry sent! You will be contacted shortly.');
+                    bookingForm.reset();
                 } catch(err) { alert('Error: '+err.message); }
             });
 
