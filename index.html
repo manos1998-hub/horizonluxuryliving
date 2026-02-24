@@ -536,6 +536,9 @@
 
     <script>
         (function() {
+            // Record start time for minimum 4s loader
+            const startTime = Date.now();
+
             // ---------- FIREBASE CONFIG ----------
             const firebaseConfig = {
                 apiKey: "AIzaSyBMzcjbqruiE_nJXhEfUWaASHbKE8YM60E",
@@ -660,7 +663,12 @@
                 renderCalendar();
                 syncBookingBars();
                 renderGalleryOrderList();
-                hideLoader(); // <-- hide loader when everything is ready
+                // Ensure loader stays at least 4 seconds
+                const elapsed = Date.now() - startTime;
+                const remaining = Math.max(0, 4000 - elapsed);
+                setTimeout(() => {
+                    hideLoader();
+                }, remaining);
             }
 
             async function saveToFirebase() {
