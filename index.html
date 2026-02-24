@@ -229,6 +229,140 @@
         .tour-info { padding: 20px; }
         .tour-info h4 { font-size: 1.3rem; margin-bottom: 8px; }
         .tour-info p { color: var(--text-light); font-size: 0.95rem; }
+
+        /* ---------- PREMIUM 3D SOCIAL TILES (white background, enhanced shadow) ---------- */
+        .social-tiles-wrapper {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        .social-tiles-wrapper h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            color: var(--dark);
+            margin-bottom: 30px;
+            font-weight: 600;
+        }
+        .premium-social-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            gap: 2.5rem;
+            perspective: 1200px;
+        }
+        .premium-social-tile {
+            position: relative;
+            width: 160px;
+            height: 160px;
+            border-radius: 16px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-decoration: none;
+            color: #2c2c2c;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.25), 
+                        0 0 0 1px rgba(0, 0, 0, 0.02) inset;
+            transform-style: preserve-3d;
+            transition: transform 0.4s ease, box-shadow 0.4s ease, border-color 0.3s ease;
+            will-change: transform;
+            overflow: hidden;
+        }
+        .premium-social-tile::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.8) 0%, rgba(255, 255, 255, 0) 70%);
+            opacity: 0.4;
+            transition: opacity 0.4s ease;
+            pointer-events: none;
+            z-index: 1;
+            mix-blend-mode: soft-light;
+        }
+        /* Brand-specific very subtle background tints */
+        .premium-social-tile.instagram {
+            background: linear-gradient(145deg, #fff9fb, #ffffff);
+            border-color: rgba(225, 48, 108, 0.2);
+        }
+        .premium-social-tile.facebook {
+            background: linear-gradient(145deg, #f5f8ff, #ffffff);
+            border-color: rgba(66, 103, 178, 0.2);
+        }
+        .premium-social-tile.tiktok {
+            background: linear-gradient(145deg, #f5f5f5, #ffffff);
+            border-color: rgba(0, 0, 0, 0.1);
+        }
+        .premium-social-tile i {
+            font-size: 3.5rem;
+            margin-bottom: 0.5rem;
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.05));
+            transition: transform 0.3s ease, filter 0.3s ease, color 0.3s ease;
+            z-index: 2;
+            position: relative;
+        }
+        /* Brand icon colors */
+        .premium-social-tile.instagram i { color: #e1306c; }
+        .premium-social-tile.facebook i { color: #4267B2; }
+        .premium-social-tile.tiktok i { color: #010101; }
+        .premium-social-tile span {
+            font-weight: 500;
+            font-size: 1.1rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
+            z-index: 2;
+            position: relative;
+            background: rgba(255, 255, 255, 0.7);
+            padding: 0.2rem 0.8rem;
+            border-radius: 30px;
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            font-family: 'Playfair Display', serif;
+            font-weight: 600;
+            color: #2c2c2c;
+        }
+        /* Hover effects with deeper shadows */
+        .premium-social-tile:hover {
+            transform: translateY(-8px) rotateX(2deg) rotateY(2deg) scale(1.02);
+            box-shadow: 0 40px 50px -15px rgba(0, 0, 0, 0.3), 
+                        0 0 0 1px rgba(0, 0, 0, 0.04) inset;
+            border-color: rgba(0, 0, 0, 0.1);
+        }
+        .premium-social-tile.instagram:hover {
+            box-shadow: 0 40px 50px -15px rgba(225, 48, 108, 0.25), 
+                        0 0 0 1px rgba(225, 48, 108, 0.15) inset;
+        }
+        .premium-social-tile.facebook:hover {
+            box-shadow: 0 40px 50px -15px rgba(66, 103, 178, 0.25), 
+                        0 0 0 1px rgba(66, 103, 178, 0.15) inset;
+        }
+        .premium-social-tile.tiktok:hover {
+            box-shadow: 0 40px 50px -15px rgba(0, 0, 0, 0.3), 
+                        0 0 0 1px rgba(0, 0, 0, 0.1) inset;
+        }
+        .premium-social-tile:hover::before {
+            opacity: 0.6;
+        }
+        .premium-social-tile:hover i {
+            transform: translateY(-2px);
+            filter: drop-shadow(0 6px 8px rgba(0, 0, 0, 0.15));
+        }
+        /* Responsive */
+        @media (max-width: 700px) {
+            .premium-social-container { gap: 1.5rem; }
+            .premium-social-tile { width: 130px; height: 130px; }
+            .premium-social-tile i { font-size: 2.8rem; }
+            .premium-social-tile span { font-size: 0.9rem; }
+        }
+
         /* ---------- FOOTER ---------- */
         footer { background: var(--dark); color: #aaa; padding: 60px 0 30px; }
         .footer-grid { display: grid; grid-template-columns: 1fr; gap: 40px; margin-bottom: 40px; }
@@ -241,9 +375,6 @@
         .footer-col h4 { color: white; margin-bottom: 20px; font-size: 1.2rem; letter-spacing: 0.5px; }
         .footer-col p, .footer-col a { color: #aaa; text-decoration: none; line-height: 2; transition: var(--transition); font-size: 0.95rem; }
         .footer-col a:hover { color: var(--primary); }
-        .social-icons { display: flex; gap: 15px; margin-top: 15px; }
-        .social-icons a { color: white; background: #333; width: 40px; height: 40px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; transition: var(--transition); }
-        .social-icons a:hover { background: var(--primary); color: var(--dark); transform: translateY(-3px); }
         .copyright { text-align: center; border-top: 1px solid #333; padding-top: 30px; color: #666; font-size: 0.9rem; }
         /* ---------- ADMIN ICON ---------- */
         .admin-icon {
@@ -396,6 +527,27 @@
 
     <!-- Main Content (dynamic) -->
     <main id="main-content"></main>
+
+    <!-- Premium 3D Social Tiles Section -->
+    <div class="container" style="padding-bottom: 20px;">
+        <div class="social-tiles-wrapper">
+            <h3>Connect With Us</h3>
+            <div class="premium-social-container">
+                <a href="#" class="premium-social-tile instagram" target="_blank">
+                    <i class="fab fa-instagram"></i>
+                    <span>Instagram</span>
+                </a>
+                <a href="#" class="premium-social-tile facebook" target="_blank">
+                    <i class="fab fa-facebook-f"></i>
+                    <span>Facebook</span>
+                </a>
+                <a href="#" class="premium-social-tile tiktok" target="_blank">
+                    <i class="fab fa-tiktok"></i>
+                    <span>TikTok</span>
+                </a>
+            </div>
+        </div>
+    </div>
 
     <!-- Footer -->
     <footer>
@@ -564,7 +716,24 @@
                         </select>
                     </div>
                     <div class="admin-field"><label>Max Guests</label><input type="number" id="settings-maxGuests" value="12"></div>
+                    
+                    <!-- 👇 NEW SOCIAL LINKS FIELDS -->
                     <hr>
+                    <h3>Social Media Links</h3>
+                    <div class="admin-field">
+                        <label>Instagram URL</label>
+                        <input type="url" id="settings-social-instagram" placeholder="https://instagram.com/...">
+                    </div>
+                    <div class="admin-field">
+                        <label>Facebook URL</label>
+                        <input type="url" id="settings-social-facebook" placeholder="https://facebook.com/...">
+                    </div>
+                    <div class="admin-field">
+                        <label>TikTok URL</label>
+                        <input type="url" id="settings-social-tiktok" placeholder="https://tiktok.com/...">
+                    </div>
+                    <hr>
+
                     <h3>Email Notifications</h3>
                     <div class="admin-field"><label>Admin Email</label><input type="email" id="settings-adminEmail"></div>
                     <div class="admin-field"><label>EmailJS Public Key</label><input type="text" id="settings-emailjs-public"></div>
@@ -715,7 +884,12 @@
                 adminEmail: "",
                 emailjsPublic: "",
                 emailjsService: "",
-                emailjsTemplate: ""
+                emailjsTemplate: "",
+                social: {                     // 👈 new
+                    instagram: "#",
+                    facebook: "#",
+                    tiktok: "#"
+                }
             },
             footer: {
                 copyright: "© 2026 Horizon Luxury Living. All rights reserved.",
@@ -893,15 +1067,10 @@
                 <div class="footer-col">
                     <h4>Horizon</h4>
                     <p>Luxury boutique apartment in the heart of the city.</p>
-                    <div class="social-icons">
-                        <a href="#"><i class="fab fa-facebook-f"></i></a>
-                        <a href="#"><i class="fab fa-instagram"></i></a>
-                        <a href="#"><i class="fab fa-twitter"></i></a>
-                    </div>
                 </div>
                 <div class="footer-col">
                     <h4>Contact</h4>
-                    <p><i class="fas fa-map-marker-alt"></i> ${siteData.footer.address}</p>
+                    <p><i class="fas fa-map-marker-alt"></i> <a href="https://maps.google.com/?q=${encodeURIComponent(siteData.footer.address)}" target="_blank" style="color: #aaa; text-decoration: none;">${siteData.footer.address}</a></p>
                     <p><i class="fas fa-phone"></i> ${siteData.footer.phone}</p>
                     <p><i class="fas fa-envelope"></i> ${siteData.footer.email}</p>
                 </div>
@@ -911,6 +1080,15 @@
                 </div>
             `;
             document.getElementById('copyright').textContent = siteData.footer.copyright;
+
+            // Update social media links
+            const instaTile = document.querySelector('.premium-social-tile.instagram');
+            const fbTile = document.querySelector('.premium-social-tile.facebook');
+            const tiktokTile = document.querySelector('.premium-social-tile.tiktok');
+            
+            if (instaTile) instaTile.href = siteData.settings.social?.instagram || '#';
+            if (fbTile) fbTile.href = siteData.settings.social?.facebook || '#';
+            if (tiktokTile) tiktokTile.href = siteData.settings.social?.tiktok || '#';
         }
 
         function populateGuestDropdown(maxGuests) {
@@ -1052,6 +1230,11 @@
             document.getElementById('settings-emailjs-public').value = siteData.settings.emailjsPublic || '';
             document.getElementById('settings-emailjs-service').value = siteData.settings.emailjsService || '';
             document.getElementById('settings-emailjs-template').value = siteData.settings.emailjsTemplate || '';
+
+            // Social links
+            document.getElementById('settings-social-instagram').value = siteData.settings.social?.instagram || '#';
+            document.getElementById('settings-social-facebook').value = siteData.settings.social?.facebook || '#';
+            document.getElementById('settings-social-tiktok').value = siteData.settings.social?.tiktok || '#';
 
             // Footer
             document.getElementById('copyright-input').value = siteData.footer.copyright;
@@ -1792,6 +1975,12 @@ END:VEVENT
             siteData.settings.emailjsPublic = document.getElementById('settings-emailjs-public').value;
             siteData.settings.emailjsService = document.getElementById('settings-emailjs-service').value;
             siteData.settings.emailjsTemplate = document.getElementById('settings-emailjs-template').value;
+
+            // Social links
+            if (!siteData.settings.social) siteData.settings.social = {};
+            siteData.settings.social.instagram = document.getElementById('settings-social-instagram').value;
+            siteData.settings.social.facebook = document.getElementById('settings-social-facebook').value;
+            siteData.settings.social.tiktok = document.getElementById('settings-social-tiktok').value;
 
             // Footer
             siteData.footer.copyright = document.getElementById('copyright-input').value;
