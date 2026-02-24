@@ -601,7 +601,7 @@
         .modal-submit { background: var(--primary); color: var(--dark); border: none; padding: 15px 30px; border-radius: 40px; font-weight: 600; width: 100%; cursor: pointer; transition: var(--transition); font-size: 16px; margin-top: 10px; }
         .modal-submit:hover { background: var(--primary-dark); transform: translateY(-2px); }
 
-        /* ---------- FULL GALLERY MODAL ---------- */
+        /* ---------- FULL GALLERY MODAL (improved close) ---------- */
         .full-gallery-modal {
             display: none;
             position: fixed;
@@ -612,7 +612,7 @@
             background: rgba(0,0,0,0.95);
             z-index: 4000;
             justify-content: center;
-            align-items: center;
+            align-items: flex-start;
             padding: 20px;
             overflow-y: auto;
         }
@@ -621,26 +621,37 @@
             width: 100%;
             max-width: 1200px;
             position: relative;
+            margin: 40px auto;
         }
         .full-gallery-close {
-            position: absolute;
-            top: -40px;
-            right: 0;
-            font-size: 40px;
-            color: white;
+            position: sticky;
+            top: 10px;
+            float: right;
+            width: 50px;
+            height: 50px;
+            background: var(--primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--dark);
+            font-size: 2rem;
             cursor: pointer;
             transition: var(--transition);
             z-index: 10;
+            border: 2px solid white;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
         }
         .full-gallery-close:hover {
-            color: var(--primary);
-            transform: scale(1.1);
+            background: var(--primary-dark);
+            transform: scale(1.1) rotate(90deg);
         }
         .full-gallery-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
             gap: 20px;
-            margin-top: 20px;
+            margin-top: 70px; /* space for sticky close */
+            clear: both;
         }
         .full-gallery-grid img {
             width: 100%;
@@ -654,6 +665,24 @@
         .full-gallery-grid img:hover {
             transform: scale(1.02);
             border-color: var(--primary);
+        }
+        .full-gallery-close-bottom {
+            display: block;
+            width: fit-content;
+            margin: 30px auto 0;
+            padding: 12px 30px;
+            background: var(--primary);
+            color: var(--dark);
+            border: none;
+            border-radius: 40px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 1.1rem;
+        }
+        .full-gallery-close-bottom:hover {
+            background: var(--primary-dark);
+            transform: scale(1.05);
         }
     </style>
 </head>
@@ -944,11 +973,12 @@
         </div>
     </div>
 
-    <!-- FULL GALLERY MODAL (for "View All") -->
+    <!-- FULL GALLERY MODAL (improved close) -->
     <div class="full-gallery-modal" id="fullGalleryModal">
         <div class="full-gallery-content">
-            <span class="full-gallery-close" id="closeFullGallery">&times;</span>
+            <div class="full-gallery-close" id="closeFullGallery">&times;</div>
             <div class="full-gallery-grid" id="fullGalleryGrid"></div>
+            <button class="full-gallery-close-bottom" id="closeFullGalleryBottom">Close Gallery</button>
         </div>
     </div>
 
@@ -2191,7 +2221,7 @@ END:VEVENT
             adminOverlay.style.display = 'none';
         });
 
-        // Full gallery modal functions
+        // Full gallery modal functions (with improved close)
         function openFullGallery() {
             const modal = document.getElementById('fullGalleryModal');
             const grid = document.getElementById('fullGalleryGrid');
@@ -2199,9 +2229,17 @@ END:VEVENT
             modal.style.display = 'flex';
         }
 
+        // Close via X button
         document.getElementById('closeFullGallery').addEventListener('click', () => {
             document.getElementById('fullGalleryModal').style.display = 'none';
         });
+
+        // Close via bottom button
+        document.getElementById('closeFullGalleryBottom').addEventListener('click', () => {
+            document.getElementById('fullGalleryModal').style.display = 'none';
+        });
+
+        // Close via overlay click
         window.addEventListener('click', (e) => {
             const modal = document.getElementById('fullGalleryModal');
             if (e.target === modal) modal.style.display = 'none';
