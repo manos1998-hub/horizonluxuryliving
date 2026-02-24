@@ -1201,12 +1201,12 @@
             }
         }, 4000);
 
-        // Firebase config
+        // Firebase config - FIXED STORAGE BUCKET
         const firebaseConfig = {
             apiKey: "AIzaSyBMzcjbqruiE_nJXhEfUWaASHbKE8YM60E",
             authDomain: "horizonluxury-18b60.firebaseapp.com",
             projectId: "horizonluxury-18b60",
-            storageBucket: "horizonluxury-18b60.firebasestorage.app",
+            storageBucket: "horizonluxury-18b60.appspot.com", // ✅ Corrected!
             messagingSenderId: "521174900591",
             appId: "1:521174900591:web:e7773cdd8052a6214b529a"
         };
@@ -1746,10 +1746,16 @@
                 const storageRef = storage.ref();
                 const imageRef = storageRef.child(path + '/' + Date.now() + '_' + file.name);
                 const uploadTask = imageRef.put(file);
-                uploadTask.on('state_changed', null, reject, async () => {
-                    const url = await uploadTask.snapshot.ref.getDownloadURL();
-                    resolve(url);
-                });
+                uploadTask.on('state_changed', null, 
+                    (error) => {
+                        console.error('Upload error:', error);
+                        reject(error.message || 'Upload failed');
+                    }, 
+                    async () => {
+                        const url = await uploadTask.snapshot.ref.getDownloadURL();
+                        resolve(url);
+                    }
+                );
             });
         }
 
