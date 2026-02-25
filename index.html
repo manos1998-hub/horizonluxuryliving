@@ -564,7 +564,7 @@
             color: #aaa; font-size:0.9rem; 
         }
 
-        /* ---------- ADMIN ICON ---------- */
+        /* ---------- ADMIN ICON (hidden by default, shown only on /admin path) ---------- */
         .admin-icon { 
             position:fixed; bottom:20px; right:20px; width:56px; height:56px; 
             background:var(--primary); border-radius:50%; display:flex; align-items:center; 
@@ -875,7 +875,7 @@
         </div>
     </footer>
 
-    <!-- Admin Icon -->
+    <!-- Admin Icon (hidden by default, shown only on /admin path) -->
     <div class="admin-icon" id="adminIcon"><i class="fas fa-pen-to-square"></i></div>
 
     <!-- Admin Overlay -->
@@ -1121,6 +1121,14 @@
     <script>
         (function() {
             const startTime = Date.now();
+
+            // ---------- ADMIN PATH CHECK ----------
+            // Only show admin icon if URL contains "/admin"
+            const isAdminPath = window.location.pathname.includes('/admin') || window.location.hash.includes('admin');
+            const adminIcon = document.getElementById('adminIcon');
+            if (!isAdminPath) {
+                adminIcon.style.display = 'none';
+            }
 
             // Firebase config
             const firebaseConfig = {
@@ -1904,30 +1912,32 @@
                 alert('Bulk pricing applied'); renderCalendar();
             });
 
-            // Admin login/logout
-            const adminIcon = document.getElementById('adminIcon');
+            // Admin login/logout (only functional if admin icon is visible, but listeners remain)
             const adminOverlay = document.getElementById('adminOverlay');
             const loginContainer = document.getElementById('loginContainer');
             const adminDashboard = document.getElementById('adminDashboard');
-            adminIcon.addEventListener('click', ()=>{
-                if(auth.currentUser) {
-                    loginContainer.style.display='none';
-                    adminDashboard.style.display='block';
-                    adminOverlay.style.display='flex';
-                    if (!unsubscribeReservations) {
-                        unsubscribeReservations = reservationsCol.orderBy('createdAt', 'desc').onSnapshot(snapshot => {
-                            reservations = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-                            renderReservationsList();
-                            renderCalendar();
-                        }, error => console.error("Listener error:", error));
+            // Only attach admin icon listener if on admin path
+            if (isAdminPath) {
+                adminIcon.addEventListener('click', ()=>{
+                    if(auth.currentUser) {
+                        loginContainer.style.display='none';
+                        adminDashboard.style.display='block';
+                        adminOverlay.style.display='flex';
+                        if (!unsubscribeReservations) {
+                            unsubscribeReservations = reservationsCol.orderBy('createdAt', 'desc').onSnapshot(snapshot => {
+                                reservations = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                                renderReservationsList();
+                                renderCalendar();
+                            }, error => console.error("Listener error:", error));
+                        }
+                        setTimeout(()=>{ renderCalendar(); renderGalleryOrderList(); },100);
+                    } else {
+                        loginContainer.style.display='block';
+                        adminDashboard.style.display='none';
+                        adminOverlay.style.display='flex';
                     }
-                    setTimeout(()=>{ renderCalendar(); renderGalleryOrderList(); },100);
-                } else {
-                    loginContainer.style.display='block';
-                    adminDashboard.style.display='none';
-                    adminOverlay.style.display='flex';
-                }
-            });
+                });
+            }
             document.getElementById('loginBtn').addEventListener('click', async ()=>{
                 const email = document.getElementById('loginEmail').value;
                 const pwd = document.getElementById('loginPassword').value;
