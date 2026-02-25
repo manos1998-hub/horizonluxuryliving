@@ -58,6 +58,68 @@
             --shadow-glow: 0 20px 40px -10px rgba(212, 175, 55, 0.3);
             --transition: all 0.4s cubic-bezier(0.2, 0.9, 0.3, 1);
         }
+        /* Light theme overrides */
+        body.light-mode {
+            --dark: #ffffff;               /* white background for cards */
+            --gray: #f5f5f5;               /* light gray for sections */
+            --text: #1a1a1a;               /* dark text */
+            --glass-bg: rgba(0, 0, 0, 0.03);
+            --glass-border: rgba(212, 175, 55, 0.3);
+            --shadow-elevation: 0 10px 30px -10px rgba(0, 0, 0, 0.1);
+        }
+        /* Headings in light mode – black, except hero and footer */
+        body.light-mode h1,
+        body.light-mode h2,
+        body.light-mode h3,
+        body.light-mode h4 {
+            color: #000;
+        }
+        /* Hero title stays white */
+        body.light-mode .hero h1 {
+            color: #fff !important;
+        }
+        /* Footer headings and text stay white (footer bg is dark) */
+        body.light-mode footer h1,
+        body.light-mode footer h2,
+        body.light-mode footer h3,
+        body.light-mode footer h4,
+        body.light-mode footer p,
+        body.light-mode footer a,
+        body.light-mode .copyright {
+            color: #fff;
+        }
+        /* Dining description in light mode -> black */
+        body.light-mode .dining-content p {
+            color: #000;
+        }
+        /* Testimonial heading and text in light mode -> black */
+        body.light-mode .testimonials .section-title h2 {
+            color: #000;
+        }
+        body.light-mode .testimonial-card p {
+            color: #000;
+        }
+        /* Other light mode adjustments */
+        body.light-mode .section-title p {
+            color: #555;
+        }
+        body.light-mode .service-card p,
+        body.light-mode .tour-info p {
+            color: #333;
+        }
+        body.light-mode .booking-input,
+        body.light-mode .modal-field input {
+            color: #000;
+            background: rgba(255,255,255,0.9);
+            border-color: #ccc;
+        }
+        body.light-mode .booking-input::placeholder {
+            color: #666;
+        }
+        body.light-mode .premium-social-tile span {
+            color: #000;
+        }
+
         body { 
             font-family: 'Manrope', sans-serif; 
             color: var(--text); 
@@ -66,12 +128,14 @@
             scroll-behavior: smooth; 
             -webkit-tap-highlight-color: transparent;
             letter-spacing: 0.3px;
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
         h1, h2, h3, h4 { 
             font-family: 'Playfair Display', serif; 
             font-weight: 600; 
             letter-spacing: -0.02em;
             color: white;
+            transition: color 0.3s ease;
         }
         .container { 
             width:90%; max-width:1400px; margin:0 auto; padding:80px 0; 
@@ -114,16 +178,74 @@
             padding: 10px 0;
             box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
         }
+        /* Light mode scrolled header */
+        body.light-mode .site-header.scrolled {
+            background: rgba(255, 255, 255, 0.9);
+        }
         .header-inner { 
             display:flex; flex-direction:column; align-items:center; 
             width:90%; max-width:1400px; margin:0 auto; gap:10px; 
+            position: relative;
         }
-        @media (min-width:769px) { .header-inner { flex-direction:row; justify-content:space-between; } }
+        @media (min-width:769px) { 
+            .header-inner { 
+                flex-direction:row; 
+                justify-content:space-between;
+            } 
+        }
         .logo { 
             font-family:'Playfair Display',serif; font-size:24px; font-weight:700; 
             color:white; text-shadow:0 4px 20px rgba(0,0,0,0.3); letter-spacing:2px; 
+            transition: color 0.3s ease;
         }
         @media (min-width:768px) { .logo { font-size:28px; } }
+        /* Light mode logo color: white normally, black when scrolled */
+        body.light-mode .logo {
+            color: #fff;
+        }
+        body.light-mode .site-header.scrolled .logo {
+            color: #000;
+        }
+
+        /* Theme toggle button (sun/moon) – no background */
+        .theme-toggle {
+            position: absolute;
+            top: 50%;
+            right: 10px;
+            transform: translateY(-50%);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 1.5rem;
+            z-index: 101;
+            background: transparent !important;
+            border: none;
+            color: var(--primary); /* gold */
+        }
+        @media (min-width:769px) {
+            .theme-toggle {
+                position: static;
+                transform: none;
+                margin-left: 20px;
+            }
+        }
+        .theme-toggle:hover {
+            transform: translateY(-50%) scale(1.1);
+        }
+        @media (min-width:769px) {
+            .theme-toggle:hover {
+                transform: scale(1.1);
+            }
+        }
+        /* In light mode, the icon color stays gold */
+        body.light-mode .theme-toggle {
+            color: var(--primary);
+        }
 
         /* mobile booking bar - hidden by default, shown based on scroll or always on mobile */
         .mobile-booking-bar { 
@@ -185,6 +307,14 @@
             height:2px; background:var(--primary); transition:width 0.3s ease, left 0.3s ease; 
         }
         .nav-menu a:hover::after { width:100%; left:0; }
+        /* Light mode nav links: white normally, black when scrolled */
+        body.light-mode .nav-menu a {
+            color: #fff;
+            text-shadow: none;
+        }
+        body.light-mode .site-header.scrolled .nav-menu a {
+            color: #000;
+        }
 
         /* hide hero booking bar on mobile */
         @media (max-width:768px) { .hero .booking-bar { display:none; } }
@@ -228,6 +358,7 @@
         .hero h1 { 
             font-size:clamp(2.2rem,8vw,5.5rem); margin-bottom:15px; line-height:1.1; 
             font-weight:700; text-shadow:0 4px 30px rgba(0,0,0,0.5); 
+            color: white !important; /* ensure white in both themes */
         }
         .hero p { 
             font-size:1rem; margin-bottom:30px; font-weight:300; opacity:0.95; 
@@ -851,6 +982,10 @@
     <header class="site-header" id="siteHeader">
         <div class="header-inner">
             <div class="logo" id="site-logo">Horizon</div>
+            <!-- Theme toggle button (sun/moon) – reliable and visible -->
+            <div class="theme-toggle" id="themeToggle" title="Switch theme">
+                <i class="fas fa-sun" id="themeIcon"></i>  <!-- sun in dark mode, moon in light mode -->
+            </div>
             <!-- Mobile booking bar (hidden initially, but on mobile it's always visible via CSS) -->
             <div class="mobile-booking-bar" id="mobileBookingBar">
                 <input type="date" class="booking-input" id="mobile-booking-checkin">
@@ -1198,6 +1333,36 @@
     <script>
         (function() {
             const startTime = Date.now();
+
+            // ---------- THEME TOGGLE ----------
+            const themeToggle = document.getElementById('themeToggle');
+            const themeIcon = document.getElementById('themeIcon');
+            const body = document.body;
+
+            // Check localStorage for saved theme
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'light') {
+                body.classList.add('light-mode');
+                themeIcon.classList.remove('fa-sun');
+                themeIcon.classList.add('fa-moon');
+            } else {
+                // default dark – sun
+                themeIcon.classList.add('fa-sun');
+                themeIcon.classList.remove('fa-moon');
+            }
+
+            themeToggle.addEventListener('click', () => {
+                body.classList.toggle('light-mode');
+                if (body.classList.contains('light-mode')) {
+                    themeIcon.classList.remove('fa-sun');
+                    themeIcon.classList.add('fa-moon');
+                    localStorage.setItem('theme', 'light');
+                } else {
+                    themeIcon.classList.remove('fa-moon');
+                    themeIcon.classList.add('fa-sun');
+                    localStorage.setItem('theme', 'dark');
+                }
+            });
 
             // ---------- ADMIN PATH CHECK ----------
             const urlParams = new URLSearchParams(window.location.search);
