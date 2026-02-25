@@ -123,23 +123,47 @@
         }
         @media (min-width:768px) { .logo { font-size:28px; } }
 
-        /* mobile booking bar */
+        /* mobile booking bar - hidden by default, shown only on scroll */
         .mobile-booking-bar { 
-            display:flex; flex-wrap:wrap; gap:8px; width:100%; 
-            background:rgba(255,255,255,0.1); backdrop-filter:blur(10px); 
-            border-radius:40px; padding:8px; border:1px solid rgba(255,255,255,0.2); 
+            display: none;  /* hidden initially */
+            flex-wrap:wrap; 
+            gap:8px; 
+            width:100%; 
+            background:rgba(255,255,255,0.1); 
+            backdrop-filter:blur(10px); 
+            border-radius:40px; 
+            padding:8px; 
+            border:1px solid rgba(255,255,255,0.2); 
+        }
+        .mobile-booking-bar.show {
+            display: flex;  /* shown when scrolled */
         }
         .mobile-booking-bar .booking-input { 
-            background:rgba(255,255,255,0.15); border:1px solid rgba(255,255,255,0.2); 
-            padding:10px 12px; border-radius:40px; color:white; font-size:14px; 
-            flex:1 1 120px; min-width:0; 
+            background:rgba(255,255,255,0.15); 
+            border:1px solid rgba(255,255,255,0.2); 
+            padding:10px 12px; 
+            border-radius:40px; 
+            color:white; 
+            font-size:14px; 
+            flex:1 1 120px; 
+            min-width:0; 
         }
         .mobile-booking-bar .book-btn { 
-            background:var(--primary); border:none; padding:10px 16px; 
-            border-radius:40px; color:var(--dark); font-weight:600; font-size:14px; 
-            cursor:pointer; white-space:nowrap; transition:var(--transition);
+            background:var(--primary); 
+            border:none; 
+            padding:10px 16px; 
+            border-radius:40px; 
+            color:var(--dark); 
+            font-weight:600; 
+            font-size:14px; 
+            cursor:pointer; 
+            white-space:nowrap; 
+            transition:var(--transition);
         }
-        .mobile-booking-bar .book-btn:hover { background:var(--primary-dark); transform:translateY(-2px); }
+        .mobile-booking-bar .book-btn:hover { 
+            background:var(--primary-dark); 
+            transform:translateY(-2px); 
+        }
 
         .nav-menu { display:none; }
         @media (min-width:992px) { .nav-menu { display:flex; list-style:none; gap:40px; } }
@@ -784,7 +808,7 @@
     <header class="site-header" id="siteHeader">
         <div class="header-inner">
             <div class="logo" id="site-logo">Horizon</div>
-            <!-- Mobile booking bar -->
+            <!-- Mobile booking bar (hidden initially, shown on scroll) -->
             <div class="mobile-booking-bar" id="mobileBookingBar">
                 <input type="date" class="booking-input" id="mobile-booking-checkin">
                 <input type="date" class="booking-input" id="mobile-booking-checkout">
@@ -2157,6 +2181,25 @@
                 el.classList.add('fade-out');
                 observer.observe(el);
             });
+
+            // ---------- MOBILE BOOKING BAR VISIBILITY ----------
+            const mobileBar = document.getElementById('mobileBookingBar');
+            const heroBookingBar = document.querySelector('.hero .booking-bar');
+
+            function toggleMobileBar() {
+                if (!mobileBar || !heroBookingBar) return;
+                const heroRect = heroBookingBar.getBoundingClientRect();
+                // If hero booking bar is completely above viewport, show mobile bar
+                if (heroRect.bottom < 0) {
+                    mobileBar.classList.add('show');
+                } else {
+                    mobileBar.classList.remove('show');
+                }
+            }
+
+            // Initial call and scroll listener
+            toggleMobileBar();
+            window.addEventListener('scroll', toggleMobileBar);
         })();
     </script>
 </body>
