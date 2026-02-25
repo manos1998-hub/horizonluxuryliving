@@ -10,6 +10,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800&family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <!-- EmailJS -->
     <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    <!-- ical.js for parsing iCal feeds -->
+    <script src="https://cdn.jsdelivr.net/npm/ical.js@1.5.0/build/ical.min.js"></script>
     <!-- Firebase Compat -->
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
@@ -1079,14 +1081,23 @@
                     <div class="admin-field"><label>EmailJS Template ID</label><input type="text" id="settings-emailjs-template"></div>
                 </div>
 
-                <!-- Calendar Sync Tab -->
+                <!-- Calendar Sync Tab (completely replaced with new iCal UI) -->
                 <div class="admin-tab-content" id="tab-sync">
-                    <h3>Export iCal</h3>
+                    <h3>🔁 Sync with Airbnb iCal</h3>
+                    <div class="admin-field">
+                        <label>Airbnb iCal URL</label>
+                        <input type="url" id="ical-url" placeholder="https://www.airbnb.com/calendar/ical/...">
+                    </div>
+                    <div class="admin-field">
+                        <label>
+                            <input type="checkbox" id="ical-auto-sync"> Auto‑sync on page load
+                        </label>
+                    </div>
+                    <button class="upload-btn" id="sync-ical-btn">🔄 Sync Now</button>
+                    <div id="sync-result" style="margin-top:15px; font-size:0.9rem;"></div>
+                    <hr>
+                    <h3>📤 Export your blocked dates (iCal)</h3>
                     <button class="upload-btn" id="export-ical">📅 Download iCal File</button>
-                    <hr><h3>Import iCal</h3>
-                    <div class="admin-field"><label>iCal URL</label><input type="url" id="ical-import-url"></div>
-                    <button class="upload-btn" id="import-ical">🔄 Sync from iCal</button>
-                    <div id="import-result"></div>
                 </div>
 
                 <!-- Footer Tab -->
@@ -1189,7 +1200,6 @@
             const startTime = Date.now();
 
             // ---------- ADMIN PATH CHECK ----------
-            // Check if URL contains "/admin" in path OR "?admin" query parameter
             const urlParams = new URLSearchParams(window.location.search);
             const hasAdminParam = urlParams.has('admin');
             const isAdminPath = window.location.pathname.includes('/admin') || hasAdminParam;
@@ -1276,7 +1286,9 @@
                 settings: {
                     primaryColor:"#d4af37", fontFamily:"'Manrope', sans-serif", maxGuests:12,
                     adminEmail:"", emailjsPublic:"", emailjsService:"", emailjsTemplate:"",
-                    social:{ instagram:"#", facebook:"#" }
+                    social:{ instagram:"#", facebook:"#" },
+                    icalUrl: '',              // <-- added
+                    icalAutoSync: false       // <-- added
                 },
                 footer: {
                     copyright:"© 2026 Horizon Luxury Living. All rights reserved.",
@@ -1328,6 +1340,58 @@
                 hideLoader();
             }, 10000);
 
+            // ---------- iCal Sync Function ----------
+            async function syncICal(icalUrl) {
+                const resultDiv = document.getElementById('sync-result');
+                if (!resultDiv) return;
+                resultDiv.innerHTML = '⏳ Fetching iCal feed...';
+                try {
+                    const response = await fetch(icalUrl);
+                    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                    const icsText = await response.text();
+                    
+                    // Parse with ical.js
+                    const jcalData = ICAL.parse(icsText);
+                    const comp = new ICAL.Component(jcalData);
+                    const vevents = comp.getAllSubcomponents('vevent');
+                    
+                    const aptIdx = 0; // we only have one apartment
+                    if (!siteData.availability) siteData.availability = {};
+                    if (!siteData.availability[aptIdx]) siteData.availability[aptIdx] = {};
+
+                    let blockedCount = 0;
+
+                    vevents.forEach(vevent => {
+                        const event = new ICAL.Event(vevent);
+                        const start = event.startDate.toJSDate();
+                        const end = event.endDate.toJSDate();
+
+                        // Block each night from start inclusive to end exclusive
+                        let current = new Date(start);
+                        while (current < end) {
+                            const dateStr = current.toISOString().split('T')[0];
+                            // Only set as unavailable (preserve any existing price)
+                            const existing = siteData.availability[aptIdx][dateStr] || {};
+                            siteData.availability[aptIdx][dateStr] = {
+                                ...existing,
+                                available: false
+                            };
+                            blockedCount++;
+                            current.setDate(current.getDate() + 1);
+                        }
+                    });
+
+                    resultDiv.innerHTML = `✅ Synced successfully. Blocked ${blockedCount} nights.`;
+                    // Save to Firestore
+                    await saveToFirebase();
+                    // Refresh calendar display
+                    renderCalendar();
+                } catch (err) {
+                    console.error('iCal sync error:', err);
+                    resultDiv.innerHTML = `❌ Sync failed: ${err.message}`;
+                }
+            }
+
             async function loadFromFirebase() {
                 try {
                     const doc = await contentDoc.get();
@@ -1340,6 +1404,11 @@
                     const resSnapshot = await reservationsCol.orderBy('createdAt','desc').get();
                     reservations = resSnapshot.docs.map(doc=>({ id:doc.id, ...doc.data() }));
                     if(siteData.settings.emailjsPublic) initEmailJS(siteData.settings.emailjsPublic);
+
+                    // Auto‑sync if enabled and URL exists
+                    if (siteData.settings.icalAutoSync && siteData.settings.icalUrl) {
+                        syncICal(siteData.settings.icalUrl);
+                    }
                 } catch(e) { 
                     console.error(e); 
                     setDefaultDates(); 
@@ -1571,7 +1640,7 @@
                 });
             }
 
-            // ---------- ADMIN FORM POPULATION (unchanged, but we include the full functions) ----------
+            // ---------- ADMIN FORM POPULATION ----------
             function populateAdminForms() {
                 // Hero
                 document.getElementById('hero-subtitle-input').value = siteData.hero.subtitle;
@@ -1729,6 +1798,10 @@
                 document.getElementById('text-modal-footer').value = siteData.texts.modalFooter;
                 document.getElementById('text-gallery-plus').value = siteData.texts.galleryPlusAlt;
 
+                // iCal settings
+                document.getElementById('ical-url').value = siteData.settings.icalUrl || '';
+                document.getElementById('ical-auto-sync').checked = siteData.settings.icalAutoSync || false;
+
                 renderGalleryOrderList();
                 updatePreviews();
             }
@@ -1846,7 +1919,7 @@
                 const guests = parseInt(document.getElementById('booking-guests').value);
                 if(!checkin||!checkout) { alert('Please select dates'); return; }
                 if(new Date(checkin)>=new Date(checkout)) { alert('Check-out must be after check-in'); return; }
-                const aptIdx=0; const aptPricing = siteData.pricing[aptIdx];
+                const aptIdx=0; const aptPricing = siteData.pricing[0];
                 if(guests > aptPricing.maxGuests) { alert(`Max guests is ${aptPricing.maxGuests}`); return; }
                 let total=0, nights=[], cur=new Date(checkin), end=new Date(checkout);
                 while(cur<end) {
@@ -2171,6 +2244,10 @@
                 siteData.settings.social.instagram = document.getElementById('settings-social-instagram').value;
                 siteData.settings.social.facebook = document.getElementById('settings-social-facebook').value;
 
+                // iCal settings
+                siteData.settings.icalUrl = document.getElementById('ical-url').value;
+                siteData.settings.icalAutoSync = document.getElementById('ical-auto-sync').checked;
+
                 // Footer
                 siteData.footer.copyright = document.getElementById('copyright-input').value;
                 siteData.footer.address = document.getElementById('footer-address').value;
@@ -2197,7 +2274,7 @@
 
                 await saveToFirebase();
                 renderSite();
-                alert('Changes saved (including gallery order, texts, and about colors).');
+                alert('Changes saved (including gallery order, texts, about colors, and iCal settings).');
                 adminOverlay.style.display='none';
             });
 
@@ -2300,9 +2377,50 @@
                 input.click();
             });
 
-            // iCal stubs
-            document.getElementById('export-ical')?.addEventListener('click', ()=>{ alert('iCal export would be implemented here.'); });
-            document.getElementById('import-ical')?.addEventListener('click', ()=>{ alert('iCal import would be implemented here.'); });
+            // Sync iCal button
+            document.getElementById('sync-ical-btn')?.addEventListener('click', () => {
+                const url = document.getElementById('ical-url').value.trim();
+                if (!url) {
+                    alert('Please enter an iCal URL');
+                    return;
+                }
+                syncICal(url);
+            });
+
+            // Export iCal (create .ics from blocked dates)
+            document.getElementById('export-ical')?.addEventListener('click', function() {
+                const aptIdx = 0;
+                const blockedDates = siteData.availability[aptIdx] || {};
+                const events = [];
+                for (const [dateStr, data] of Object.entries(blockedDates)) {
+                    if (data.available === false) {
+                        // Single night: start = date, end = next day
+                        const start = new Date(dateStr + 'T12:00:00Z'); // noon UTC
+                        const end = new Date(start);
+                        end.setDate(end.getDate() + 1);
+                        events.push({ start, end });
+                    }
+                }
+
+                // Build iCal string
+                let icalContent = `BEGIN:VCALENDAR\r\nVERSION:2.0\r\nPRODID:-//Horizon//EN\r\n`;
+                events.forEach((ev, idx) => {
+                    const uid = `${Date.now()}-${idx}@horizon`;
+                    const startStr = ev.start.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
+                    const endStr = ev.end.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
+                    icalContent += `BEGIN:VEVENT\r\nUID:${uid}\r\nDTSTAMP:${startStr}\r\nDTSTART:${startStr}\r\nDTEND:${endStr}\r\nSUMMARY:Booked\r\nEND:VEVENT\r\n`;
+                });
+                icalContent += `END:VCALENDAR`;
+
+                // Download as file
+                const blob = new Blob([icalContent], { type: 'text/calendar' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'horizon_blocked_dates.ics';
+                a.click();
+                URL.revokeObjectURL(url);
+            });
 
             // Start loading
             loadFromFirebase();
@@ -2351,7 +2469,7 @@
             // Initial call and scroll listener
             toggleMobileBar();
             window.addEventListener('scroll', toggleMobileBar);
-            window.addEventListener('resize', toggleMobileBar); // also on resize
+            window.addEventListener('resize', toggleMobileBar);
         })();
     </script>
 </body>
