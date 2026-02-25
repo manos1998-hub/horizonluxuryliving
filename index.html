@@ -564,7 +564,7 @@
             color: #aaa; font-size:0.9rem; 
         }
 
-        /* ---------- ADMIN ICON (hidden by default, shown only on /admin path) ---------- */
+        /* ---------- ADMIN ICON (hidden by default, shown only on /admin path or ?admin) ---------- */
         .admin-icon { 
             position:fixed; bottom:20px; right:20px; width:56px; height:56px; 
             background:var(--primary); border-radius:50%; display:flex; align-items:center; 
@@ -838,7 +838,7 @@
         </div>
     </header>
 
-    <!-- Hero Section -->
+    <!-- Hero Section (id="hero" for home link) -->
     <section class="hero" id="hero">
         <div class="hero-content">
             <div class="hero-subtitle" id="hero-subtitle">Welcome to Horizon, a luxury apartment in the heart of the city</div>
@@ -867,15 +867,15 @@
         </div>
     </div>
 
-    <!-- Footer -->
-    <footer>
+    <!-- Footer (id="contact" for contact link) -->
+    <footer id="contact">
         <div class="container">
             <div class="footer-grid" id="footer-grid"></div>
             <div class="copyright" id="copyright"></div>
         </div>
     </footer>
 
-    <!-- Admin Icon (hidden by default, shown only on /admin path) -->
+    <!-- Admin Icon (hidden by default, shown only on /admin or ?admin) -->
     <div class="admin-icon" id="adminIcon"><i class="fas fa-pen-to-square"></i></div>
 
     <!-- Admin Overlay -->
@@ -1123,8 +1123,10 @@
             const startTime = Date.now();
 
             // ---------- ADMIN PATH CHECK ----------
-            // Only show admin icon if URL contains "/admin"
-            const isAdminPath = window.location.pathname.includes('/admin') || window.location.hash.includes('admin');
+            // Check if URL contains "/admin" in path OR "?admin" query parameter
+            const urlParams = new URLSearchParams(window.location.search);
+            const hasAdminParam = urlParams.has('admin');
+            const isAdminPath = window.location.pathname.includes('/admin') || hasAdminParam;
             const adminIcon = document.getElementById('adminIcon');
             if (!isAdminPath) {
                 adminIcon.style.display = 'none';
@@ -1151,7 +1153,7 @@
 
             let unsubscribeReservations = null;
 
-            // Default data (with dark theme defaults)
+            // Default data (with dark theme defaults and proper anchor links)
             const defaultData = {
                 hero: {
                     subtitle: "Welcome to Horizon, a luxury apartment in the heart of the city",
@@ -1199,7 +1201,11 @@
                     ]
                 },
                 menu: [
-                    { text:"Home", url:"#home" }, { text:"About", url:"#about" }, { text:"Gallery", url:"#gallery" }, { text:"Services", url:"#services" }, { text:"Contact", url:"#contact" }
+                    { text:"Home", url:"#hero" },      // scrolls to hero
+                    { text:"About", url:"#about" },    // scrolls to about section
+                    { text:"Gallery", url:"#gallery" }, // scrolls to gallery
+                    { text:"Services", url:"#services" }, // scrolls to services
+                    { text:"Contact", url:"#contact" }   // scrolls to footer
                 ],
                 settings: {
                     primaryColor:"#d4af37", fontFamily:"'Manrope', sans-serif", maxGuests:12,
