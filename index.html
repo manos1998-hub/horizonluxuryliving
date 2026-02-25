@@ -813,6 +813,28 @@
         @media (prefers-reduced-motion: reduce) {
             * { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
         }
+
+        /* ---------- POLICY MODALS (additional styling for long text) ---------- */
+        .policy-modal .modal-content {
+            max-width: 700px;
+        }
+        .policy-list {
+            margin: 15px 0;
+            padding-left: 20px;
+        }
+        .policy-list li {
+            margin-bottom: 12px;
+            line-height: 1.6;
+            color: #f0f0f0;
+        }
+        .policy-list ul {
+            margin-top: 5px;
+            margin-left: 20px;
+            list-style-type: circle;
+        }
+        .policy-list ul li {
+            margin-bottom: 5px;
+        }
     </style>
 </head>
 <body>
@@ -1116,6 +1138,50 @@
     <div class="lightbox-modal" id="lightboxModal">
         <span class="lightbox-close" id="lightboxClose">&times;</span>
         <img class="lightbox-content" id="lightboxImage" src="" alt="Enlarged view">
+    </div>
+
+    <!-- PRIVACY POLICY MODAL -->
+    <div class="booking-modal policy-modal" id="privacyModal">
+        <div class="modal-content">
+            <span class="close-modal" id="closePrivacyModal">&times;</span>
+            <h3>Privacy Policy</h3>
+            <ul class="policy-list">
+                <li><strong>Collection of Personal Information:</strong> We may collect personal information from users, such as names, addresses, email addresses, phone numbers, and payment details, for the purpose of processing orders and providing a personalized shopping experience. We will only collect personal information that is necessary and relevant to the services we offer.</li>
+                <li><strong>Use of Personal Information:</strong> Personal information collected will be used for order processing, payment verification, shipping, customer support, and to provide updates and promotional information about our products and services, unless the user opts out of receiving such communications.</li>
+                <li><strong>Protection of Personal Information:</strong> We take appropriate measures to protect the personal information collected from unauthorized access, disclosure, alteration, or destruction. We implement physical, technical, and administrative security safeguards to ensure the confidentiality and integrity of personal data.</li>
+                <li><strong>Third-Party Service Providers:</strong> We may engage third-party service providers to assist with order fulfillment, payment processing, shipping, and marketing activities. These providers will have access to personal information as necessary to perform their functions but are prohibited from using it for any other purpose.</li>
+                <li><strong>Cookies and Tracking Technologies:</strong> Our e-shop may use cookies and other tracking technologies to enhance the user experience, analyze website traffic, and personalize content and advertisements. Users can control the use of cookies through their browser settings.</li>
+                <li><strong>Data Retention:</strong> We will retain personal information for as long as necessary to fulfill the purposes for which it was collected and to comply with applicable laws and regulations. Users may request the deletion of their personal information, subject to any legal obligations or legitimate business interests.</li>
+                <li><strong>Data Sharing:</strong> We do not sell or rent personal information to third parties for marketing purposes. However, we may share personal information with trusted partners and service providers as necessary to fulfill orders and provide requested services.</li>
+                <li><strong>User Rights:</strong> Users have the right to access, correct, or delete their personal information held by us. They may also have the right to restrict or object to the processing of their personal information, as permitted by law.</li>
+                <li><strong>Children’s Privacy:</strong> Our e-shop is not intended for children under the age of 16. We do not knowingly collect personal information from children. If we become aware of inadvertently collecting personal information from a child, we will take steps to delete it promptly.</li>
+                <li><strong>Updates to the Privacy Policy:</strong> We reserve the right to update or modify this privacy policy at any time. Users are encouraged to review the policy periodically for any changes. Continued use of the e-shop after the policy update constitutes acceptance of the revised terms.</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- COOKIES POLICY MODAL -->
+    <div class="booking-modal policy-modal" id="cookiesModal">
+        <div class="modal-content">
+            <span class="close-modal" id="closeCookiesModal">&times;</span>
+            <h3>Cookies Policy</h3>
+            <ul class="policy-list">
+                <li><strong>What are Cookies:</strong> Cookies are small text files that are stored on a user’s device (such as a computer or mobile device) when they visit a website. They help enhance the user experience by allowing the website to remember user preferences and provide personalized content and advertisements.</li>
+                <li><strong>Types of Cookies Used:</strong> Our e-shop may use the following types of cookies:
+                    <ul>
+                        <li><strong>Necessary Cookies:</strong> These cookies are essential for the functioning of the website and enable users to navigate and use its features.</li>
+                        <li><strong>Analytical/Performance Cookies:</strong> These cookies collect anonymous information about how users interact with the website, such as the number of visitors, the pages visited, and the source of traffic. This helps us improve the performance and functionality of the website.</li>
+                        <li><strong>Functional Cookies:</strong> These cookies allow the website to remember user preferences and settings to provide a more personalized experience.</li>
+                        <li><strong>Advertising Cookies:</strong> We may work with advertising partners who use cookies to deliver targeted advertisements based on users’ interests and browsing behavior.</li>
+                        <li><strong>Third-Party Cookies:</strong> Our e-shop may allow third-party cookies from service providers, such as analytics providers or advertising networks. These cookies are subject to the respective third parties’ privacy policies and are not controlled by us.</li>
+                    </ul>
+                </li>
+                <li><strong>User Consent:</strong> By using our e-shop, users consent to the use of cookies as described in this policy. They can manage and control cookies through their browser settings or opt-out of certain cookies using the cookie banner or preference center provided on the website.</li>
+                <li><strong>Cookie Retention:</strong> Cookies may have different retention periods. Some cookies are session-based and expire when the user closes the browser, while others may be persistent cookies that remain on the user’s device for a specific period. Users can delete cookies from their device at any time.</li>
+                <li><strong>Privacy and Data Protection:</strong> The use of cookies may involve the processing of personal information. Our Privacy Policy outlines how we handle and protect personal information collected through cookies.</li>
+                <li><strong>Cookie Policy Updates:</strong> We reserve the right to update or modify this cookie policy at any time. Users are encouraged to review the policy periodically for any changes. Continued use of the e-shop after the policy update constitutes acceptance of the revised terms.</li>
+            </ul>
+        </div>
     </div>
 
     <script>
@@ -1435,10 +1501,15 @@
                     document.getElementById('testimonialPrev').addEventListener('click',()=>track.scrollBy({left:-300,behavior:'smooth'}));
                     document.getElementById('testimonialNext').addEventListener('click',()=>track.scrollBy({left:300,behavior:'smooth'}));
                 }
+                // FOOTER with additional policy links
                 document.getElementById('footer-grid').innerHTML = `
                     <div class="footer-col"><h4>Horizon</h4><p>Luxury boutique apartment in the heart of the city.</p></div>
                     <div class="footer-col"><h4>Contact</h4><p><i class="fas fa-map-marker-alt"></i> <a href="https://maps.google.com/?q=${encodeURIComponent(siteData.footer.address)}" target="_blank">${siteData.footer.address}</a></p><p><i class="fas fa-phone"></i> ${siteData.footer.phone}</p><p><i class="fas fa-envelope"></i> ${siteData.footer.email}</p></div>
-                    <div class="footer-col"><h4>Quick Links</h4>${siteData.menu.map(item=>`<p><a href="${item.url}">${item.text}</a></p>`).join('')}</div>
+                    <div class="footer-col"><h4>Quick Links</h4>
+                        ${siteData.menu.map(item=>`<p><a href="${item.url}">${item.text}</a></p>`).join('')}
+                        <p><a href="#" id="privacyPolicyFooterLink">Privacy Policy</a></p>
+                        <p><a href="#" id="cookiesPolicyFooterLink">Cookies Policy</a></p>
+                    </div>
                 `;
                 document.getElementById('copyright').textContent = siteData.footer.copyright;
                 const insta = document.querySelector('.premium-social-tile.instagram');
@@ -1450,6 +1521,9 @@
                 document.getElementById('mobile-book-btn').textContent = siteData.texts.bookingMobile;
                 document.getElementById('modal-submit-button').textContent = siteData.texts.bookingModal;
                 document.getElementById('modal-footer-note').textContent = siteData.texts.modalFooter;
+
+                // Attach listeners for policy modals
+                attachPolicyModalListeners();
             }
 
             function populateGuestDropdown(max) {
@@ -1464,7 +1538,40 @@
                 sel.value = 2;
             }
 
-            // ---------- ADMIN FORM POPULATION ----------
+            // ---------- POLICY MODAL HANDLERS ----------
+            function attachPolicyModalListeners() {
+                const privacyLink = document.getElementById('privacyPolicyFooterLink');
+                const cookiesLink = document.getElementById('cookiesPolicyFooterLink');
+                const privacyModal = document.getElementById('privacyModal');
+                const cookiesModal = document.getElementById('cookiesModal');
+                const closePrivacy = document.getElementById('closePrivacyModal');
+                const closeCookies = document.getElementById('closeCookiesModal');
+
+                if (privacyLink) {
+                    privacyLink.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        privacyModal.style.display = 'flex';
+                    });
+                }
+                if (cookiesLink) {
+                    cookiesLink.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        cookiesModal.style.display = 'flex';
+                    });
+                }
+                if (closePrivacy) {
+                    closePrivacy.addEventListener('click', () => privacyModal.style.display = 'none');
+                }
+                if (closeCookies) {
+                    closeCookies.addEventListener('click', () => cookiesModal.style.display = 'none');
+                }
+                window.addEventListener('click', (e) => {
+                    if (e.target === privacyModal) privacyModal.style.display = 'none';
+                    if (e.target === cookiesModal) cookiesModal.style.display = 'none';
+                });
+            }
+
+            // ---------- ADMIN FORM POPULATION (unchanged, but we include the full functions) ----------
             function populateAdminForms() {
                 // Hero
                 document.getElementById('hero-subtitle-input').value = siteData.hero.subtitle;
@@ -1638,7 +1745,7 @@
                 if(diningImg) { dp.src=diningImg; dp.style.display='block'; } else dp.style.display='none';
             }
 
-            // Upload helpers
+            // Upload helpers (unchanged but included)
             window.uploadGalleryImage = async (index) => {
                 const input = document.createElement('input');
                 input.type='file'; input.accept='image/*';
@@ -1725,7 +1832,7 @@
                 });
             }
 
-            // Booking modal
+            // Booking modal (unchanged)
             const modal = document.getElementById('bookingModal');
             const closeModal = document.getElementById('closeModal');
             const bookBtn = document.getElementById('book-btn');
